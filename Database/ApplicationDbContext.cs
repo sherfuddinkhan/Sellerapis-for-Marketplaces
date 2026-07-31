@@ -1,0 +1,60 @@
+﻿using Microsoft.EntityFrameworkCore;
+using Marketplacesellerportal.Models;
+
+namespace Marketplacesellerportal.Database
+{
+    public class ApplicationDbContext : DbContext
+    {
+        public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options)
+            : base(options)
+        {
+        }
+
+        // Core
+        public DbSet<User> Users { get; set; }
+        public DbSet<Seller> Sellers { get; set; }
+
+        // Products
+        public DbSet<Product> Products { get; set; }
+        public DbSet<ProductPrice> ProductPrices { get; set; }
+        public DbSet<ProductInventory> ProductInventories { get; set; }
+        public DbSet<ProductImage> ProductImages { get; set; }
+        public DbSet<ProductAttribute> ProductAttributes { get; set; }
+        public DbSet<ProductType> ProductTypes { get; set; }
+        public DbSet<StockMovement> StockMovements { get; set; }
+        public DbSet<StockLedger> StockLedgers { get; set; }
+        public DbSet<SalesOrderItem> SalesOrderItems { get; set; }
+        public DbSet<DeliveryChallan> DeliveryChallans { get; set; }
+        public DbSet<SalesInvoice> SalesInvoices { get; set; }
+        public DbSet<Shipment> Shipments { get; set; }
+        public DbSet<Payment> Payments { get; set; }
+        public DbSet<CustomerReturn> CustomerReturns { get; set; }
+
+        public DbSet<OrderStatusHistory> OrderStatusHistories { get; set; }
+
+        // Suppliers
+        public DbSet<Supplier> Suppliers { get; set; }
+        public DbSet<PurchaseReturn> PurchaseReturns { get; set; }
+        public DbSet<SalesOrder> SalesOrders { get; set; }
+
+
+        // Inventory
+
+        public DbSet<StockAdjustment> StockAdjustments { get; set; }
+        public DbSet<StockTransfer> StockTransfers { get; set; }
+        // Customers
+        public DbSet<SellerCustomer> SellerCustomers { get; set; }
+
+        // Warehouses
+        public DbSet<Warehouse> Warehouses { get; set; }
+        public DbSet<WarehouseLocation> WarehouseLocations { get; set; }
+
+        // Purchase Orders
+        public DbSet<PurchaseOrder> PurchaseOrders { get; set; }
+        public DbSet<PurchaseOrderItem> PurchaseOrderItems { get; set; }
+
+        // Goods Receipt
+        public DbSet<GoodsReceiptNote> GoodsReceiptNotes { get; set; }
+        public DbSet<GoodsReceiptItem> GoodsReceiptItems { get; set; }
+    }
+}
