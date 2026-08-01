@@ -19,17 +19,36 @@ namespace Marketplacesellerportal.Models
         [MaxLength(50)]
         public string UserName { get; set; } = string.Empty;
 
-        [Required]
         [MaxLength(100)]
-        public string Email { get; set; } = string.Empty;
+        public string? Email { get; set; }
 
         [Required]
         public string PasswordHash { get; set; } = string.Empty;
 
-        public string Role { get; set; } = "Admin";
+        [MaxLength(20)]
+        public string? Mobile { get; set; }
+
+        [MaxLength(30)]
+        public string? Role { get; set; }
 
         public bool IsActive { get; set; } = true;
-        public string? Mobile { get; set; }
-        public DateTime CreatedDate { get; set; } = DateTime.Now;
+
+        public bool EmailVerified { get; set; }
+
+        public bool MobileVerified { get; set; }
+
+        public DateTime? LastLoginDate { get; set; }
+
+        public int FailedLoginAttempts { get; set; }
+
+        public bool IsLocked { get; set; }
+
+        public string? PasswordResetToken { get; set; }
+
+        public DateTime? PasswordResetExpiry { get; set; }
+
+        public DateTime? CreatedDate { get; set; }
+
+        public DateTime? UpdatedDate { get; set; }
     }
 }

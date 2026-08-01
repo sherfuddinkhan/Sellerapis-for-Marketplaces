@@ -1,6 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Marketplacesellerportal.Models;
-
+using BrandModel = Marketplacesellerportal.Models.Brand;
 namespace Marketplacesellerportal.Database
 {
     public class ApplicationDbContext : DbContext
@@ -29,8 +29,15 @@ namespace Marketplacesellerportal.Database
         public DbSet<Shipment> Shipments { get; set; }
         public DbSet<Payment> Payments { get; set; }
         public DbSet<CustomerReturn> CustomerReturns { get; set; }
-
+        public DbSet<Wishlist> Wishlists { get; set; }
+        public DbSet<Review> Reviews { get; set; }
         public DbSet<OrderStatusHistory> OrderStatusHistories { get; set; }
+        public DbSet<WishlistItem> WishlistItems { get; set; }
+
+
+
+        public DbSet<BrandModel> Brands { get; set; }
+        public DbSet<Notification> Notifications { get; set; }
 
         // Suppliers
         public DbSet<Supplier> Suppliers { get; set; }

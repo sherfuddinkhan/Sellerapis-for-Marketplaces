@@ -10,7 +10,7 @@
     <PackageReference Include="AutoMapper.Extensions.Microsoft.DependencyInjection" Version="12.0.1" />
     <PackageReference Include="BCrypt.Net-Next" Version="4.2.0" />
     <PackageReference Include="FluentValidation.AspNetCore" Version="11.3.1" />
-    <PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="8.0.18" />
+    <PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="8.0.11" />
     <PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="8.0.8">
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
@@ -22,7 +22,7 @@
     </PackageReference>
     <PackageReference Include="Microsoft.IdentityModel.Tokens" Version="8.0.2" />
     <PackageReference Include="Swashbuckle.AspNetCore" Version="10.2.3" />
-    <PackageReference Include="System.IdentityModel.Tokens.Jwt" Version="8.0.2" />
+    <PackageReference Include="System.IdentityModel.Tokens.Jwt" Version="7.5.2" />
   </ItemGroup>
 
   <ItemGroup>
@@ -31,14 +31,11 @@
     <Folder Include="Database\Configurations\" />
     <Folder Include="Database\Migrations\" />
     <Folder Include="Database\SeedData\" />
-    <Folder Include="Identity\Helpers\" />
-    <Folder Include="Identity\Mappings\" />
     <Folder Include="ProductInventory\DTOs\" />
     <Folder Include="ProductInventory\Models\" />
     <Folder Include="Marketplace\Amazon\" />
     <Folder Include="Marketplace\Flipkart\" />
     <Folder Include="Extensions\" />
-    <Folder Include="Pipeline\" />
     <Folder Include="Orders\Controllers\" />
     <Folder Include="Orders\DTOs\" />
     <Folder Include="Orders\Interfaces\" />
