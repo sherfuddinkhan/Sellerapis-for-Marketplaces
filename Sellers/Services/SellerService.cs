@@ -24,8 +24,18 @@ namespace Marketplacesellerportal.Sellers.Services
 
         public async Task<Seller> CreateAsync(Seller seller)
         {
+            if (string.IsNullOrWhiteSpace(seller.SellerCode))
+            {
+                seller.SellerCode =
+                    "SEL-" + Guid.NewGuid().ToString("N")[..8].ToUpper();
+            }
+
+            seller.CreatedAt = DateTime.UtcNow;
+            seller.IsActive = true;
+
             await _repository.AddAsync(seller);
             await _repository.SaveChangesAsync();
+
             return seller;
         }
 

@@ -9,7 +9,13 @@ namespace Marketplacesellerportal.Models
         [Key]
         public int UserId { get; set; }
 
+        // Every User belongs to a Seller
+        [Required]
         public int SellerId { get; set; }
+
+        // NULL when this User is the Seller's own login account.
+        // Contains CustomerId when this User belongs to a Customer.
+        public int? CustomerId { get; set; }
 
         [Required]
         [MaxLength(100)]

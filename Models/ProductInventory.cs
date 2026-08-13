@@ -1,31 +1,24 @@
-﻿namespace Marketplacesellerportal.Models
+﻿using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
+
+namespace Marketplacesellerportal.Models
 {
+    [Table("ProductInventory")]
     public class ProductInventory
     {
+        [Key]
         public int ProductInventoryId { get; set; }
-
         public int SellerId { get; set; }
-
         public int ProductId { get; set; }
-
         public int WarehouseId { get; set; }
-
         public int LocationId { get; set; }
-
         public decimal? Quantity { get; set; }
-
         public decimal? ReservedQuantity { get; set; }
-
         public decimal? DamagedQuantity { get; set; }
-
         public decimal? ReorderLevel { get; set; }
-
         public decimal? ReorderQuantity { get; set; }
-
         public DateTime? LastStockUpdate { get; set; }
-
         public DateTime? CreatedDate { get; set; }
-
         public DateTime? UpdatedDate { get; set; }
     }
 }

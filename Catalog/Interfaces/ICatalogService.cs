@@ -1,4 +1,6 @@
 ﻿using Marketplacesellerportal.Catalog.DTOs;
+using Marketplacesellerportal.Models;
+
 
 namespace Marketplacesellerportal.Catalog.Interfaces
 {
@@ -8,13 +10,19 @@ namespace Marketplacesellerportal.Catalog.Interfaces
 
         Task<ProductDetailsResponse?> GetProductDetailsAsync(int productId);
 
-        Task<IEnumerable<CatalogProductResponse>> SearchProductsAsync(ProductSearchRequest request);
+        Task<Product> CreateProductAsync(CreateProductRequest request);
 
-        Task<IEnumerable<CatalogProductResponse>> GetProductsByBrandAsync(int brandId);
+        Task<IEnumerable<CatalogProductResponse>> SearchProductsAsync(
+            ProductSearchRequest request);
 
-        Task<IEnumerable<CatalogProductResponse>> GetProductsByCategoryAsync(int categoryId);
+        Task<IEnumerable<CatalogProductResponse>> GetProductsByBrandAsync(
+            int brandId);
 
-        Task<IEnumerable<CatalogProductResponse>> GetProductsByProductTypeAsync(int productTypeId);
+        Task<IEnumerable<CatalogProductResponse>> GetProductsByCategoryAsync(
+            int categoryId);
+
+        Task<IEnumerable<CatalogProductResponse>> GetProductsByProductTypeAsync(
+            int productTypeId);
 
         Task<IEnumerable<CatalogProductResponse>> GetLatestProductsAsync();
 
@@ -28,12 +36,16 @@ namespace Marketplacesellerportal.Catalog.Interfaces
 
         Task<IEnumerable<CategoryResponse>> GetCategoriesAsync();
 
-        Task<IEnumerable<ProductImageResponse>> GetProductImagesAsync(int productId);
+        Task<IEnumerable<ProductImageResponse>> GetProductImagesAsync(
+            int productId);
 
-        Task<IEnumerable<ProductAttributeResponse>> GetProductAttributesAsync(int productId);
+        Task<IEnumerable<ProductAttributeResponse>> GetProductAttributesAsync(
+            int productId);
 
-        Task<IEnumerable<ProductReviewResponse>> GetProductReviewsAsync(int productId);
+        Task<IEnumerable<ProductReviewResponse>> GetProductReviewsAsync(
+            int productId);
 
-        Task<IEnumerable<CatalogProductResponse>> GetRelatedProductsAsync(int productId);
+        Task<IEnumerable<CatalogProductResponse>> GetRelatedProductsAsync(
+            int productId);
     }
 }

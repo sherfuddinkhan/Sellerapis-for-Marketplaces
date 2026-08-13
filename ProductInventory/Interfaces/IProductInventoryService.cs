@@ -14,17 +14,11 @@ namespace Marketplacesellerportal.ProductInventories.Interfaces
 
         Task<IEnumerable<ProductInventory>> GetByWarehouseIdAsync(int warehouseId);
 
-        Task<ProductInventory?> GetInventoryAsync(
-            int sellerId,
-            int productId,
-            int warehouseId,
-            int locationId);
+        Task<ProductInventory?> GetInventoryAsync(int sellerId,int productId,int warehouseId,int locationId);
 
         Task<ProductInventory> CreateAsync(ProductInventory productInventory);
 
-        Task<bool> UpdateAsync(
-            int productInventoryId,
-            ProductInventory productInventory);
+        Task<bool> UpdateAsync(int productInventoryId,ProductInventory productInventory);
 
         Task<bool> DeleteAsync(int productInventoryId);
     }

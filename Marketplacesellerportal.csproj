@@ -26,9 +26,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="Customers\DTOs\" />
-    <Folder Include="Customers\Models\" />
-    <Folder Include="Database\Configurations\" />
     <Folder Include="Database\Migrations\" />
     <Folder Include="Database\SeedData\" />
     <Folder Include="ProductInventory\DTOs\" />
@@ -52,8 +49,6 @@
     <Folder Include="Purchases\Models\" />
     <Folder Include="Purchases\Repositories\" />
     <Folder Include="Purchases\Services\" />
-    <Folder Include="Sellers\DTOs\" />
-    <Folder Include="Sellers\Models\" />
     <Folder Include="SharedKernel\DTOs\" />
     <Folder Include="SharedKernel\Services\" />
     <Folder Include="SharedKernel\Utilities\" />

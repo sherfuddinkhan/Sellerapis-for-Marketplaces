@@ -2,7 +2,6 @@
 using Marketplacesellerportal.OrderStatusHistories.Interfaces;
 using Marketplacesellerportal.OrderStatusHistories.Repositories;
 
-
 namespace Marketplacesellerportal.OrderStatusHistories.Services
 {
     public class OrderStatusHistoryService : IOrderStatusHistoryService
@@ -19,9 +18,9 @@ namespace Marketplacesellerportal.OrderStatusHistories.Services
             return await _repository.GetAllAsync();
         }
 
-        public async Task<OrderStatusHistory?> GetByIdAsync(int historyId)
+        public async Task<OrderStatusHistory?> GetByIdAsync(int orderStatusHistoryId)
         {
-            return await _repository.GetByIdAsync(historyId);
+            return await _repository.GetByIdAsync(orderStatusHistoryId);
         }
 
         public async Task<IEnumerable<OrderStatusHistory>> GetByOrderIdAsync(int orderId)
@@ -44,9 +43,12 @@ namespace Marketplacesellerportal.OrderStatusHistories.Services
             return history;
         }
 
-        public async Task<bool> UpdateAsync(int historyId, OrderStatusHistory history)
+        public async Task<bool> UpdateAsync(
+            int orderStatusHistoryId,
+            OrderStatusHistory history)
         {
-            var existing = await _repository.GetByIdAsync(historyId);
+            var existing =
+                await _repository.GetByIdAsync(orderStatusHistoryId);
 
             if (existing == null)
                 return false;
@@ -62,14 +64,15 @@ namespace Marketplacesellerportal.OrderStatusHistories.Services
             return true;
         }
 
-        public async Task<bool> DeleteAsync(int historyId)
+        public async Task<bool> DeleteAsync(int orderStatusHistoryId)
         {
-            var existing = await _repository.GetByIdAsync(historyId);
+            var existing =
+                await _repository.GetByIdAsync(orderStatusHistoryId);
 
             if (existing == null)
                 return false;
 
-            await _repository.DeleteAsync(historyId);
+            await _repository.DeleteAsync(orderStatusHistoryId);
             await _repository.SaveChangesAsync();
 
             return true;

@@ -15,7 +15,11 @@ namespace Marketplacesellerportal.AuthManagement.Repositories
         }
 
         #region Login
-
+        public async Task<bool> SellerExistsAsync(int sellerId)
+        {
+            return await _context.Sellers
+                .AnyAsync(s => s.SellerId == sellerId);
+        }
         public async Task<User?> LoginAsync(string userName)
         {
             return await _context.Users
@@ -44,6 +48,13 @@ namespace Marketplacesellerportal.AuthManagement.Repositories
 
         #region Registration
 
+        public async Task<bool> CustomerBelongsToSellerAsync(int customerId,int sellerId)
+        {
+            return await _context.SellerCustomers
+                .AnyAsync(c =>
+                    c.CustomerId == customerId &&
+                    c.SellerId == sellerId);
+        }
         public async Task<bool> UserExistsAsync(string userName)
         {
             return await _context.Users

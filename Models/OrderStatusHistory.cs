@@ -1,8 +1,12 @@
-﻿namespace Marketplacesellerportal.Models
+﻿using System;
+using System.ComponentModel.DataAnnotations;
+
+namespace Marketplacesellerportal.Models
 {
     public class OrderStatusHistory
     {
-        public int HistoryId { get; set; }
+        [Key]
+        public int OrderStatusHistoryId { get; set; }
 
         public int OrderId { get; set; }
 

@@ -23,7 +23,7 @@ namespace Marketplacesellerportal.OrderStatusHistories.Repositories
         public async Task<OrderStatusHistory?> GetByIdAsync(int historyId)
         {
             return await _context.OrderStatusHistories
-                .FirstOrDefaultAsync(x => x.HistoryId == historyId);
+                .FirstOrDefaultAsync(x => x.OrderStatusHistoryId == historyId);
         }
 
         public async Task<IEnumerable<OrderStatusHistory>> GetByOrderIdAsync(int orderId)

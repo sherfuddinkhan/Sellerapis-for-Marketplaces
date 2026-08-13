@@ -13,7 +13,16 @@ namespace Marketplacesellerportal.Database
         // Core
         public DbSet<User> Users { get; set; }
         public DbSet<Seller> Sellers { get; set; }
+        public DbSet<SellerCustomer> SellerCustomers { get; set; }
 
+        protected override void OnModelCreating(ModelBuilder modelBuilder)
+        {
+            base.OnModelCreating(modelBuilder);
+
+            modelBuilder.ApplyConfigurationsFromAssembly(
+                typeof(ApplicationDbContext).Assembly);
+        }
+        public DbSet<Category> Categories { get; set; }
         // Products
         public DbSet<Product> Products { get; set; }
         public DbSet<ProductPrice> ProductPrices { get; set; }
@@ -50,7 +59,7 @@ namespace Marketplacesellerportal.Database
         public DbSet<StockAdjustment> StockAdjustments { get; set; }
         public DbSet<StockTransfer> StockTransfers { get; set; }
         // Customers
-        public DbSet<SellerCustomer> SellerCustomers { get; set; }
+
 
         // Warehouses
         public DbSet<Warehouse> Warehouses { get; set; }
