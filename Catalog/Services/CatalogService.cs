@@ -1,5 +1,6 @@
 ﻿using Marketplacesellerportal.Catalog.DTOs;
 using Marketplacesellerportal.Catalog.Interfaces;
+using Marketplacesellerportal.Models;
 
 namespace Marketplacesellerportal.Catalog.Services
 {
@@ -12,52 +13,98 @@ namespace Marketplacesellerportal.Catalog.Services
             _repository = repository;
         }
 
-        public Task<IEnumerable<CatalogProductResponse>> GetProductsAsync()
-            => _repository.GetProductsAsync();
+        public async Task<Product> CreateProductAsync(CreateProductRequest request)
+        {
+            return await _repository.CreateProductAsync(request);
+        }
 
-        public Task<ProductDetailsResponse?> GetProductDetailsAsync(int productId)
-            => _repository.GetProductDetailsAsync(productId);
+        public async Task<IEnumerable<CatalogProductResponse>> GetProductsAsync()
+        {
+            return await _repository.GetProductsAsync();
+        }
 
-        public Task<IEnumerable<CatalogProductResponse>> SearchProductsAsync(ProductSearchRequest request)
-            => _repository.SearchProductsAsync(request);
+        public async Task<ProductDetailsResponse?> GetProductDetailsAsync(
+            int productId)
+        {
+            return await _repository.GetProductDetailsAsync(productId);
+        }
 
-        public Task<IEnumerable<CatalogProductResponse>> GetProductsByBrandAsync(int brandId)
-            => _repository.GetProductsByBrandAsync(brandId);
+        public async Task<IEnumerable<CatalogProductResponse>> SearchProductsAsync(
+            ProductSearchRequest request)
+        {
+            return await _repository.SearchProductsAsync(request);
+        }
 
-        public Task<IEnumerable<CatalogProductResponse>> GetProductsByCategoryAsync(int categoryId)
-            => _repository.GetProductsByCategoryAsync(categoryId);
+        public async Task<IEnumerable<CatalogProductResponse>> GetProductsByBrandAsync(
+            int brandId)
+        {
+            return await _repository.GetProductsByBrandAsync(brandId);
+        }
 
-        public Task<IEnumerable<CatalogProductResponse>> GetProductsByProductTypeAsync(int productTypeId)
-            => _repository.GetProductsByProductTypeAsync(productTypeId);
+        public async Task<IEnumerable<CatalogProductResponse>> GetProductsByCategoryAsync(
+            int categoryId)
+        {
+            return await _repository.GetProductsByCategoryAsync(categoryId);
+        }
 
-        public Task<IEnumerable<CatalogProductResponse>> GetLatestProductsAsync()
-            => _repository.GetLatestProductsAsync();
+        public async Task<IEnumerable<CatalogProductResponse>> GetProductsByProductTypeAsync(
+            int productTypeId)
+        {
+            return await _repository.GetProductsByProductTypeAsync(productTypeId);
+        }
 
-        public Task<IEnumerable<CatalogProductResponse>> GetFeaturedProductsAsync()
-            => _repository.GetFeaturedProductsAsync();
+        public async Task<IEnumerable<CatalogProductResponse>> GetLatestProductsAsync()
+        {
+            return await _repository.GetLatestProductsAsync();
+        }
 
-        public Task<IEnumerable<CatalogProductResponse>> GetTopRatedProductsAsync()
-            => _repository.GetTopRatedProductsAsync();
+        public async Task<IEnumerable<CatalogProductResponse>> GetFeaturedProductsAsync()
+        {
+            return await _repository.GetFeaturedProductsAsync();
+        }
 
-        public Task<IEnumerable<CatalogProductResponse>> GetBestSellingProductsAsync()
-            => _repository.GetBestSellingProductsAsync();
+        public async Task<IEnumerable<CatalogProductResponse>> GetTopRatedProductsAsync()
+        {
+            return await _repository.GetTopRatedProductsAsync();
+        }
 
-        public Task<IEnumerable<BrandResponse>> GetBrandsAsync()
-            => _repository.GetBrandsAsync();
+        public async Task<IEnumerable<CatalogProductResponse>> GetBestSellingProductsAsync()
+        {
+            return await _repository.GetBestSellingProductsAsync();
+        }
 
-        public Task<IEnumerable<CategoryResponse>> GetCategoriesAsync()
-            => _repository.GetCategoriesAsync();
+        public async Task<IEnumerable<BrandResponse>> GetBrandsAsync()
+        {
+            return await _repository.GetBrandsAsync();
+        }
 
-        public Task<IEnumerable<ProductImageResponse>> GetProductImagesAsync(int productId)
-            => _repository.GetProductImagesAsync(productId);
+        public async Task<IEnumerable<CategoryResponse>> GetCategoriesAsync()
+        {
+            return await _repository.GetCategoriesAsync();
+        }
 
-        public Task<IEnumerable<ProductAttributeResponse>> GetProductAttributesAsync(int productId)
-            => _repository.GetProductAttributesAsync(productId);
+        public async Task<IEnumerable<ProductImageResponse>> GetProductImagesAsync(
+            int productId)
+        {
+            return await _repository.GetProductImagesAsync(productId);
+        }
 
-        public Task<IEnumerable<ProductReviewResponse>> GetProductReviewsAsync(int productId)
-            => _repository.GetProductReviewsAsync(productId);
+        public async Task<IEnumerable<ProductAttributeResponse>> GetProductAttributesAsync(
+            int productId)
+        {
+            return await _repository.GetProductAttributesAsync(productId);
+        }
 
-        public Task<IEnumerable<CatalogProductResponse>> GetRelatedProductsAsync(int productId)
-            => _repository.GetRelatedProductsAsync(productId);
+        public async Task<IEnumerable<ProductReviewResponse>> GetProductReviewsAsync(
+            int productId)
+        {
+            return await _repository.GetProductReviewsAsync(productId);
+        }
+
+        public async Task<IEnumerable<CatalogProductResponse>> GetRelatedProductsAsync(
+            int productId)
+        {
+            return await _repository.GetRelatedProductsAsync(productId);
+        }
     }
 }

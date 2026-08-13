@@ -11,8 +11,12 @@ namespace Marketplacesellerportal.Models
         public int SellerId { get; set; }
 
         [Required]
+        [MaxLength(50)]
+        public string SellerCode { get; set; } = string.Empty;
+
+        [Required]
         [MaxLength(200)]
-        public string CompanyName { get; set; } = string.Empty;
+        public string SellerName { get; set; } = string.Empty;
 
         [MaxLength(100)]
         public string ContactPerson { get; set; } = string.Empty;
@@ -37,6 +41,9 @@ namespace Marketplacesellerportal.Models
 
         [MaxLength(20)]
         public string PostalCode { get; set; } = string.Empty;
+
+        [MaxLength(100)]
+        public string Country { get; set; } = string.Empty;
 
         public bool IsActive { get; set; }
 

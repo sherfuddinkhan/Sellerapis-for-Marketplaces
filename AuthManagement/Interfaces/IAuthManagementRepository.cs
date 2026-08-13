@@ -4,7 +4,10 @@ namespace Marketplacesellerportal.AuthManagement.Interfaces
 {
     public interface IAuthManagementRepository
     {
+        // ==========================================
         // Authentication
+        // ==========================================
+
         Task<User?> LoginAsync(string userName);
 
         Task<User?> GetByIdAsync(int userId);
@@ -13,14 +16,33 @@ namespace Marketplacesellerportal.AuthManagement.Interfaces
 
         Task<User?> GetByEmailAsync(string email);
 
+
+        // ==========================================
         // Registration
+        // ==========================================
+
+        Task<bool> SellerExistsAsync(int sellerId);
+
         Task<bool> UserExistsAsync(string userName);
 
         Task<bool> EmailExistsAsync(string email);
 
         Task AddUserAsync(User user);
 
+
+        // ==========================================
+        // Customer Validation
+        // ==========================================
+
+        Task<bool> CustomerBelongsToSellerAsync(
+            int customerId,
+            int sellerId);
+
+
+        // ==========================================
         // Update
+        // ==========================================
+
         Task UpdateUserAsync(User user);
 
         Task UpdatePasswordAsync(User user);
@@ -31,7 +53,11 @@ namespace Marketplacesellerportal.AuthManagement.Interfaces
 
         Task ResetFailedLoginAttemptsAsync(User user);
 
+
+        // ==========================================
         // Password Reset
+        // ==========================================
+
         Task SetPasswordResetTokenAsync(
             User user,
             string token,
@@ -39,12 +65,20 @@ namespace Marketplacesellerportal.AuthManagement.Interfaces
 
         Task<User?> GetByResetTokenAsync(string token);
 
+
+        // ==========================================
         // Account Lock
+        // ==========================================
+
         Task LockUserAsync(User user);
 
         Task UnlockUserAsync(User user);
 
+
+        // ==========================================
         // Save
+        // ==========================================
+
         Task SaveChangesAsync();
     }
 }

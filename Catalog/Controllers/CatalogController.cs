@@ -1,6 +1,7 @@
-﻿using Microsoft.AspNetCore.Mvc;
-using Marketplacesellerportal.Catalog.DTOs;
+﻿using Marketplacesellerportal.Catalog.DTOs;
 using Marketplacesellerportal.Catalog.Interfaces;
+using Marketplacesellerportal.Models;
+using Microsoft.AspNetCore.Mvc;
 
 namespace Marketplacesellerportal.Catalog.Controllers
 {
@@ -48,6 +49,18 @@ namespace Marketplacesellerportal.Catalog.Controllers
         public async Task<IActionResult> GetCategories()
         {
             return Ok(await _service.GetCategoriesAsync());
+        }
+
+        [HttpPost("products")]
+        public async Task<IActionResult> CreateProduct(
+         CreateProductRequest request)
+        {
+            var createdProduct = await _service.CreateProductAsync(request);
+
+            return CreatedAtAction(
+                nameof(GetProductDetails),
+                new { id = createdProduct.ProductId },
+                createdProduct);
         }
 
         [HttpGet("brand/{brandId}")]

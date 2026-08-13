@@ -1,7 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Marketplacesellerportal.Models;
 using Marketplacesellerportal.ProductTypes.Interfaces;
-
+using Marketplacesellerportal.ProductTypes.DTOs;
 namespace Marketplacesellerportal.ProductTypes.Controllers
 {
     [ApiController]
@@ -50,8 +50,16 @@ namespace Marketplacesellerportal.ProductTypes.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> Create(ProductType productType)
+        public async Task<IActionResult> Create(CreateProductTypeRequest request)
         {
+            var productType = new ProductType
+            {
+                ProductTypeName = request.ProductTypeName,
+                Description = request.Description,
+                IsActive = request.IsActive,
+                CreatedDate = DateTime.Now
+            };
+
             return Ok(await _service.CreateAsync(productType));
         }
 

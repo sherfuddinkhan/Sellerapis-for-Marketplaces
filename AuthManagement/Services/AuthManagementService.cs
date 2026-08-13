@@ -22,6 +22,7 @@ namespace Marketplacesellerportal.AuthManagement.Services
 
         public async Task<LoginResponse> RegisterAsync(RegisterRequest request)
         {
+            // Check username
             if (await _repository.UserExistsAsync(request.UserName))
             {
                 return new LoginResponse
@@ -31,6 +32,7 @@ namespace Marketplacesellerportal.AuthManagement.Services
                 };
             }
 
+            // Check email
             if (await _repository.EmailExistsAsync(request.Email))
             {
                 return new LoginResponse
@@ -40,9 +42,29 @@ namespace Marketplacesellerportal.AuthManagement.Services
                 };
             }
 
+            // Validate Customer belongs to Seller
+            if (request.CustomerId.HasValue)
+            {
+                var customerExists =
+                    await _repository.CustomerBelongsToSellerAsync(
+                        request.CustomerId.Value,
+                        request.SellerId);
+
+                if (!customerExists)
+                {
+                    return new LoginResponse
+                    {
+                        Success = false,
+                        Message = "Customer does not belong to the specified seller."
+                    };
+                }
+            }
+
+            // Create User
             var user = new User
             {
                 SellerId = request.SellerId,
+                CustomerId = request.CustomerId,
                 FullName = request.FullName,
                 UserName = request.UserName,
                 Email = request.Email,
@@ -54,16 +76,26 @@ namespace Marketplacesellerportal.AuthManagement.Services
                 MobileVerified = false,
                 FailedLoginAttempts = 0,
                 IsLocked = false,
+
                 CreatedDate = DateTime.Now
             };
 
+            // Save
             await _repository.AddUserAsync(user);
             await _repository.SaveChangesAsync();
 
+            // Return registered user details
             return new LoginResponse
             {
                 Success = true,
-                Message = "User registered successfully."
+                Message = "User registered successfully.",
+                UserId = user.UserId,
+                SellerId = user.SellerId,
+                CustomerId = user.CustomerId,
+                UserName = user.UserName,
+                FullName = user.FullName,
+                Email = user.Email ?? "",
+                Role = user.Role ?? ""
             };
         }
 
@@ -123,6 +155,7 @@ namespace Marketplacesellerportal.AuthManagement.Services
                 Expiration = token.expiration,
                 UserId = user.UserId,
                 SellerId = user.SellerId,
+                CustomerId = user.CustomerId,
                 UserName = user.UserName,
                 FullName = user.FullName,
                 Email = user.Email ?? "",
@@ -158,7 +191,8 @@ namespace Marketplacesellerportal.AuthManagement.Services
 
         #region Change Password
 
-        public async Task<LoginResponse> ChangePasswordAsync(ChangePasswordRequest request)
+        public async Task<LoginResponse> ChangePasswordAsync(
+     ChangePasswordRequest request)
         {
             var user = await _repository.GetByIdAsync(request.UserId);
 
@@ -171,7 +205,9 @@ namespace Marketplacesellerportal.AuthManagement.Services
                 };
             }
 
-            if (!PasswordHasher.Verify(request.CurrentPassword, user.PasswordHash))
+            if (!PasswordHasher.Verify(
+                request.CurrentPassword,
+                user.PasswordHash))
             {
                 return new LoginResponse
                 {
@@ -180,7 +216,10 @@ namespace Marketplacesellerportal.AuthManagement.Services
                 };
             }
 
-            user.PasswordHash = PasswordHasher.Hash(request.NewPassword);
+            user.PasswordHash =
+                PasswordHasher.Hash(request.NewPassword);
+
+            user.UpdatedDate = DateTime.Now;
 
             await _repository.UpdatePasswordAsync(user);
             await _repository.SaveChangesAsync();
@@ -188,7 +227,14 @@ namespace Marketplacesellerportal.AuthManagement.Services
             return new LoginResponse
             {
                 Success = true,
-                Message = "Password changed successfully."
+                Message = "Password changed successfully.",
+                UserId = user.UserId,
+                SellerId = user.SellerId,
+                CustomerId = user.CustomerId,
+                UserName = user.UserName,
+                FullName = user.FullName,
+                Email = user.Email ?? "",
+                Role = user.Role ?? ""
             };
         }
 
@@ -221,7 +267,15 @@ namespace Marketplacesellerportal.AuthManagement.Services
             return new LoginResponse
             {
                 Success = true,
-                Message = token
+                Message = "Password reset token generated successfully.",
+                Token = token,
+                UserId = user.UserId,
+                SellerId = user.SellerId,
+                CustomerId = user.CustomerId,
+                UserName = user.UserName,
+                FullName = user.FullName,
+                Email = user.Email ?? "",
+                Role = user.Role ?? ""
             };
         }
 
@@ -250,9 +304,17 @@ namespace Marketplacesellerportal.AuthManagement.Services
             await _repository.SaveChangesAsync();
 
             return new LoginResponse
+
             {
                 Success = true,
-                Message = "Password reset successfully."
+                Message = "Password reset token generated successfully.",
+                UserId = user.UserId,
+                SellerId = user.SellerId,
+                CustomerId = user.CustomerId,
+                UserName = user.UserName,
+                FullName = user.FullName,
+                Email = user.Email ?? "",
+                Role = user.Role ?? ""
             };
         }
 

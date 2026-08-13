@@ -1,6 +1,7 @@
-﻿using Microsoft.AspNetCore.Mvc;
-using Marketplacesellerportal.Models;
+﻿using Marketplacesellerportal.Models;
+using Marketplacesellerportal.Sellers.DTOs;
 using Marketplacesellerportal.Sellers.Interfaces;
+using Microsoft.AspNetCore.Mvc;
 
 namespace Marketplacesellerportal.Sellers.Controllers
 {
@@ -33,23 +34,63 @@ namespace Marketplacesellerportal.Sellers.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> Create(Seller seller)
+        public async Task<IActionResult> Create(RegisterSellerRequest request)
         {
+            var seller = new Seller
+            {
+                SellerName = request.SellerName,
+                ContactPerson = request.ContactPerson,
+                Email = request.Email,
+                Phone = request.Phone,
+                GSTIN = request.GSTIN,
+                Address = request.Address,
+                City = request.City,
+                State = request.State,
+                PostalCode = request.PostalCode,
+                Country = request.Country
+            };
+
             var result = await _service.CreateAsync(seller);
+
             return Ok(result);
         }
 
-        [HttpPut]
-        public async Task<IActionResult> Update(Seller seller)
+        [HttpPut("{id}")]
+        public async Task<IActionResult> Update(int id, RegisterSellerRequest request)
         {
+            var seller = await _service.GetByIdAsync(id);
+
+            if (seller == null)
+                return NotFound(new { message = "Seller not found" });
+
+            seller.SellerName = request.SellerName;
+            seller.ContactPerson = request.ContactPerson;
+            seller.Email = request.Email;
+            seller.Phone = request.Phone;
+            seller.GSTIN = request.GSTIN;
+            seller.Address = request.Address;
+            seller.City = request.City;
+            seller.State = request.State;
+            seller.PostalCode = request.PostalCode;
+            seller.Country = request.Country;
+
+            seller.UpdatedAt = DateTime.UtcNow;
+
             await _service.UpdateAsync(seller);
-            return NoContent();
+
+            return Ok(seller);
         }
 
         [HttpDelete("{id}")]
         public async Task<IActionResult> Delete(int id)
         {
+            var seller = await _service.GetByIdAsync(id);
+
+            if (seller == null)
+                return NotFound(new { message = "Seller not found" });
+
             await _service.DeleteAsync(id);
+
             return NoContent();
         }
     }
