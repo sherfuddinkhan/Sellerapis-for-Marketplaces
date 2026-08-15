@@ -10,7 +10,7 @@ namespace Marketplacesellerportal.Models
         public int WarehouseId { get; set; }
 
         public int SellerId { get; set; }
-
+        public int CustomerId { get; set; }
         public string WarehouseCode { get; set; } = string.Empty;
 
         public string WarehouseName { get; set; } = string.Empty;

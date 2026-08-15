@@ -52,7 +52,14 @@ namespace Marketplacesellerportal.ProductPrices.Repositories
                 .Where(x => x.IsActive == true)
                 .ToListAsync();
         }
-
+        public async Task<IEnumerable<ProductPrice>> GetBySellerCustomerAsync(int sellerId,int customerId)
+        {
+            return await _context.ProductPrices
+                .Where(x =>
+                    x.SellerId == sellerId &&
+                    x.CustomerId == customerId)
+                .ToListAsync();
+        }
         public async Task<ProductPrice?> GetProductPriceAsync(
             int sellerId,
             int productId,
@@ -74,7 +81,7 @@ namespace Marketplacesellerportal.ProductPrices.Repositories
             _context.ProductPrices.Update(productPrice);
             return Task.CompletedTask;
         }
-
+   
         public async Task DeleteAsync(int productPriceId)
         {
             var entity = await GetByIdAsync(productPriceId);

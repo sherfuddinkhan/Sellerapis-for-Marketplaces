@@ -13,7 +13,16 @@ namespace Marketplacesellerportal.ProductTypes.Repositories
         {
             _context = context;
         }
-
+        public async Task<IEnumerable<ProductType>> GetBySellerCustomerAsync(
+            int sellerId,
+            int customerId)
+        {
+            return await _context.ProductTypes
+                .Where(x =>
+                    x.SellerId == sellerId &&
+                    x.CustomerId == customerId)
+                .ToListAsync();
+        }
         public async Task<IEnumerable<ProductType>> GetAllAsync()
         {
             return await _context.ProductTypes.ToListAsync();

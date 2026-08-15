@@ -14,6 +14,17 @@ namespace Marketplacesellerportal.Categories.Repositories
         {
             _context = context;
         }
+        public async Task<IEnumerable<Category>> GetByIdsAsync(
+            IEnumerable<int> categoryIds)
+        {
+            var ids = categoryIds
+                .Distinct()
+                .ToList();
+
+            return await _context.Categories
+                .Where(x => ids.Contains(x.CategoryId))
+                .ToListAsync();
+        }
 
         public async Task<IEnumerable<Category>> GetAllAsync()
         {

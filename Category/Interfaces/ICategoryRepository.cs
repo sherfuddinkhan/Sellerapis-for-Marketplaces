@@ -10,7 +10,8 @@ namespace Marketplacesellerportal.Categories.Interfaces
         Task<Category?> GetByIdAsync(int categoryId);
 
         Task<Category?> GetByNameAsync(string categoryName);
-
+        Task<IEnumerable<Category>> GetByIdsAsync(
+            IEnumerable<int> categoryIds);
         Task<IEnumerable<Category>> GetActiveAsync();
 
         Task AddAsync(Category category);

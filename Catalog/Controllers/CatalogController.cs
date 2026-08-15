@@ -1,6 +1,5 @@
 ﻿using Marketplacesellerportal.Catalog.DTOs;
 using Marketplacesellerportal.Catalog.Interfaces;
-using Marketplacesellerportal.Models;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Marketplacesellerportal.Catalog.Controllers
@@ -16,16 +15,36 @@ namespace Marketplacesellerportal.Catalog.Controllers
             _service = service;
         }
 
+        // =========================================================
+        // GET ALL PRODUCTS
+        // =========================================================
+
         [HttpGet("products")]
-        public async Task<IActionResult> GetProducts()
+        public async Task<IActionResult> GetProducts(
+            [FromQuery] int sellerId,
+            [FromQuery] int customerId)
         {
-            return Ok(await _service.GetProductsAsync());
+            var products = await _service.GetProductsAsync(
+                sellerId,
+                customerId);
+
+            return Ok(products);
         }
 
+        // =========================================================
+        // GET PRODUCT DETAILS
+        // =========================================================
+
         [HttpGet("products/{id}")]
-        public async Task<IActionResult> GetProductDetails(int id)
+        public async Task<IActionResult> GetProductDetails(
+            int id,
+            [FromQuery] int sellerId,
+            [FromQuery] int customerId)
         {
-            var result = await _service.GetProductDetailsAsync(id);
+            var result = await _service.GetProductDetailsAsync(
+                id,
+                sellerId,
+                customerId);
 
             if (result == null)
                 return NotFound();
@@ -33,100 +52,256 @@ namespace Marketplacesellerportal.Catalog.Controllers
             return Ok(result);
         }
 
+        // =========================================================
+        // SEARCH
+        // =========================================================
+
         [HttpPost("search")]
-        public async Task<IActionResult> Search(ProductSearchRequest request)
+        public async Task<IActionResult> Search(
+            [FromQuery] int sellerId,
+            [FromQuery] int customerId,
+            [FromBody] ProductSearchRequest request)
         {
-            return Ok(await _service.SearchProductsAsync(request));
+            var result = await _service.SearchProductsAsync(
+                request,
+                sellerId,
+                customerId);
+
+            return Ok(result);
         }
 
-        [HttpGet("brands")]
-        public async Task<IActionResult> GetBrands()
-        {
-            return Ok(await _service.GetBrandsAsync());
-        }
-
-        [HttpGet("categories")]
-        public async Task<IActionResult> GetCategories()
-        {
-            return Ok(await _service.GetCategoriesAsync());
-        }
+        // =========================================================
+        // CREATE PRODUCT
+        // =========================================================
 
         [HttpPost("products")]
         public async Task<IActionResult> CreateProduct(
-         CreateProductRequest request)
+            CreateProductRequest request)
         {
-            var createdProduct = await _service.CreateProductAsync(request);
+            if (!ModelState.IsValid)
+                return BadRequest(ModelState);
+
+            var createdProduct =
+                await _service.CreateProductAsync(request);
 
             return CreatedAtAction(
                 nameof(GetProductDetails),
-                new { id = createdProduct.ProductId },
+                new
+                {
+                    id = createdProduct.ProductId,
+                    sellerId = createdProduct.SellerId,
+                    customerId = createdProduct.CustomerId
+                },
                 createdProduct);
         }
 
-        [HttpGet("brand/{brandId}")]
-        public async Task<IActionResult> ProductsByBrand(int brandId)
+        // =========================================================
+        // BRANDS
+        // =========================================================
+
+        [HttpGet("brands")]
+        public async Task<IActionResult> GetBrands(
+            [FromQuery] int sellerId,
+            [FromQuery] int customerId)
         {
-            return Ok(await _service.GetProductsByBrandAsync(brandId));
+            return Ok(
+                await _service.GetBrandsAsync(
+                    sellerId,
+                    customerId));
         }
+
+        // =========================================================
+        // CATEGORIES
+        // =========================================================
+
+        [HttpGet("categories")]
+        public async Task<IActionResult> GetCategories(
+            [FromQuery] int sellerId,
+            [FromQuery] int customerId)
+        {
+            return Ok(
+                await _service.GetCategoriesAsync(
+                    sellerId,
+                    customerId));
+        }
+
+        // =========================================================
+        // PRODUCTS BY BRAND
+        // =========================================================
+
+        [HttpGet("brand/{brandId}")]
+        public async Task<IActionResult> ProductsByBrand(
+            int brandId,
+            [FromQuery] int sellerId,
+            [FromQuery] int customerId)
+        {
+            return Ok(
+                await _service.GetProductsByBrandAsync(
+                    brandId,
+                    sellerId,
+                    customerId));
+        }
+
+        // =========================================================
+        // PRODUCTS BY CATEGORY
+        // =========================================================
 
         [HttpGet("category/{categoryId}")]
-        public async Task<IActionResult> ProductsByCategory(int categoryId)
+        public async Task<IActionResult> ProductsByCategory(
+            int categoryId,
+            [FromQuery] int sellerId,
+            [FromQuery] int customerId)
         {
-            return Ok(await _service.GetProductsByCategoryAsync(categoryId));
+            return Ok(
+                await _service.GetProductsByCategoryAsync(
+                    categoryId,
+                    sellerId,
+                    customerId));
         }
+
+        // =========================================================
+        // PRODUCTS BY PRODUCT TYPE
+        // =========================================================
 
         [HttpGet("producttype/{productTypeId}")]
-        public async Task<IActionResult> ProductsByProductType(int productTypeId)
+        public async Task<IActionResult> ProductsByProductType(
+            int productTypeId,
+            [FromQuery] int sellerId,
+            [FromQuery] int customerId)
         {
-            return Ok(await _service.GetProductsByProductTypeAsync(productTypeId));
+            return Ok(
+                await _service.GetProductsByProductTypeAsync(
+                    productTypeId,
+                    sellerId,
+                    customerId));
         }
+
+        // =========================================================
+        // LATEST
+        // =========================================================
 
         [HttpGet("latest")]
-        public async Task<IActionResult> LatestProducts()
+        public async Task<IActionResult> LatestProducts(
+            [FromQuery] int sellerId,
+            [FromQuery] int customerId)
         {
-            return Ok(await _service.GetLatestProductsAsync());
+            return Ok(
+                await _service.GetLatestProductsAsync(
+                    sellerId,
+                    customerId));
         }
+
+        // =========================================================
+        // FEATURED
+        // =========================================================
 
         [HttpGet("featured")]
-        public async Task<IActionResult> FeaturedProducts()
+        public async Task<IActionResult> FeaturedProducts(
+            [FromQuery] int sellerId,
+            [FromQuery] int customerId)
         {
-            return Ok(await _service.GetFeaturedProductsAsync());
+            return Ok(
+                await _service.GetFeaturedProductsAsync(
+                    sellerId,
+                    customerId));
         }
+
+        // =========================================================
+        // TOP RATED
+        // =========================================================
 
         [HttpGet("toprated")]
-        public async Task<IActionResult> TopRatedProducts()
+        public async Task<IActionResult> TopRatedProducts(
+            [FromQuery] int sellerId,
+            [FromQuery] int customerId)
         {
-            return Ok(await _service.GetTopRatedProductsAsync());
+            return Ok(
+                await _service.GetTopRatedProductsAsync(
+                    sellerId,
+                    customerId));
         }
+
+        // =========================================================
+        // BEST SELLERS
+        // =========================================================
 
         [HttpGet("bestsellers")]
-        public async Task<IActionResult> BestSellingProducts()
+        public async Task<IActionResult> BestSellingProducts(
+            [FromQuery] int sellerId,
+            [FromQuery] int customerId)
         {
-            return Ok(await _service.GetBestSellingProductsAsync());
+            return Ok(
+                await _service.GetBestSellingProductsAsync(
+                    sellerId,
+                    customerId));
         }
+
+        // =========================================================
+        // IMAGES
+        // =========================================================
 
         [HttpGet("{productId}/images")]
-        public async Task<IActionResult> Images(int productId)
+        public async Task<IActionResult> Images(
+            int productId,
+            [FromQuery] int sellerId,
+            [FromQuery] int customerId)
         {
-            return Ok(await _service.GetProductImagesAsync(productId));
+            return Ok(
+                await _service.GetProductImagesAsync(
+                    productId,
+                    sellerId,
+                    customerId));
         }
+
+        // =========================================================
+        // ATTRIBUTES
+        // =========================================================
 
         [HttpGet("{productId}/attributes")]
-        public async Task<IActionResult> Attributes(int productId)
+        public async Task<IActionResult> Attributes(
+            int productId,
+            [FromQuery] int sellerId,
+            [FromQuery] int customerId)
         {
-            return Ok(await _service.GetProductAttributesAsync(productId));
+            return Ok(
+                await _service.GetProductAttributesAsync(
+                    productId,
+                    sellerId,
+                    customerId));
         }
+
+        // =========================================================
+        // REVIEWS
+        // =========================================================
 
         [HttpGet("{productId}/reviews")]
-        public async Task<IActionResult> Reviews(int productId)
+        public async Task<IActionResult> Reviews(
+            int productId,
+            [FromQuery] int sellerId,
+            [FromQuery] int customerId)
         {
-            return Ok(await _service.GetProductReviewsAsync(productId));
+            return Ok(
+                await _service.GetProductReviewsAsync(
+                    productId,
+                    sellerId,
+                    customerId));
         }
 
+        // =========================================================
+        // RELATED PRODUCTS
+        // =========================================================
+
         [HttpGet("{productId}/related")]
-        public async Task<IActionResult> RelatedProducts(int productId)
+        public async Task<IActionResult> RelatedProducts(
+            int productId,
+            [FromQuery] int sellerId,
+            [FromQuery] int customerId)
         {
-            return Ok(await _service.GetRelatedProductsAsync(productId));
+            return Ok(
+                await _service.GetRelatedProductsAsync(
+                    productId,
+                    sellerId,
+                    customerId));
         }
     }
 }

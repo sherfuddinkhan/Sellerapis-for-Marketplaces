@@ -35,14 +35,15 @@ namespace Marketplacesellerportal.SellerCustomers.Controllers
             return Ok(customers);
         }
 
-        // GET: api/SellerCustomer/1/customers/2
-        [HttpGet("{sellerId:int}/customers/{customerId:int}")]
-        public async Task<IActionResult> GetCustomer(
-            int sellerId,
-            int customerId)
+        
+// GET: api/SellerCustomer/5/customers/2
+[HttpGet("{sellerId:int}/customers/{customerId:int}")]
+public async Task<IActionResult> GetCustomer(
+    int sellerId,
+    int customerId)
         {
             var customer =
-                await _service.GetCustomerAsync(
+                await _service.GetCustomerWithProductsAsync(
                     sellerId,
                     customerId);
 
@@ -50,12 +51,14 @@ namespace Marketplacesellerportal.SellerCustomers.Controllers
             {
                 return NotFound(new
                 {
-                    message = "Customer not found."
+                    message = "Customer not found for this seller."
                 });
             }
 
             return Ok(customer);
         }
+
+
 
         // GET: api/SellerCustomer/1/code/CUST001
         [HttpGet("{sellerId:int}/code/{customerCode}")]

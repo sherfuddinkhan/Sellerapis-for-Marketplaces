@@ -4,11 +4,15 @@
     {
         public int ProductTypeId { get; set; }
 
+        public int SellerId { get; set; }
+
+        public int CustomerId { get; set; }
+
         public string ProductTypeName { get; set; } = string.Empty;
 
         public string? Description { get; set; }
 
-        public bool IsActive { get; set; }
+        public bool IsActive { get; set; } = true;
 
         public DateTime CreatedDate { get; set; }
 

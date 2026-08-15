@@ -13,7 +13,28 @@ namespace Marketplacesellerportal.ProductAttributes.Repositories
         {
             _context = context;
         }
+        public async Task<IEnumerable<ProductAttribute>> GetByProductIdsAsync(
+    IEnumerable<int> productIds)
+        {
+            return await _context.ProductAttributes
+                .Where(x => productIds.Contains(x.ProductId))
+                .ToListAsync();
+        }
 
+        public async Task<IEnumerable<ProductAttribute>> GetByAttributeNameAsync(
+    string attributeName)
+        {
+            return await _context.ProductAttributes
+                .Where(x => x.AttributeName == attributeName)
+                .ToListAsync();
+        }
+        public async Task<IEnumerable<ProductAttribute>> GetBySellerIdAsync(
+    int sellerId)
+        {
+            return await _context.ProductAttributes
+                .Where(x => x.SellerId == sellerId)
+                .ToListAsync();
+        }
         public async Task<IEnumerable<ProductAttribute>> GetAllAsync()
         {
             return await _context.ProductAttributes.ToListAsync();
@@ -24,6 +45,7 @@ namespace Marketplacesellerportal.ProductAttributes.Repositories
             return await _context.ProductAttributes
                 .FirstOrDefaultAsync(x => x.ProductAttributeId == productAttributeId);
         }
+       
 
         public async Task<IEnumerable<ProductAttribute>> GetByProductIdAsync(int productId)
         {
@@ -32,12 +54,7 @@ namespace Marketplacesellerportal.ProductAttributes.Repositories
                 .ToListAsync();
         }
 
-        public async Task<IEnumerable<ProductAttribute>> GetByAttributeNameAsync(string attributeName)
-        {
-            return await _context.ProductAttributes
-                .Where(x => x.AttributeName == attributeName)
-                .ToListAsync();
-        }
+      
 
         public async Task AddAsync(ProductAttribute productAttribute)
         {
@@ -61,6 +78,17 @@ namespace Marketplacesellerportal.ProductAttributes.Repositories
         public async Task SaveChangesAsync()
         {
             await _context.SaveChangesAsync();
+        }
+        public async Task<IEnumerable<ProductAttribute>>
+    GetBySellerCustomerAsync(
+        int sellerId,
+        int customerId)
+        {
+            return await _context.ProductAttributes
+                .Where(x =>
+                    x.SellerId == sellerId &&
+                    x.CustomerId == customerId)
+                .ToListAsync();
         }
     }
 }

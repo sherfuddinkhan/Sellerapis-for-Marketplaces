@@ -15,7 +15,8 @@ namespace Marketplacesellerportal.ProductImages.Interfaces
         Task<ProductImage?> GetPrimaryImageAsync(int productId);
 
         Task AddAsync(ProductImage productImage);
-
+        Task<IEnumerable<ProductImage>> GetByProductIdsAsync(
+    IEnumerable<int> productIds);
         Task UpdateAsync(ProductImage productImage);
 
         Task DeleteAsync(int productImageId);
