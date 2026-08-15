@@ -11,7 +11,7 @@ namespace Marketplacesellerportal.ProductTypes.Interfaces
         Task<ProductType?> GetByNameAsync(string productTypeName);
 
         Task<IEnumerable<ProductType>> GetActiveAsync();
-
+        Task<IEnumerable<ProductType>> GetBySellerCustomerAsync(int sellerId,int customerId);
         Task AddAsync(ProductType productType);
 
         Task UpdateAsync(ProductType productType);

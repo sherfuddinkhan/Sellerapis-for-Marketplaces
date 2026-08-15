@@ -2,11 +2,15 @@
 {
     public class ProductReviewResponse
     {
-        public string CustomerName { get; set; } = string.Empty;
+        public int ReviewId { get; set; }
+
+        public int CustomerId { get; set; }
+
+        public int ProductId { get; set; }
 
         public int Rating { get; set; }
 
-        public string? Review { get; set; }
+        public string? ReviewText { get; set; }
 
         public DateTime CreatedDate { get; set; }
     }

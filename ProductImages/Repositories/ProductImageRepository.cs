@@ -13,12 +13,20 @@ namespace Marketplacesellerportal.ProductImages.Repositories
         {
             _context = context;
         }
-
+        public async Task<IEnumerable<ProductImage>> GetByProductIdsAsync(
+    IEnumerable<int> productIds)
+        {
+            return await _context.ProductImages
+                .Where(x => productIds.Contains(x.ProductId))
+                .OrderBy(x => x.ProductId)
+                .ThenBy(x => x.DisplayOrder)
+                .ToListAsync();
+        }
         public async Task<IEnumerable<ProductImage>> GetAllAsync()
         {
             return await _context.ProductImages.ToListAsync();
         }
-
+    
         public async Task<ProductImage?> GetByIdAsync(int productImageId)
         {
             return await _context.ProductImages

@@ -13,7 +13,10 @@ namespace Marketplacesellerportal.SellerCustomers.Interfaces
         Task<SellerCustomer?> GetCustomerAsync(
             int sellerId,
             int customerId);
-
+        Task<SellerCustomerWithProductsResponse?>
+    GetCustomerWithProductsAsync(
+        int sellerId,
+        int customerId);
         Task<SellerCustomer?> GetByCustomerCodeAsync(
             int sellerId,
             string customerCode);

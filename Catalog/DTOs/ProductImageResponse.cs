@@ -4,8 +4,14 @@
     {
         public int ProductImageId { get; set; }
 
-        public string ImageUrl { get; set; } = string.Empty;
+        public int ProductId { get; set; }
+
+        public string? ImageUrl { get; set; }
+
+        public int DisplayOrder { get; set; }
 
         public bool IsPrimary { get; set; }
+
+        public DateTime CreatedDate { get; set; }
     }
 }

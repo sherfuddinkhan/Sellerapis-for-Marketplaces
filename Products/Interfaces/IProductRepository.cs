@@ -1,9 +1,5 @@
-﻿using Marketplacesellerportal.Models;
-using Microsoft.EntityFrameworkCore;
-using Marketplacesellerportal.Database;
+﻿
 using Marketplacesellerportal.Models;
-using Marketplacesellerportal.Products.Interfaces;
-using Marketplacesellerportal.SharedKernel.Repositories;
 using Marketplacesellerportal.SharedKernel.Interfaces;
 
 namespace Marketplacesellerportal.Products.Interfaces
@@ -12,5 +8,7 @@ namespace Marketplacesellerportal.Products.Interfaces
     {
         Task<Product?> GetBySKUAsync(string sku);
         Task<IEnumerable<Product>> GetBySellerAsync(int sellerId);
+        Task<IEnumerable<Product>> GetProductsBySellerCustomerAsync(int sellerId,int customerId);
+       
     }
 }

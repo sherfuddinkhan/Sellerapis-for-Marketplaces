@@ -3,9 +3,9 @@
     public class CreateProductRequest
     {
         public int SellerId { get; set; }
-
+        public int CustomerId { get; set; }
         public string SKU { get; set; } = string.Empty;
-
+        public int? ProductTypeId { get; set; }
         public string ProductName { get; set; } = string.Empty;
 
         public string? Description { get; set; }

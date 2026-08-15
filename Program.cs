@@ -22,6 +22,10 @@ using Marketplacesellerportal.Categories.Repositories;
 using Marketplacesellerportal.Categories.Services;
 using Marketplacesellerportal.Database;
 
+using Marketplacesellerportal.Products.Interfaces;
+using Marketplacesellerportal.Products.Repositories;
+using Marketplacesellerportal.Products.Services;
+
 using Marketplacesellerportal.ProductInventories.Interfaces;
 using Marketplacesellerportal.ProductInventories.Services;
 using Marketplacesellerportal.ProductInventories.Repositories;
@@ -351,11 +355,8 @@ builder.Services.AddScoped<
 // =========================================================
 // PRODUCT
 // =========================================================
-
-builder.Services.AddScoped<
-    IProductRepository,
-    ProductRepository>();
-
+builder.Services.AddScoped<IProductService, ProductService>();
+builder.Services.AddScoped<IProductRepository,ProductRepository>();
 
 // =========================================================
 // PRODUCT TYPE

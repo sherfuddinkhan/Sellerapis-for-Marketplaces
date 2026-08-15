@@ -1,8 +1,9 @@
 ﻿using Marketplacesellerportal.Models;
+using Marketplacesellerportal.SharedKernel.Interfaces;
 
 namespace Marketplacesellerportal.ProductInventories.Interfaces
 {
-    public interface IProductInventoryRepository
+    public interface IProductInventoryRepository : IGenericRepository<ProductInventory>
     {
         Task<IEnumerable<ProductInventory>> GetAllAsync();
 
@@ -14,14 +15,9 @@ namespace Marketplacesellerportal.ProductInventories.Interfaces
 
         Task<IEnumerable<ProductInventory>> GetByWarehouseIdAsync(int warehouseId);
 
-        Task<ProductInventory?> GetInventoryAsync(
-            int sellerId,
-            int productId,
-            int warehouseId,
-            int locationId);
-
+        Task<ProductInventory?> GetInventoryAsync(int sellerId,int productId,int warehouseId,int locationId);
         Task AddAsync(ProductInventory productInventory);
-
+        Task<IEnumerable<ProductInventory>> GetBySellerCustomerAsync(int sellerId,int customerId);
         Task UpdateAsync(ProductInventory productInventory);
 
         Task DeleteAsync(int productInventoryId);

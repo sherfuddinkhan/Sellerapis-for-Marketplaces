@@ -39,9 +39,7 @@
     <Folder Include="Orders\Models\" />
     <Folder Include="Orders\Repositories\" />
     <Folder Include="Orders\Services\" />
-    <Folder Include="Products\Controllers\" />
     <Folder Include="Products\Models\" />
-    <Folder Include="Products\Services\" />
     <Folder Include="PurchaseOrderItems\NewFolder\" />
     <Folder Include="Purchases\Controllers\" />
     <Folder Include="Purchases\DTOs\" />

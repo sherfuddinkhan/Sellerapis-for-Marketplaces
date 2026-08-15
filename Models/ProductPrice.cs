@@ -7,7 +7,7 @@
         public int ProductId { get; set; }
 
         public int SellerId { get; set; }
-
+        public int CustomerId { get; set; }
         public string PriceType { get; set; } = string.Empty;
 
         public decimal Price { get; set; }

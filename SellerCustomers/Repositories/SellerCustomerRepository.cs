@@ -16,9 +16,11 @@ namespace Marketplacesellerportal.SellerCustomers.Repositories
         {
         }
 
-        // Get all customers belonging to a seller
-        public async Task<IEnumerable<SellerCustomer>>
-            GetBySellerIdAsync(int sellerId)
+        // =========================================================
+        // GET ALL CUSTOMERS FOR A SELLER
+        // =========================================================
+        public async Task<IEnumerable<SellerCustomer>> GetBySellerIdAsync(
+            int sellerId)
         {
             return await _dbSet
                 .Where(c => c.SellerId == sellerId)
@@ -26,7 +28,9 @@ namespace Marketplacesellerportal.SellerCustomers.Repositories
                 .ToListAsync();
         }
 
-        // Get one customer belonging to a specific seller
+        // =========================================================
+        // GET CUSTOMER BY SELLER + CUSTOMER ID
+        // =========================================================
         public async Task<SellerCustomer?> GetCustomerAsync(
             int sellerId,
             int customerId)
@@ -37,11 +41,12 @@ namespace Marketplacesellerportal.SellerCustomers.Repositories
                     c.CustomerId == customerId);
         }
 
-        // Get customer by code within a specific seller
-        public async Task<SellerCustomer?>
-            GetByCustomerCodeAsync(
-                int sellerId,
-                string customerCode)
+        // =========================================================
+        // GET CUSTOMER BY SELLER + CUSTOMER CODE
+        // =========================================================
+        public async Task<SellerCustomer?> GetByCustomerCodeAsync(
+            int sellerId,
+            string customerCode)
         {
             return await _dbSet
                 .FirstOrDefaultAsync(c =>
@@ -49,8 +54,9 @@ namespace Marketplacesellerportal.SellerCustomers.Repositories
                     c.CustomerCode == customerCode);
         }
 
-        // Check whether a customer code already exists
-        // for this particular seller
+        // =========================================================
+        // CHECK CUSTOMER CODE
+        // =========================================================
         public async Task<bool> CustomerCodeExistsAsync(
             int sellerId,
             string customerCode)
@@ -61,7 +67,9 @@ namespace Marketplacesellerportal.SellerCustomers.Repositories
                     c.CustomerCode == customerCode);
         }
 
-        // Generate the next CustomerId for a seller
+        // =========================================================
+        // GET NEXT CUSTOMER ID
+        // =========================================================
         public async Task<int> GetNextCustomerIdAsync(
             int sellerId)
         {

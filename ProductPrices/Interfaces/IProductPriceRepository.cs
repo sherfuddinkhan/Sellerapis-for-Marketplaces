@@ -21,6 +21,11 @@ namespace Marketplacesellerportal.ProductPrices.Interfaces
             int productId,
             string priceType);
 
+        // Seller + Customer prices
+        Task<IEnumerable<ProductPrice>> GetBySellerCustomerAsync(
+            int sellerId,
+            int customerId);
+
         Task AddAsync(ProductPrice productPrice);
 
         Task UpdateAsync(ProductPrice productPrice);
