@@ -15,13 +15,8 @@ namespace Marketplacesellerportal.StockAdjustments.Interfaces
         Task<IEnumerable<StockAdjustment>> GetByWarehouseIdAsync(int warehouseId);
 
         Task<IEnumerable<StockAdjustment>> GetByAdjustmentTypeAsync(string adjustmentType);
-
-        Task<StockAdjustment?> GetStockAdjustmentAsync(
-            int sellerId,
-            int productId,
-            int warehouseId,
-            int stockAdjustmentId);
-
+        Task<IEnumerable<StockAdjustment>> GetBySellerCustomerAsync(int sellerId,int customerId);
+        Task<StockAdjustment?> GetStockAdjustmentAsync(int sellerId,int productId,int warehouseId,int stockAdjustmentId);
         Task AddAsync(StockAdjustment stockAdjustment);
 
         Task UpdateAsync(StockAdjustment stockAdjustment);

@@ -163,6 +163,7 @@ using System.Text;
 var builder = WebApplication.CreateBuilder(args);
 
 
+Console.WriteLine("DATABASE: " +builder.Configuration.GetConnectionString("DefaultConnection"));
 // =========================================================
 // MVC / CONTROLLERS
 // =========================================================
@@ -245,13 +246,8 @@ builder.Services.AddDbContext<ApplicationDbContext>(
 // AUTH MANAGEMENT
 // =========================================================
 
-builder.Services.AddScoped<
-    IAuthManagementRepository,
-    AuthManagementRepository>();
-
-builder.Services.AddScoped<
-    IAuthManagementService,
-    AuthManagementService>();
+builder.Services.AddScoped<IAuthManagementRepository,AuthManagementRepository>();
+builder.Services.AddScoped<IAuthManagementService,AuthManagementService>();
 
 builder.Services.AddSingleton<JwtTokenGenerator>();
 
@@ -260,26 +256,16 @@ builder.Services.AddSingleton<JwtTokenGenerator>();
 // SELLER
 // =========================================================
 
-builder.Services.AddScoped<
-    ISellerRepository,
-    SellerRepository>();
-
-builder.Services.AddScoped<
-    ISellerService,
-    SellerService>();
+builder.Services.AddScoped<ISellerRepository,SellerRepository>();
+builder.Services.AddScoped<ISellerService,SellerService>();
 
 
 // =========================================================
 // SELLER CUSTOMER
 // =========================================================
 
-builder.Services.AddScoped<
-    ISellerCustomerRepository,
-    SellerCustomerRepository>();
-
-builder.Services.AddScoped<
-    ISellerCustomerService,
-    SellerCustomerService>();
+builder.Services.AddScoped<ISellerCustomerRepository,SellerCustomerRepository>();
+builder.Services.AddScoped<ISellerCustomerService,SellerCustomerService>();
 // =========================================================
 // Category 
 // =========================================================

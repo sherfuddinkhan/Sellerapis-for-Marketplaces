@@ -32,7 +32,24 @@ namespace Marketplacesellerportal.Warehouses.Repositories
                 .ToListAsync();
         }
 
-        public async Task<Warehouse?> GetWarehouseAsync(int sellerId, int warehouseId)
+        // =========================================================
+        // GET WAREHOUSES BY SELLER + CUSTOMER
+        // =========================================================
+        public async Task<IEnumerable<Warehouse>> GetBySellerCustomerAsync(
+            int sellerId,
+            int customerId)
+        {
+            return await _context.Warehouses
+                .Where(x =>
+                    x.SellerId == sellerId &&
+                    x.CustomerId == customerId)
+                .OrderBy(x => x.WarehouseId)
+                .ToListAsync();
+        }
+
+        public async Task<Warehouse?> GetWarehouseAsync(
+            int sellerId,
+            int warehouseId)
         {
             return await _context.Warehouses
                 .FirstOrDefaultAsync(x =>

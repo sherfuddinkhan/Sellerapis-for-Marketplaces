@@ -140,10 +140,7 @@ namespace Marketplacesellerportal.Catalog.Repositories
         // =========================================================
         // SEARCH PRODUCTS
         // =========================================================
-        public async Task<IEnumerable<CatalogProductResponse>> SearchProductsAsync(
-    ProductSearchRequest request,
-    int sellerId,
-    int customerId)
+ public async Task<IEnumerable<CatalogProductResponse>> SearchProductsAsync(ProductSearchRequest request,int sellerId,int customerId)
         {
             var query = _context.Products
                 .AsNoTracking()
@@ -239,10 +236,7 @@ namespace Marketplacesellerportal.Catalog.Repositories
         // GET PRODUCTS BY CATEGORY
         // =========================================================
         public async Task<IEnumerable<CatalogProductResponse>>
-            GetProductsByCategoryAsync(
-                int categoryId,
-                int sellerId,
-                int customerId)
+            GetProductsByCategoryAsync(int categoryId,int sellerId,int customerId)
         {
             var products = await _context.Products
                 .AsNoTracking()
@@ -252,22 +246,13 @@ namespace Marketplacesellerportal.Catalog.Repositories
                     p.CategoryId == categoryId &&
                     p.IsActive == true)
                 .ToListAsync();
-
-            return await BuildProductResponsesAsync(
-                products,
-                sellerId,
-                customerId);
+            return await BuildProductResponsesAsync(products,sellerId,customerId);
         }
-
-
         // =========================================================
         // GET PRODUCTS BY PRODUCT TYPE
         // =========================================================
         public async Task<IEnumerable<CatalogProductResponse>>
-            GetProductsByProductTypeAsync(
-                int productTypeId,
-                int sellerId,
-                int customerId)
+            GetProductsByProductTypeAsync(int productTypeId,int sellerId,int customerId)
         {
             var products = await _context.Products
                 .AsNoTracking()
@@ -278,10 +263,7 @@ namespace Marketplacesellerportal.Catalog.Repositories
                     p.IsActive == true)
                 .ToListAsync();
 
-            return await BuildProductResponsesAsync(
-                products,
-                sellerId,
-                customerId);
+            return await BuildProductResponsesAsync(products,sellerId,customerId);
         }
 
 
@@ -680,13 +662,12 @@ namespace Marketplacesellerportal.Catalog.Repositories
             // do not reference Inventory.SellerId unless the
             // database table actually contains that column.
             //
-            var inventories = await _context.ProductInventories
-       .AsNoTracking()
-       .Where(x =>
-           productIds.Contains(x.ProductId) &&
-           x.SellerId == sellerId &&
-           x.CustomerId == customerId)
-       .ToListAsync();
+      var inventories = await _context.ProductInventory.AsNoTracking()
+         .Where(x =>
+             productIds.Contains(x.ProductId) &&
+             x.SellerId == sellerId &&
+             x.CustomerId == customerId)
+         .ToListAsync();
 
             // =====================================================
             // PRODUCT IMAGES

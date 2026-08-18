@@ -16,17 +16,11 @@ namespace Marketplacesellerportal.StockAdjustments.Interfaces
 
         Task<IEnumerable<StockAdjustment>> GetByAdjustmentTypeAsync(string adjustmentType);
 
-        Task<StockAdjustment?> GetStockAdjustmentAsync(
-            int sellerId,
-            int productId,
-            int warehouseId,
-            int stockAdjustmentId);
+        Task<StockAdjustment?> GetStockAdjustmentAsync(int sellerId,int productId,int warehouseId,int stockAdjustmentId);
 
         Task<StockAdjustment> CreateAsync(StockAdjustment stockAdjustment);
 
-        Task<bool> UpdateAsync(
-            int stockAdjustmentId,
-            StockAdjustment stockAdjustment);
+        Task<bool> UpdateAsync(int stockAdjustmentId,StockAdjustment stockAdjustment);
 
         Task<bool> DeleteAsync(int stockAdjustmentId);
     }

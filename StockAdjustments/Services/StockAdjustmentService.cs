@@ -42,17 +42,9 @@ namespace Marketplacesellerportal.StockAdjustments.Services
             return await _repository.GetByAdjustmentTypeAsync(adjustmentType);
         }
 
-        public async Task<StockAdjustment?> GetStockAdjustmentAsync(
-            int sellerId,
-            int productId,
-            int warehouseId,
-            int stockAdjustmentId)
+        public async Task<StockAdjustment?> GetStockAdjustmentAsync(int sellerId,int productId,int warehouseId,int stockAdjustmentId)
         {
-            return await _repository.GetStockAdjustmentAsync(
-                sellerId,
-                productId,
-                warehouseId,
-                stockAdjustmentId);
+            return await _repository.GetStockAdjustmentAsync(sellerId,productId,warehouseId,stockAdjustmentId);
         }
 
         public async Task<StockAdjustment> CreateAsync(StockAdjustment stockAdjustment)
@@ -61,16 +53,13 @@ namespace Marketplacesellerportal.StockAdjustments.Services
 
             if (stockAdjustment.AdjustmentDate == null)
                 stockAdjustment.AdjustmentDate = DateTime.Now;
-
             await _repository.AddAsync(stockAdjustment);
             await _repository.SaveChangesAsync();
 
             return stockAdjustment;
         }
 
-        public async Task<bool> UpdateAsync(
-            int stockAdjustmentId,
-            StockAdjustment stockAdjustment)
+        public async Task<bool> UpdateAsync(int stockAdjustmentId,StockAdjustment stockAdjustment)
         {
             var existing = await _repository.GetByIdAsync(stockAdjustmentId);
 

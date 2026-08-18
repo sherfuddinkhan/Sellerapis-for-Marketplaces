@@ -26,7 +26,7 @@ namespace Marketplacesellerportal.Database
         // Products
         public DbSet<Product> Products { get; set; }
         public DbSet<ProductPrice> ProductPrices { get; set; }
-        public DbSet<ProductInventory> ProductInventories { get; set; }
+        public DbSet<ProductInventory> ProductInventory { get; set; }
         public DbSet<ProductImage> ProductImages { get; set; }
         public DbSet<ProductAttribute> ProductAttributes { get; set; }
         public DbSet<ProductType> ProductTypes { get; set; }

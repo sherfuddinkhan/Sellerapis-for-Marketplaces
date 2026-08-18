@@ -1,4 +1,6 @@
-﻿namespace Marketplacesellerportal.Models
+﻿using System.ComponentModel.DataAnnotations.Schema;
+
+namespace Marketplacesellerportal.Models
 {
     public class Product
     {
@@ -16,6 +18,8 @@
 
         public int? BrandId { get; set; }
 
+        [NotMapped]
+        public string? BrandName { get; set; }
         public int? CategoryId { get; set; }
 
         public int? ProductTypeId { get; set; }

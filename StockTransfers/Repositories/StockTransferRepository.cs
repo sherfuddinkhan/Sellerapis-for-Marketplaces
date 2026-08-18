@@ -60,10 +60,15 @@ namespace Marketplacesellerportal.StockTransfers.Repositories
                 .ToListAsync();
         }
 
-        public async Task<StockTransfer?> GetStockTransferAsync(
-            int sellerId,
-            int productId,
-            int stockTransferId)
+        public async Task<IEnumerable<StockTransfer>> GetBySellerCustomerAsync(int sellerId,int customerId)
+        {
+            return await _context.StockTransfers
+                .Where(x =>
+                    x.SellerId == sellerId &&
+                    x.CustomerId == customerId)
+                .ToListAsync();
+        }
+        public async Task<StockTransfer?> GetStockTransferAsync(int sellerId,int productId,int stockTransferId)
         {
             return await _context.StockTransfers.FirstOrDefaultAsync(x =>
                 x.SellerId == sellerId &&

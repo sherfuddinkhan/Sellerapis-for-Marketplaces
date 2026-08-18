@@ -23,7 +23,7 @@ namespace Marketplacesellerportal.ProductInventories.Repositories
         // =========================================================
         public async Task<IEnumerable<ProductInventory>> GetAllAsync()
         {
-            return await _context.ProductInventories
+            return await _context.ProductInventory
                 .AsNoTracking()
                 .ToListAsync();
         }
@@ -34,7 +34,7 @@ namespace Marketplacesellerportal.ProductInventories.Repositories
         public async Task<ProductInventory?> GetByIdAsync(
             int productInventoryId)
         {
-            return await _context.ProductInventories
+            return await _context.ProductInventory
                 .AsNoTracking()
                 .FirstOrDefaultAsync(x =>
                     x.ProductInventoryId == productInventoryId);
@@ -46,7 +46,7 @@ namespace Marketplacesellerportal.ProductInventories.Repositories
         public async Task<IEnumerable<ProductInventory>> GetBySellerIdAsync(
             int sellerId)
         {
-            return await _context.ProductInventories
+            return await _context.ProductInventory
                 .AsNoTracking()
                 .Where(x => x.SellerId == sellerId)
                 .ToListAsync();
@@ -60,7 +60,7 @@ namespace Marketplacesellerportal.ProductInventories.Repositories
                 int sellerId,
                 int customerId)
         {
-            return await _context.ProductInventories
+            return await _context.ProductInventory
                 .AsNoTracking()
                 .Where(x =>
                     x.SellerId == sellerId &&
@@ -74,7 +74,7 @@ namespace Marketplacesellerportal.ProductInventories.Repositories
         public async Task<IEnumerable<ProductInventory>> GetByProductIdAsync(
             int productId)
         {
-            return await _context.ProductInventories
+            return await _context.ProductInventory
                 .AsNoTracking()
                 .Where(x => x.ProductId == productId)
                 .ToListAsync();
@@ -86,7 +86,7 @@ namespace Marketplacesellerportal.ProductInventories.Repositories
         public async Task<IEnumerable<ProductInventory>> GetByWarehouseIdAsync(
             int warehouseId)
         {
-            return await _context.ProductInventories
+            return await _context.ProductInventory
                 .AsNoTracking()
                 .Where(x => x.WarehouseId == warehouseId)
                 .ToListAsync();
@@ -102,7 +102,7 @@ namespace Marketplacesellerportal.ProductInventories.Repositories
             int warehouseId,
             int locationId)
         {
-            return await _context.ProductInventories
+            return await _context.ProductInventory
                 .AsNoTracking()
                 .FirstOrDefaultAsync(x =>
                     x.SellerId == sellerId &&
@@ -116,7 +116,7 @@ namespace Marketplacesellerportal.ProductInventories.Repositories
         // =========================================================
         public async Task AddAsync(ProductInventory productInventory)
         {
-            await _context.ProductInventories
+            await _context.ProductInventory
                 .AddAsync(productInventory);
         }
 
@@ -125,7 +125,7 @@ namespace Marketplacesellerportal.ProductInventories.Repositories
         // =========================================================
         public Task UpdateAsync(ProductInventory productInventory)
         {
-            _context.ProductInventories.Update(productInventory);
+            _context.ProductInventory.Update(productInventory);
 
             return Task.CompletedTask;
         }
@@ -135,13 +135,13 @@ namespace Marketplacesellerportal.ProductInventories.Repositories
         // =========================================================
         public async Task DeleteAsync(int productInventoryId)
         {
-            var entity = await _context.ProductInventories
+            var entity = await _context.ProductInventory
                 .FirstOrDefaultAsync(x =>
                     x.ProductInventoryId == productInventoryId);
 
             if (entity != null)
             {
-                _context.ProductInventories.Remove(entity);
+                _context.ProductInventory.Remove(entity);
             }
         }
 
@@ -151,7 +151,7 @@ namespace Marketplacesellerportal.ProductInventories.Repositories
         // =========================================================
         public Task DeleteAsync(ProductInventory productInventory)
         {
-            _context.ProductInventories.Remove(productInventory);
+            _context.ProductInventory.Remove(productInventory);
 
             return Task.CompletedTask;
         }

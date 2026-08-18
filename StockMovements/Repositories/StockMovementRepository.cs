@@ -31,7 +31,20 @@ namespace Marketplacesellerportal.StockMovements.Repositories
                 .Where(x => x.SellerId == sellerId)
                 .ToListAsync();
         }
-
+        // =========================================================
+        // GET STOCK MOVEMENTS BY SELLER + CUSTOMER
+        // =========================================================
+        public async Task<IEnumerable<StockMovement>> GetBySellerCustomerAsync(
+            int sellerId,
+            int customerId)
+        {
+            return await _context.StockMovements
+                .Where(x =>
+                    x.SellerId == sellerId &&
+                    x.CustomerId == customerId)
+                .OrderBy(x => x.StockMovementId)
+                .ToListAsync();
+        }
         public async Task<IEnumerable<StockMovement>> GetByProductIdAsync(int productId)
         {
             return await _context.StockMovements

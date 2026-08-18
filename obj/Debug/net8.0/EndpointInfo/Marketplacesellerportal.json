@@ -7119,6 +7119,14 @@
               "type": "integer",
               "format": "int32"
             }
+          },
+          {
+            "name": "customerId",
+            "in": "query",
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
           }
         ],
         "responses": {
@@ -7737,6 +7745,14 @@
       "CreateProductTypeRequest": {
         "type": "object",
         "properties": {
+          "sellerId": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "customerId": {
+            "type": "integer",
+            "format": "int32"
+          },
           "productTypeName": {
             "type": "string",
             "nullable": true
@@ -8202,6 +8218,10 @@
           "brandId": {
             "type": "integer",
             "format": "int32",
+            "nullable": true
+          },
+          "brandName": {
+            "type": "string",
             "nullable": true
           },
           "categoryId": {
@@ -9048,6 +9068,10 @@
             "type": "integer",
             "format": "int32"
           },
+          "customerId": {
+            "type": "integer",
+            "format": "int32"
+          },
           "sellerId": {
             "type": "integer",
             "format": "int32"
@@ -9072,17 +9096,13 @@
             "type": "string",
             "nullable": true
           },
-          "referenceNumber": {
+          "adjustedBy": {
             "type": "string",
             "nullable": true
           },
           "adjustmentDate": {
             "type": "string",
             "format": "date-time"
-          },
-          "adjustedBy": {
-            "type": "integer",
-            "format": "int32"
           },
           "createdDate": {
             "type": "string",
@@ -9103,6 +9123,10 @@
             "format": "int32"
           },
           "productId": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "customerId": {
             "type": "integer",
             "format": "int32"
           },
@@ -9583,10 +9607,6 @@
         "type": "object",
         "properties": {
           "locationId": {
-            "type": "integer",
-            "format": "int32"
-          },
-          "sellerId": {
             "type": "integer",
             "format": "int32"
           },

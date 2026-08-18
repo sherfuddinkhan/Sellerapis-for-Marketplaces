@@ -31,7 +31,20 @@ namespace Marketplacesellerportal.StockLedgers.Repositories
                 .Where(x => x.SellerId == sellerId)
                 .ToListAsync();
         }
-
+        // =========================================================
+        // GET STOCK LEDGER BY SELLER + CUSTOMER
+        // =========================================================
+        public async Task<IEnumerable<StockLedger>> GetBySellerCustomerAsync(
+            int sellerId,
+            int customerId)
+        {
+            return await _context.StockLedgers
+                .Where(x =>
+                    x.SellerId == sellerId &&
+                    x.CustomerId == customerId)
+                .OrderBy(x => x.StockLedgerId)
+                .ToListAsync();
+        }
         public async Task<IEnumerable<StockLedger>> GetByProductIdAsync(int productId)
         {
             return await _context.StockLedgers

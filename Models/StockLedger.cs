@@ -1,5 +1,8 @@
-﻿namespace Marketplacesellerportal.Models
+﻿using System.ComponentModel.DataAnnotations.Schema;
+
+namespace Marketplacesellerportal.Models
 {
+    [Table("StockLedger")]
     public class StockLedger
     {
         public int StockLedgerId { get; set; }
@@ -7,7 +10,7 @@
         public int SellerId { get; set; }
 
         public int ProductId { get; set; }
-
+        public int CustomerId { get; set; }
         public int WarehouseId { get; set; }
 
         public string TransactionType { get; set; } = string.Empty;

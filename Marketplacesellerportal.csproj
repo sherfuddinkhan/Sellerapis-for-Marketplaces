@@ -29,7 +29,6 @@
     <Folder Include="Database\Migrations\" />
     <Folder Include="Database\SeedData\" />
     <Folder Include="ProductInventory\DTOs\" />
-    <Folder Include="ProductInventory\Models\" />
     <Folder Include="Marketplace\Amazon\" />
     <Folder Include="Marketplace\Flipkart\" />
     <Folder Include="Extensions\" />
@@ -39,7 +38,6 @@
     <Folder Include="Orders\Models\" />
     <Folder Include="Orders\Repositories\" />
     <Folder Include="Orders\Services\" />
-    <Folder Include="Products\Models\" />
     <Folder Include="PurchaseOrderItems\NewFolder\" />
     <Folder Include="Purchases\Controllers\" />
     <Folder Include="Purchases\DTOs\" />
