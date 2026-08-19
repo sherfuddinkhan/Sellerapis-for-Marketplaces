@@ -9,7 +9,9 @@ namespace Marketplacesellerportal.Payments.Interfaces
         Task<Payment?> GetByIdAsync(int paymentId);
 
         Task<IEnumerable<Payment>> GetByOrderAsync(int orderId);
-
+        Task<IEnumerable<Payment>> GetBySellerCustomerAsync(
+    int sellerId,
+    int customerId);
         Task<IEnumerable<Payment>> GetByStatusAsync(string paymentStatus);
 
         Task<Payment?> GetByTransactionIdAsync(string transactionId);
@@ -17,7 +19,7 @@ namespace Marketplacesellerportal.Payments.Interfaces
         Task AddAsync(Payment payment);
 
         Task UpdateAsync(Payment payment);
-
+        Task<IEnumerable<Payment>> GetByCustomerIdAsync(int customerId);
         Task DeleteAsync(int paymentId);
 
         Task SaveChangesAsync();

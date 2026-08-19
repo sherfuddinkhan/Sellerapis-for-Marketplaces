@@ -568,7 +568,7 @@ namespace Marketplacesellerportal.Catalog.Repositories
 
                     ProductId = x.ProductId,
 
-                    Rating = x.Rating ?? 0,
+                    Rating = x.Rating,
 
                     ReviewText = x.ReviewText ?? "",
 
@@ -844,7 +844,7 @@ namespace Marketplacesellerportal.Catalog.Repositories
                         Rating =
                             productReviews.Any()
                                 ? productReviews.Average(
-                                    x => x.Rating ?? 0)
+                                    x => x.Rating)
                                 : 0,
 
                         ReviewCount =

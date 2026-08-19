@@ -1,14 +1,29 @@
 ﻿
 using Marketplacesellerportal.Categories.Interfaces;
+using Marketplacesellerportal.CustomerReturns.Interfaces;
+using Marketplacesellerportal.DeliveryChallans.Interfaces;
+using Marketplacesellerportal.GoodsReceiptItems.Interfaces;
+using Marketplacesellerportal.GoodsReceiptNotes.Interfaces;
 using Marketplacesellerportal.Models;
+using Marketplacesellerportal.Notifications.Interfaces;
+using Marketplacesellerportal.OrderStatusHistories.Interfaces;
+using Marketplacesellerportal.Payments.Interfaces;
 using Marketplacesellerportal.ProductAttributes.Interfaces;
 using Marketplacesellerportal.ProductImages.Interfaces;
 using Marketplacesellerportal.ProductInventories.Interfaces;
 using Marketplacesellerportal.ProductPrices.Interfaces;
 using Marketplacesellerportal.Products.Interfaces;
 using Marketplacesellerportal.ProductTypes.Interfaces;
+using Marketplacesellerportal.PurchaseOrderItems.Interfaces;
+using Marketplacesellerportal.PurchaseOrders.Repositories;
+using Marketplacesellerportal.PurchaseReturns.Interfaces;
+using Marketplacesellerportal.Reviews.Interfaces;
+using Marketplacesellerportal.SalesInvoices.Interfaces;
+using Marketplacesellerportal.SalesOrderItems.Interfaces;
+using Marketplacesellerportal.SalesOrders.Interfaces;
 using Marketplacesellerportal.SellerCustomers.DTOs;
 using Marketplacesellerportal.SellerCustomers.Interfaces;
+using Marketplacesellerportal.Shipments.Interfaces;
 using Marketplacesellerportal.StockAdjustments.Interfaces;
 using Marketplacesellerportal.StockAdjustments.Repositories;
 using Marketplacesellerportal.StockLedgers.Interfaces;
@@ -18,10 +33,12 @@ using Marketplacesellerportal.StockMovements.Repositories;
 using Marketplacesellerportal.StockTransfers.Interfaces;
 using Marketplacesellerportal.Suppliers.Interfaces;
 using Marketplacesellerportal.WarehouseLocations.Interfaces;
+using Marketplacesellerportal.WarehouseLocations.Interfaces;
 using Marketplacesellerportal.WarehouseLocations.Repositories;
 using Marketplacesellerportal.Warehouses.Interfaces;
 using Marketplacesellerportal.Warehouses.Repositories;
-using Marketplacesellerportal.WarehouseLocations.Interfaces;
+using Marketplacesellerportal.WishlistItems.Interfaces;
+using Marketplacesellerportal.Wishlists.Interfaces;
 using Microsoft.EntityFrameworkCore;
 using static System.Net.Mime.MediaTypeNames;
 
@@ -49,7 +66,24 @@ namespace Marketplacesellerportal.SellerCustomers.Services
         private readonly IStockTransferRepository _stockTransferRepository;
         private readonly ISupplierRepository _supplierRepository;
         private readonly IWarehouseLocationRepository _warehouseLocationRepository;
-
+       
+        private readonly ISalesOrderRepository _salesOrderRepository;
+        private readonly ISalesOrderItemRepository _salesOrderItemRepository;
+        private readonly ICustomerReturnRepository _customerReturnRepository;
+        private readonly IDeliveryChallanRepository _deliveryChallanRepository;
+        private readonly IGoodsReceiptNoteRepository _goodsReceiptNoteRepository;
+        private readonly IGoodsReceiptItemRepository _goodsReceiptItemRepository;
+        private readonly INotificationRepository _notificationRepository;
+        private readonly IOrderStatusHistoryRepository _orderStatusHistoryRepository;
+        private readonly IPaymentRepository _paymentRepository;
+        private readonly IPurchaseOrderRepository _purchaseOrderRepository;
+        private readonly IPurchaseOrderItemRepository _purchaseOrderItemRepository;
+        private readonly IPurchaseReturnRepository _purchaseReturnRepository;
+        private readonly IReviewRepository _reviewRepository;
+        private readonly ISalesInvoiceRepository _salesInvoiceRepository;
+        private readonly IShipmentRepository _shipmentRepository;
+        private readonly IWishlistRepository _wishlistRepository;
+        private readonly IWishlistItemRepository _wishlistItemRepository;
         public SellerCustomerService(
        ISellerCustomerRepository repository,
        IProductRepository productRepository,
@@ -65,8 +99,25 @@ namespace Marketplacesellerportal.SellerCustomers.Services
        IStockAdjustmentRepository stockAdjustmentRepository,
        IStockTransferRepository stockTransferRepository,
        ISupplierRepository supplierRepository,
-       IWarehouseLocationRepository warehouseLocationRepository
-        )
+       IWarehouseLocationRepository warehouseLocationRepository,
+       ISalesOrderRepository salesOrderRepository,
+       ISalesOrderItemRepository salesOrderItemRepository,
+       ICustomerReturnRepository customerReturnRepository,
+       IDeliveryChallanRepository deliveryChallanRepository,
+       IGoodsReceiptNoteRepository goodsReceiptNoteRepository,
+       IGoodsReceiptItemRepository goodsReceiptItemRepository,
+       INotificationRepository notificationRepository,
+       IOrderStatusHistoryRepository orderStatusHistoryRepository,
+       IPaymentRepository paymentRepository,
+       IPurchaseOrderRepository purchaseOrderRepository,
+       IPurchaseOrderItemRepository purchaseOrderItemRepository,
+       IPurchaseReturnRepository purchaseReturnRepository,
+       IReviewRepository reviewRepository,
+       ISalesInvoiceRepository salesInvoiceRepository,
+       IShipmentRepository shipmentRepository,
+       IWishlistRepository wishlistRepository,
+       IWishlistItemRepository wishlistItemRepository)
+        
         {
             _repository = repository;
             _productRepository = productRepository;
@@ -83,6 +134,24 @@ namespace Marketplacesellerportal.SellerCustomers.Services
             _stockTransferRepository = stockTransferRepository;
             _supplierRepository = supplierRepository;
             _warehouseLocationRepository = warehouseLocationRepository;
+
+            _customerReturnRepository = customerReturnRepository;
+            _deliveryChallanRepository = deliveryChallanRepository;
+            _goodsReceiptNoteRepository = goodsReceiptNoteRepository;
+            _goodsReceiptItemRepository = goodsReceiptItemRepository;
+            _notificationRepository = notificationRepository;
+            _orderStatusHistoryRepository = orderStatusHistoryRepository;
+            _paymentRepository = paymentRepository;
+            _purchaseOrderRepository = purchaseOrderRepository;
+            _purchaseOrderItemRepository = purchaseOrderItemRepository;
+            _purchaseReturnRepository = purchaseReturnRepository;
+            _reviewRepository = reviewRepository;
+            _salesInvoiceRepository = salesInvoiceRepository;
+            _salesOrderRepository = salesOrderRepository;
+            _salesOrderItemRepository = salesOrderItemRepository;
+            _shipmentRepository = shipmentRepository;
+            _wishlistRepository = wishlistRepository;
+            _wishlistItemRepository = wishlistItemRepository;
         }
         // =========================================================
         // GET ALL SELLER CUSTOMERS
@@ -184,7 +253,112 @@ namespace Marketplacesellerportal.SellerCustomers.Services
       var stockMovements = await _stockMovementRepository.GetBySellerCustomerAsync(sellerId, customerId);
       var stockLedgers = await _stockLedgerRepository.GetBySellerCustomerAsync(sellerId, customerId);
       var warehouses = await _warehouseRepository.GetBySellerCustomerAsync(sellerId, customerId);
-      var response = new SellerCustomerWithProductsResponse
+            // =====================================================
+            // GET SALES ORDERS
+            // Seller + Customer specific
+            // =====================================================
+
+     var salesOrders = await _salesOrderRepository.GetBySellerCustomerAsync(sellerId, customerId);
+
+            // =====================================================
+            // GET SALES ORDER ITEMS
+            // SalesOrderItems do not contain SellerId / CustomerId.
+            // They are mapped through SalesOrderId.
+            // =====================================================
+
+            var salesOrderItems = new List<SalesOrderItem>();
+
+            foreach (var salesOrder in salesOrders)
+            {
+                var items = await _salesOrderItemRepository
+                    .GetBySalesOrderIdAsync(salesOrder.SalesOrderId);
+
+                salesOrderItems.AddRange(items);
+            }
+
+            // =====================================================
+            // GET CUSTOMER TRANSACTIONS
+            // =====================================================
+
+            var customerReturns =
+                await _customerReturnRepository
+                    .GetBySellerCustomerAsync(sellerId, customerId);
+
+            var deliveryChallans =
+                await _deliveryChallanRepository
+                    .GetBySellerCustomerAsync(sellerId, customerId);
+
+            var goodsReceiptNotes =
+                await _goodsReceiptNoteRepository
+                    .GetBySellerCustomerAsync(sellerId, customerId);
+
+            var goodsReceiptItems =
+                await _goodsReceiptItemRepository
+                    .GetBySellerCustomerAsync(sellerId, customerId);
+
+            var notifications =
+     await _notificationRepository
+         .GetBySellerCustomerAsync(
+             sellerId,
+             customerId);
+
+            var orderStatusHistories =
+      await _orderStatusHistoryRepository
+          .GetBySellerCustomerAsync(
+              sellerId,
+              customerId);
+
+            var payments =
+     await _paymentRepository
+         .GetBySellerCustomerAsync(sellerId, customerId);
+            var purchaseOrders =
+                await _purchaseOrderRepository
+                    .GetBySellerCustomerAsync(sellerId, customerId);
+
+            var purchaseOrderItems =
+     await _purchaseOrderItemRepository
+         .GetByPurchaseOrdersAsync(
+             sellerId,
+             customerId,
+             purchaseOrders
+                 .Select(x => x.PurchaseOrderId)
+                 .ToList());
+
+            var purchaseReturns =
+    await _purchaseReturnRepository
+        .GetBySellerCustomerAsync(sellerId, customerId);
+
+            var reviews =
+     await _reviewRepository
+         .GetBySellerCustomerAsync(
+             sellerId,
+             customerId);
+
+            var salesInvoices =
+                await _salesInvoiceRepository
+                    .GetBySellerCustomerAsync(sellerId, customerId);
+
+            var shipments =
+       await _shipmentRepository
+           .GetBySellerCustomerAsync(sellerId, customerId);
+
+            var wishlists =
+      await _wishlistRepository
+          .GetBySellerCustomerAsync(
+              sellerId,
+              customerId);
+
+            var wishlistItems =
+        await _wishlistItemRepository
+            .GetBySellerCustomerAsync(
+                sellerId,
+                customerId);
+            // =====================================================
+            // MAP TRANSACTIONS
+            // =====================================================
+
+
+            var response = new SellerCustomerWithProductsResponse
             {
                 CustomerId = customer.CustomerId,
                 SellerId = customer.SellerId,
@@ -631,9 +805,299 @@ namespace Marketplacesellerportal.SellerCustomers.Services
     })
     .ToList();
             // =====================================================
-            // RETURN COMPLETE REPORT
+            // MAP SALES ORDERS
+            // Seller + Customer specific
             // =====================================================
 
+            response.Transactions.SalesOrders = salesOrders
+                .Select(s => new SellerCustomerSalesOrderResponse
+                {
+                    SalesOrderId = s.SalesOrderId,
+
+                    SellerId = s.SellerId,
+
+                    CustomerId = s.CustomerId,
+
+                    SalesOrderNumber = s.SalesOrderNumber,
+
+                    OrderDate = s.OrderDate,
+
+                    Status = s.Status,
+
+                    TotalAmount = s.TotalAmount,
+
+                    Remarks = s.Remarks,
+
+                    CreatedDate = s.CreatedDate,
+
+                    UpdatedDate = s.UpdatedDate
+                })
+                .ToList();
+
+            // =====================================================
+            // MAP SALES ORDER ITEMS
+            // Mapped through SalesOrderId
+            // =====================================================
+
+            response.Transactions.SalesOrderItems = salesOrderItems
+                .Select(i => new SellerCustomerSalesOrderItemResponse
+                {
+                    SalesOrderItemId = i.SalesOrderItemId,
+
+                    SalesOrderId = i.SalesOrderId,
+
+                    ProductId = i.ProductId,
+
+                    Quantity = i.Quantity,
+
+                    UnitPrice = i.UnitPrice,
+
+                    Discount = i.Discount,
+
+                    TaxAmount = i.TaxAmount,
+
+                    TotalAmount = i.TotalAmount
+                })
+                .ToList();
+            // =====================================================
+            // RETURN COMPLETE REPORT
+            // =====================================================
+            response.Transactions.CustomerReturns =
+    customerReturns
+        .Select(x => new SellerCustomerCustomerReturnResponse
+        {
+            CustomerReturnId = x.CustomerReturnId,
+            SellerId = x.SellerId,
+            CustomerId = x.CustomerId,
+            SalesInvoiceId = x.SalesInvoiceId,
+            ProductId = x.ProductId,
+            ReturnNumber = x.ReturnNumber,
+            ReturnDate = x.ReturnDate,
+            Quantity = x.Quantity,
+            ReturnAmount = x.ReturnAmount,
+            Reason = x.Reason,
+            Status = x.Status
+        })
+        .ToList();
+            response.Transactions.DeliveryChallans =
+    deliveryChallans
+        .Select(x => new SellerCustomerDeliveryChallanResponse
+        {
+            DeliveryChallanId = x.DeliveryChallanId,
+            SalesOrderId = x.SalesOrderId,
+            ChallanNumber = x.ChallanNumber,
+            ChallanDate = x.ChallanDate,
+            VehicleNumber = x.VehicleNumber,
+            DriverName = x.DriverName,
+            DriverMobile = x.DriverMobile,
+            TransporterName = x.TransporterName,
+            Status = x.Status,
+            Remarks = x.Remarks,
+            CreatedDate = x.CreatedDate
+        })
+        .ToList();
+            response.Transactions.GoodsReceiptNotes =
+    goodsReceiptNotes
+        .Select(x => new SellerCustomerGoodsReceiptNoteResponse
+        {
+            GoodsReceiptNoteId = x.GoodsReceiptNoteId,
+            PurchaseOrderId = x.PurchaseOrderId,
+            GRNNumber = x.GRNNumber,
+            ReceiptDate = x.ReceiptDate,
+            Status = x.Status,
+            Remarks = x.Remarks,
+            CreatedDate = x.CreatedDate
+        })
+        .ToList();
+            response.Transactions.GoodsReceiptItems =
+    goodsReceiptItems
+        .Select(x => new SellerCustomerGoodsReceiptItemResponse
+        {
+            GoodsReceiptItemId = x.GoodsReceiptItemId,
+            GoodsReceiptNoteId = x.GoodsReceiptNoteId,
+            ProductId = x.ProductId,
+            ReceivedQuantity = x.ReceivedQuantity,
+            AcceptedQuantity = x.AcceptedQuantity,
+            RejectedQuantity = x.RejectedQuantity,
+            Remarks = x.Remarks
+        })
+        .ToList();
+            response.Transactions.SalesOrders =
+    salesOrders
+        .Select(x => new SellerCustomerSalesOrderResponse
+        {
+            SalesOrderId = x.SalesOrderId,
+            SellerId = x.SellerId,
+            CustomerId = x.CustomerId,
+            SalesOrderNumber = x.SalesOrderNumber,
+            OrderDate = x.OrderDate,
+            Status = x.Status,
+            TotalAmount = x.TotalAmount,
+            Remarks = x.Remarks,
+            CreatedDate = x.CreatedDate,
+            UpdatedDate = x.UpdatedDate
+        })
+        .ToList();
+            response.Transactions.SalesOrderItems =
+    salesOrderItems
+        .Select(x => new SellerCustomerSalesOrderItemResponse
+        {
+            SalesOrderItemId = x.SalesOrderItemId,
+            SalesOrderId = x.SalesOrderId,
+            ProductId = x.ProductId,
+            Quantity = x.Quantity,
+            UnitPrice = x.UnitPrice,
+            Discount = x.Discount,
+            TaxAmount = x.TaxAmount,
+            TotalAmount = x.TotalAmount
+        })
+        .ToList();
+            response.Transactions.SalesInvoices =
+    salesInvoices
+        .Select(x => new SellerCustomerSalesInvoiceResponse
+        {
+            SalesInvoiceId = x.SalesInvoiceId,
+            SellerId = sellerId,
+            CustomerId = customerId,
+            SalesOrderId = x.SalesOrderId,
+            InvoiceNumber = x.InvoiceNumber,
+            InvoiceDate = x.InvoiceDate,
+            SubTotal = x.SubTotal,
+            DiscountAmount = x.DiscountAmount,
+            TaxAmount = x.TaxAmount,
+            TotalAmount = x.TotalAmount,
+            PaidAmount = x.PaidAmount,
+            BalanceAmount = x.BalanceAmount,
+            PaymentStatus = x.PaymentStatus,
+            Status = x.Status,
+            Remarks = x.Remarks,
+            CreatedDate = x.CreatedDate,
+            UpdatedDate = x.UpdatedDate
+        })
+        .ToList();
+            response.Transactions.PurchaseOrders =
+    purchaseOrders
+        .Select(x => new SellerCustomerPurchaseOrderResponse
+        {
+            PurchaseOrderId = x.PurchaseOrderId,
+            SellerId = x.SellerId,
+            CustomerId = customerId,
+            SupplierId = x.SupplierId,
+            PurchaseOrderNumber = x.PurchaseOrderNumber,
+            OrderDate = x.OrderDate,
+            ExpectedDeliveryDate = x.ExpectedDeliveryDate,
+            Status = x.Status,
+            TotalAmount = x.TotalAmount,
+            Remarks = x.Remarks,
+            CreatedDate = x.CreatedDate,
+            UpdatedDate = x.UpdatedDate
+        })
+        .ToList();
+            response.Transactions.PurchaseOrderItems =
+    purchaseOrderItems
+        .Select(x => new SellerCustomerPurchaseOrderItemResponse
+        {
+            PurchaseOrderItemId = x.PurchaseOrderItemId,
+            SellerId = x.SellerId,
+            CustomerId = customerId,
+            PurchaseOrderId = x.PurchaseOrderId,
+            ProductId = x.ProductId,
+            Quantity = x.Quantity,
+            UnitPrice = x.UnitPrice,
+            Discount = x.Discount,
+            TaxAmount = x.TaxAmount,
+            TotalAmount = x.TotalAmount
+        })
+        .ToList();
+            response.Transactions.Notifications = notifications
+    .Select(x => new SellerCustomerNotificationResponse
+    {
+        NotificationId = x.NotificationId,
+        SellerId = x.SellerId,
+        CustomerId = customerId,
+      
+        Title = x.Title,
+        Message = x.Message,
+        IsRead = x.IsRead,
+        CreatedDate = x.CreatedDate
+    })
+    .ToList();
+            response.Transactions.OrderStatusHistories = orderStatusHistories
+    .Select(x => new SellerCustomerOrderStatusHistoryResponse
+    {
+        OrderStatusHistoryId = x.OrderStatusHistoryId,
+        SellerId = x.SellerId,
+        CustomerId = customerId,
+        OrderId = x.OrderId,
+        Status = x.Status,
+        Remarks = x.Remarks,
+        ChangedOn = x.ChangedOn
+    })
+    .ToList();
+            response.Transactions.Payments = payments
+    .Select(x => new SellerCustomerPaymentResponse
+    {
+        PaymentId = x.PaymentId,
+        SellerId = x.SellerId,
+        CustomerId = customerId,
+        OrderId = x.OrderId,
+        PaymentMethod = x.PaymentMethod,
+        Amount = x.Amount,
+        PaymentStatus = x.PaymentStatus,
+        TransactionId = x.TransactionId,
+        PaymentDate = x.PaymentDate
+    })
+    .ToList();
+            response.Transactions.Shipments = shipments
+    .Select(x => new SellerCustomerShipmentResponse
+    {
+        ShipmentId = x.ShipmentId,
+        SellerId = x.SellerId,
+        CustomerId = customerId,
+        OrderId = x.OrderId,
+        CourierName = x.CourierName,
+        TrackingNumber = x.TrackingNumber,
+        ShipmentDate = x.ShipmentDate,
+        DeliveryDate = x.DeliveryDate,
+        ShipmentStatus = x.ShipmentStatus
+    })
+    .ToList();
+
+            response.Transactions.Reviews = reviews
+    .Select(x => new SellerCustomerReviewResponse
+    {
+        ReviewId = x.ReviewId,
+        SellerId = x.SellerId,
+        CustomerId = x.CustomerId,
+        ProductId = x.ProductId,
+        Rating = x.Rating,
+        ReviewText = x.ReviewText,
+        CreatedDate = x.CreatedDate,
+    })
+    .ToList();
+            response.Transactions.Wishlists = wishlists
+    .Select(x => new SellerCustomerWishlistResponse
+    {
+        WishlistId = x.WishlistId,
+        SellerId = x.SellerId,
+        CustomerId = x.CustomerId,
+        CreatedDate = x.CreatedDate
+    })
+    .ToList();
+            response.Transactions.WishlistItems = wishlistItems
+    .Select(x => new SellerCustomerWishlistItemResponse
+    {
+        WishlistItemId = x.WishlistItemId,
+        SellerId = x.SellerId,
+        CustomerId = customerId,
+        WishlistId = x.WishlistId,
+        ProductId = x.ProductId,
+        CreatedDate = x.CreatedDate
+    })
+    .ToList();
+
+            response.Transactions.CustomerId = customerId;
+            response.Transactions.SellerId = sellerId;
             return response;
         }
 

@@ -18,7 +18,16 @@ namespace Marketplacesellerportal.WishlistItems.Repositories
         {
             return await _context.WishlistItems.ToListAsync();
         }
-
+        public async Task<IEnumerable<WishlistItem>> GetBySellerCustomerAsync(
+    int sellerId,
+    int customerId)
+        {
+            return await _context.WishlistItems
+                .Where(x =>
+                    x.SellerId == sellerId &&
+                    x.CustomerId == customerId)
+                .ToListAsync();
+        }
         public async Task<WishlistItem?> GetByIdAsync(int wishlistItemId)
         {
             return await _context.WishlistItems

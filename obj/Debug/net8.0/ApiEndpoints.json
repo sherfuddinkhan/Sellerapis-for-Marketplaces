@@ -2471,6 +2471,11 @@
         "Name": "sellerId",
         "Type": "System.Int32",
         "IsRequired": true
+      },
+      {
+        "Name": "customerId",
+        "Type": "System.Int32",
+        "IsRequired": false
       }
     ],
     "ReturnTypes": []

@@ -13,7 +13,16 @@ namespace Marketplacesellerportal.GoodsReceiptNotes.Repositories
         {
             _context = context;
         }
-
+        public async Task<IEnumerable<GoodsReceiptNote>> GetBySellerCustomerAsync(
+    int sellerId,
+    int customerId)
+        {
+            return await _context.GoodsReceiptNotes
+                .Where(x =>
+                    x.SellerId == sellerId &&
+                    x.CustomerId == customerId)
+                .ToListAsync();
+        }
         public async Task<IEnumerable<GoodsReceiptNote>> GetAllAsync()
         {
             return await _context.GoodsReceiptNotes.ToListAsync();

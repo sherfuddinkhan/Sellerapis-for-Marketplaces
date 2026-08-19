@@ -31,14 +31,12 @@
     <Folder Include="ProductInventory\DTOs\" />
     <Folder Include="Marketplace\Amazon\" />
     <Folder Include="Marketplace\Flipkart\" />
-    <Folder Include="Extensions\" />
     <Folder Include="Orders\Controllers\" />
     <Folder Include="Orders\DTOs\" />
     <Folder Include="Orders\Interfaces\" />
     <Folder Include="Orders\Models\" />
     <Folder Include="Orders\Repositories\" />
     <Folder Include="Orders\Services\" />
-    <Folder Include="PurchaseOrderItems\NewFolder\" />
     <Folder Include="Purchases\Controllers\" />
     <Folder Include="Purchases\DTOs\" />
     <Folder Include="Purchases\Interfaces\" />

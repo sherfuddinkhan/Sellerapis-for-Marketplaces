@@ -10,6 +10,18 @@ namespace Marketplacesellerportal.Models
 
         public int PurchaseOrderId { get; set; }
 
+        // =====================================================
+        // SELLER + CUSTOMER
+        // =====================================================
+
+        public int SellerId { get; set; }
+
+        public int CustomerId { get; set; }
+
+        // =====================================================
+        // PRODUCT
+        // =====================================================
+
         public int ProductId { get; set; }
 
         public decimal Quantity { get; set; }
@@ -21,6 +33,10 @@ namespace Marketplacesellerportal.Models
         public decimal? TaxAmount { get; set; }
 
         public decimal TotalAmount { get; set; }
+
+        // =====================================================
+        // NAVIGATION
+        // =====================================================
 
         [ForeignKey(nameof(PurchaseOrderId))]
         public PurchaseOrder? PurchaseOrder { get; set; }

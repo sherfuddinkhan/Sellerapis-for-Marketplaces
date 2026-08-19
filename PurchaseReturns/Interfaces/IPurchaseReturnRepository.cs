@@ -13,7 +13,9 @@ namespace Marketplacesellerportal.PurchaseReturns.Interfaces
         Task<IEnumerable<PurchaseReturn>> GetBySupplierIdAsync(int supplierId);
 
         Task<IEnumerable<PurchaseReturn>> GetByGoodsReceiptNoteIdAsync(int goodsReceiptNoteId);
-
+        Task<IEnumerable<PurchaseReturn>> GetBySellerCustomerAsync(
+    int sellerId,
+    int customerId);
         Task<IEnumerable<PurchaseReturn>> GetByStatusAsync(string status);
 
         Task<PurchaseReturn?> GetPurchaseReturnAsync(

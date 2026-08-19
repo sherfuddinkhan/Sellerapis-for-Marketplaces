@@ -21,5 +21,10 @@
         public string? Status { get; set; }
 
         public DateTime? CreatedDate { get; set; }
+
+        // SellerCustomer mapping
+        public int SellerId { get; set; }
+
+        public int CustomerId { get; set; }
     }
 }

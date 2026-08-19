@@ -13,7 +13,9 @@ namespace Marketplacesellerportal.Shipments.Interfaces
         Task<IEnumerable<Shipment>> GetByStatusAsync(string shipmentStatus);
 
         Task<Shipment?> GetByTrackingNumberAsync(string trackingNumber);
-
+        Task<IEnumerable<Shipment>> GetBySellerCustomerAsync(
+    int sellerId,
+    int customerId);
         Task AddAsync(Shipment shipment);
 
         Task UpdateAsync(Shipment shipment);

@@ -13,11 +13,12 @@ namespace Marketplacesellerportal.Models
       
         public int ProductId { get; set; }
 
-        public int? Rating { get; set; }
+        public int Rating { get; set; }
 
         [Column("Review")]
         public string? ReviewText{ get; set; }
 
         public DateTime? CreatedDate { get; set; }
+       
     }
 }

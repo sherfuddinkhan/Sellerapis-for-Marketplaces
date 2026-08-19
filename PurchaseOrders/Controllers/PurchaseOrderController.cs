@@ -33,9 +33,9 @@ namespace Marketplacesellerportal.PurchaseOrders.Controllers
         }
 
         [HttpGet("seller/{sellerId}")]
-        public async Task<IActionResult> GetBySeller(int sellerId)
+        public async Task<IActionResult> GetBySeller(int sellerId,int customerId )
         {
-            return Ok(await _service.GetBySellerIdAsync(sellerId));
+            return Ok(await _service.GetBySellerCustomerAsync(sellerId, customerId));
         }
 
         [HttpGet("supplier/{supplierId}")]

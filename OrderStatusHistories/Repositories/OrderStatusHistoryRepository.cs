@@ -14,7 +14,16 @@ namespace Marketplacesellerportal.OrderStatusHistories.Repositories
         {
             _context = context;
         }
-
+        public async Task<IEnumerable<OrderStatusHistory>> GetBySellerCustomerAsync(
+    int sellerId,
+    int customerId)
+        {
+            return await _context.OrderStatusHistories
+                .Where(x =>
+                    x.SellerId == sellerId &&
+                    x.CustomerId == customerId)
+                .ToListAsync();
+        }
         public async Task<IEnumerable<OrderStatusHistory>> GetAllAsync()
         {
             return await _context.OrderStatusHistories.ToListAsync();

@@ -3788,6 +3788,14 @@
               "type": "integer",
               "format": "int32"
             }
+          },
+          {
+            "name": "customerId",
+            "in": "query",
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
           }
         ],
         "responses": {
@@ -7885,6 +7893,14 @@
             "type": "string",
             "format": "date-time",
             "nullable": true
+          },
+          "sellerId": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "customerId": {
+            "type": "integer",
+            "format": "int32"
           }
         },
         "additionalProperties": false
@@ -7897,6 +7913,14 @@
             "format": "int32"
           },
           "salesOrderId": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "sellerId": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "customerId": {
             "type": "integer",
             "format": "int32"
           },
@@ -7962,6 +7986,14 @@
             "type": "integer",
             "format": "int32"
           },
+          "sellerId": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "customerId": {
+            "type": "integer",
+            "format": "int32"
+          },
           "productId": {
             "type": "integer",
             "format": "int32"
@@ -8012,10 +8044,13 @@
             "minLength": 1,
             "type": "string"
           },
-          "receiptDate": {
-            "type": "string",
-            "format": "date-time",
-            "nullable": true
+          "sellerId": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "customerId": {
+            "type": "integer",
+            "format": "int32"
           },
           "status": {
             "maxLength": 100,
@@ -8025,6 +8060,11 @@
           "remarks": {
             "maxLength": 1000,
             "type": "string",
+            "nullable": true
+          },
+          "receiptDate": {
+            "type": "string",
+            "format": "date-time",
             "nullable": true
           },
           "createdDate": {
@@ -8079,14 +8119,16 @@
             "type": "string",
             "nullable": true
           },
+          "sellerId": {
+            "type": "integer",
+            "format": "int32"
+          },
           "isRead": {
-            "type": "boolean",
-            "nullable": true
+            "type": "boolean"
           },
           "createdDate": {
             "type": "string",
-            "format": "date-time",
-            "nullable": true
+            "format": "date-time"
           }
         },
         "additionalProperties": false
@@ -8095,6 +8137,14 @@
         "type": "object",
         "properties": {
           "orderStatusHistoryId": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "sellerId": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "customerId": {
             "type": "integer",
             "format": "int32"
           },
@@ -8137,26 +8187,26 @@
             "type": "number",
             "format": "double"
           },
-          "paymentDate": {
+          "paymentStatus": {
             "type": "string",
-            "format": "date-time"
+            "nullable": true
           },
           "transactionId": {
             "type": "string",
             "nullable": true
           },
-          "paymentStatus": {
-            "type": "string",
-            "nullable": true
-          },
-          "remarks": {
-            "type": "string",
-            "nullable": true
-          },
-          "createdDate": {
+          "paymentDate": {
             "type": "string",
             "format": "date-time",
             "nullable": true
+          },
+          "sellerId": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "customerId": {
+            "type": "integer",
+            "format": "int32"
           }
         },
         "additionalProperties": false
@@ -8586,6 +8636,10 @@
             "type": "integer",
             "format": "int32"
           },
+          "customerId": {
+            "type": "integer",
+            "format": "int32"
+          },
           "purchaseOrderNumber": {
             "type": "string",
             "nullable": true
@@ -8637,6 +8691,14 @@
             "type": "integer",
             "format": "int32"
           },
+          "sellerId": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "customerId": {
+            "type": "integer",
+            "format": "int32"
+          },
           "productId": {
             "type": "integer",
             "format": "int32"
@@ -8680,6 +8742,14 @@
             "format": "int32"
           },
           "purchaseOrderId": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "sellerId": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "customerId": {
             "type": "integer",
             "format": "int32"
           },
@@ -8857,8 +8927,7 @@
           },
           "rating": {
             "type": "integer",
-            "format": "int32",
-            "nullable": true
+            "format": "int32"
           },
           "reviewText": {
             "type": "string",
@@ -8880,6 +8949,14 @@
             "format": "int32"
           },
           "salesOrderId": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "sellerId": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "customerId": {
             "type": "integer",
             "format": "int32"
           },
@@ -9029,6 +9106,14 @@
         "type": "object",
         "properties": {
           "shipmentId": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "sellerId": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "customerId": {
             "type": "integer",
             "format": "int32"
           },
@@ -9649,6 +9734,10 @@
             "type": "integer",
             "format": "int32"
           },
+          "sellerId": {
+            "type": "integer",
+            "format": "int32"
+          },
           "customerId": {
             "type": "integer",
             "format": "int32"
@@ -9672,9 +9761,23 @@
             "type": "integer",
             "format": "int32"
           },
+          "sellerId": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "customerId": {
+            "type": "integer",
+            "format": "int32"
+          },
           "productId": {
             "type": "integer",
             "format": "int32"
+          },
+          "wishlist": {
+            "$ref": "#/components/schemas/Wishlist"
+          },
+          "product": {
+            "$ref": "#/components/schemas/Product"
           },
           "createdDate": {
             "type": "string",

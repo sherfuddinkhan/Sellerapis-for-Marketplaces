@@ -100,8 +100,7 @@
         // PROCUREMENT
         // =========================================================
 
-        public List<SellerCustomerSupplierResponse> Suppliers { get; set; }
-            = new();
-  
+        public List<SellerCustomerSupplierResponse> Suppliers { get; set; }= new();
+       public SellerCustomerTransactionResponse Transactions { get; set; } = new();
     }
 }

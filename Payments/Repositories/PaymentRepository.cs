@@ -18,13 +18,26 @@ namespace Marketplacesellerportal.Payments.Repositories
         {
             return await _context.Payments.ToListAsync();
         }
-
+        public async Task<IEnumerable<Payment>> GetByCustomerIdAsync(int customerId)
+        {
+            return await _context.Payments
+                .Where(x => x.CustomerId == customerId)
+                .ToListAsync();
+        }
         public async Task<Payment?> GetByIdAsync(int paymentId)
         {
             return await _context.Payments
                 .FirstOrDefaultAsync(x => x.PaymentId == paymentId);
         }
-
+        public async Task<IEnumerable<Payment>>
+    GetBySellerCustomerAsync(int sellerId, int customerId)
+        {
+            return await _context.Payments
+                .Where(x =>
+                    x.SellerId == sellerId &&
+                    x.CustomerId == customerId)
+                .ToListAsync();
+        }
         public async Task<IEnumerable<Payment>> GetByOrderAsync(int orderId)
         {
             return await _context.Payments

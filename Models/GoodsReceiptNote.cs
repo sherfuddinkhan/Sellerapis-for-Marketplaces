@@ -14,7 +14,9 @@ namespace Marketplacesellerportal.Models
         [MaxLength(200)]
         public string GRNNumber { get; set; } = string.Empty;
 
-        public DateTime? ReceiptDate { get; set; }
+        public int SellerId { get; set; }
+
+        public int CustomerId { get; set; }
 
         [MaxLength(100)]
         public string? Status { get; set; }
@@ -22,6 +24,9 @@ namespace Marketplacesellerportal.Models
         [MaxLength(1000)]
         public string? Remarks { get; set; }
 
+
+        // Existing properties
+        public DateTime? ReceiptDate { get; set; }
         public DateTime? CreatedDate { get; set; }
 
         [ForeignKey(nameof(PurchaseOrderId))]

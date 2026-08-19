@@ -9,11 +9,13 @@ namespace Marketplacesellerportal.Models
         public int GoodsReceiptItemId { get; set; }
 
         public int GoodsReceiptNoteId { get; set; }
+        public int SellerId { get; set; }
+        public int CustomerId { get; set; }
 
         public int ProductId { get; set; }
 
         public decimal ReceivedQuantity { get; set; }
-
+    
         public decimal AcceptedQuantity { get; set; }
 
         public decimal? RejectedQuantity { get; set; }

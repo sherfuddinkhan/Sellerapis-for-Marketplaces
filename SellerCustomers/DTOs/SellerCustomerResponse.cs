@@ -37,5 +37,9 @@
 
         public List<SellerCustomerWarehouseResponse> Warehouses { get; set; }
             = new List<SellerCustomerWarehouseResponse>();
+
+        // Transaction mappings
+        public SellerCustomerTransactionResponse Transactions { get; set; }
+            = new();
     }
 }

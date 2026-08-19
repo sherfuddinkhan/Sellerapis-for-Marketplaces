@@ -12,7 +12,7 @@ namespace Marketplacesellerportal.Models
         public int SellerId { get; set; }
 
         public int SupplierId { get; set; }
-
+        public int CustomerId { get; set; }
         public string PurchaseOrderNumber { get; set; } = string.Empty;
 
         public DateTime? OrderDate { get; set; }
