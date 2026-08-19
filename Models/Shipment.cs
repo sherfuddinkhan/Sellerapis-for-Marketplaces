@@ -4,6 +4,10 @@
     {
         public int ShipmentId { get; set; }
 
+        public int SellerId { get; set; }
+
+        public int CustomerId { get; set; }
+
         public int OrderId { get; set; }
 
         public string? CourierName { get; set; }

@@ -15,7 +15,7 @@ namespace Marketplacesellerportal.SalesOrders.Interfaces
         Task<IEnumerable<SalesOrder>> GetByStatusAsync(string status);
 
         Task<SalesOrder?> GetBySalesOrderNumberAsync(string salesOrderNumber);
-
+        Task<IEnumerable<SalesOrder>> GetBySellerCustomerAsync(int sellerId,int customerId);
         Task AddAsync(SalesOrder salesOrder);
 
         Task UpdateAsync(SalesOrder salesOrder);

@@ -18,7 +18,14 @@ namespace Marketplacesellerportal.StockAdjustments.Repositories
         {
             return await _context.StockAdjustments.ToListAsync();
         }
-
+        public async Task<IEnumerable<StockAdjustment>> GetBySellerCustomerAsync(int sellerId,int customerId)
+        {
+            return await _context.StockAdjustments
+                .Where(x =>
+                    x.SellerId == sellerId &&
+                    x.CustomerId == customerId)
+                .ToListAsync();
+        }
         public async Task<StockAdjustment?> GetByIdAsync(int stockAdjustmentId)
         {
             return await _context.StockAdjustments
@@ -53,11 +60,7 @@ namespace Marketplacesellerportal.StockAdjustments.Repositories
                 .ToListAsync();
         }
 
-        public async Task<StockAdjustment?> GetStockAdjustmentAsync(
-            int sellerId,
-            int productId,
-            int warehouseId,
-            int stockAdjustmentId)
+        public async Task<StockAdjustment?> GetStockAdjustmentAsync(int sellerId,int productId,int warehouseId,int stockAdjustmentId)
         {
             return await _context.StockAdjustments.FirstOrDefaultAsync(x =>
                 x.SellerId == sellerId &&

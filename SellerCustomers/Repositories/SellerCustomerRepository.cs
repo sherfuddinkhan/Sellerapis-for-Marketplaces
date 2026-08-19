@@ -10,10 +10,12 @@ namespace Marketplacesellerportal.SellerCustomers.Repositories
         : GenericRepository<SellerCustomer>,
           ISellerCustomerRepository
     {
-        public SellerCustomerRepository(
-            ApplicationDbContext context)
+        private readonly ApplicationDbContext _context;
+
+        public SellerCustomerRepository(ApplicationDbContext context)
             : base(context)
         {
+            _context = context;
         }
 
         // =========================================================
@@ -30,15 +32,72 @@ namespace Marketplacesellerportal.SellerCustomers.Repositories
 
         // =========================================================
         // GET CUSTOMER BY SELLER + CUSTOMER ID
+        //
+        // Includes:
+        // Product
+        // Inventory
+        // Price
+        // ProductType
+        // Category
+        // Image
+        // Attribute
+        // StockMovement
+        // StockLedger
+        // Warehouse
         // =========================================================
         public async Task<SellerCustomer?> GetCustomerAsync(
             int sellerId,
             int customerId)
         {
-            return await _dbSet
+            // =====================================================
+            // 1. GET CUSTOMER
+            // =====================================================
+            var customer = await _dbSet
                 .FirstOrDefaultAsync(c =>
                     c.SellerId == sellerId &&
                     c.CustomerId == customerId);
+
+            if (customer == null)
+                return null;
+
+
+            // =====================================================
+            // 2. STOCK MOVEMENTS
+            // =====================================================
+            customer.StockMovements = await _context.StockMovements
+                .Where(x =>
+                    x.SellerId == sellerId &&
+                    x.CustomerId == customerId)
+                .OrderByDescending(x => x.MovementDate)
+                .ToListAsync();
+
+
+            // =====================================================
+            // 3. STOCK LEDGER
+            // =====================================================
+            customer.StockLedgers = await _context.StockLedgers
+                .Where(x =>
+                    x.SellerId == sellerId &&
+                    x.CustomerId == customerId)
+                .OrderByDescending(x => x.TransactionDate)
+                .ToListAsync();
+
+
+            // =====================================================
+            // 4. WAREHOUSES
+            // =====================================================
+            customer.Warehouses = await _context.Warehouses
+                .Where(x =>
+                    x.SellerId == sellerId &&
+                    x.CustomerId == customerId)
+                .OrderBy(x => x.WarehouseId)
+                .ToListAsync();
+
+
+            // =====================================================
+            // RETURN CUSTOMER
+            // =====================================================
+            return customer;
         }
 
         // =========================================================

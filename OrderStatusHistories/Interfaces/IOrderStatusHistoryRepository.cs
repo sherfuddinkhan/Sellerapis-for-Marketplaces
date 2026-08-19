@@ -9,7 +9,9 @@ namespace Marketplacesellerportal.OrderStatusHistories.Interfaces
         Task<OrderStatusHistory?> GetByIdAsync(int historyId);
 
         Task<IEnumerable<OrderStatusHistory>> GetByOrderIdAsync(int orderId);
-
+        Task<IEnumerable<OrderStatusHistory>> GetBySellerCustomerAsync(
+    int sellerId,
+    int customerId);
         Task<IEnumerable<OrderStatusHistory>> GetByStatusAsync(string status);
 
         Task AddAsync(OrderStatusHistory history);

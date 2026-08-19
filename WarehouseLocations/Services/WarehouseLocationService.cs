@@ -27,9 +27,9 @@ namespace Marketplacesellerportal.WarehouseLocations.Services
             return await _repository.GetByWarehouseIdAsync(warehouseId);
         }
 
-        public async Task<WarehouseLocation?> GetLocationAsync(int warehouseId, int locationId)
+        public async Task<WarehouseLocation?> GetLocationAsync(int warehouseId, int locationId, int customerId)
         {
-            return await _repository.GetLocationAsync(warehouseId, locationId);
+            return await _repository.GetLocationAsync(warehouseId, locationId, customerId);
         }
 
         public async Task<WarehouseLocation> CreateAsync(WarehouseLocation location)

@@ -1,5 +1,6 @@
 ﻿using Marketplacesellerportal.Models;
 using Marketplacesellerportal.PurchaseOrders.Interfaces;
+using Marketplacesellerportal.PurchaseOrders.Repositories;
 
 namespace Marketplacesellerportal.PurchaseOrders.Services
 {
@@ -22,19 +23,29 @@ namespace Marketplacesellerportal.PurchaseOrders.Services
             return await _repository.GetByIdAsync(purchaseOrderId);
         }
 
-        public async Task<IEnumerable<PurchaseOrder>> GetBySellerIdAsync(int sellerId)
+        // =====================================================
+        // GET PURCHASE ORDERS BY SELLER + CUSTOMER
+        // =====================================================
+        public async Task<IEnumerable<PurchaseOrder>> GetBySellerCustomerAsync(
+            int sellerId,
+            int customerId)
         {
-            return await _repository.GetBySellerIdAsync(sellerId);
+            return await _repository.GetBySellerCustomerAsync(
+                sellerId,
+                customerId);
         }
 
-        public async Task<IEnumerable<PurchaseOrder>> GetBySupplierIdAsync(int supplierId)
+        public async Task<IEnumerable<PurchaseOrder>> GetBySupplierIdAsync(
+            int supplierId)
         {
             return await _repository.GetBySupplierIdAsync(supplierId);
         }
 
-        
-
-        public async Task<PurchaseOrder> CreateAsync(PurchaseOrder purchaseOrder)
+        // =====================================================
+        // CREATE
+        // =====================================================
+        public async Task<PurchaseOrder> CreateAsync(
+            PurchaseOrder purchaseOrder)
         {
             purchaseOrder.CreatedDate = DateTime.Now;
 
@@ -43,35 +54,55 @@ namespace Marketplacesellerportal.PurchaseOrders.Services
 
             return purchaseOrder;
         }
-        public async Task<PurchaseOrder?> GetBySellerAndPurchaseOrderIdAsync(
-    int sellerId,
-    int purchaseOrderId)
+
+        // =====================================================
+        // GET BY SELLER + PURCHASE ORDER
+        // =====================================================
+        public async Task<PurchaseOrder?>
+            GetBySellerAndPurchaseOrderIdAsync(
+                int sellerId,
+                int purchaseOrderId)
         {
             return await _repository.GetBySellerAndPurchaseOrderIdAsync(
                 sellerId,
                 purchaseOrderId);
         }
-        public async Task<PurchaseOrder?> GetBySellerSupplierAndPurchaseOrderIdAsync(
-    int sellerId,
-    int supplierId,
-    int purchaseOrderId)
+
+        // =====================================================
+        // GET BY SELLER + SUPPLIER + PURCHASE ORDER
+        // =====================================================
+        public async Task<PurchaseOrder?>
+            GetBySellerSupplierAndPurchaseOrderIdAsync(
+                int sellerId,
+                int supplierId,
+                int purchaseOrderId)
         {
-            return await _repository.GetBySellerSupplierAndPurchaseOrderIdAsync(
-                sellerId,
-                supplierId,
-                purchaseOrderId);
+            return await _repository
+                .GetBySellerSupplierAndPurchaseOrderIdAsync(
+                    sellerId,
+                    supplierId,
+                    purchaseOrderId);
         }
-        public async Task<bool> UpdateAsync(int purchaseOrderId, PurchaseOrder purchaseOrder)
+
+        // =====================================================
+        // UPDATE
+        // =====================================================
+        public async Task<bool> UpdateAsync(
+            int purchaseOrderId,
+            PurchaseOrder purchaseOrder)
         {
-            var existing = await _repository.GetByIdAsync(purchaseOrderId);
+            var existing =
+                await _repository.GetByIdAsync(purchaseOrderId);
 
             if (existing == null)
                 return false;
 
             existing.SupplierId = purchaseOrder.SupplierId;
-            existing.PurchaseOrderNumber = purchaseOrder.PurchaseOrderNumber;
+            existing.PurchaseOrderNumber =
+                purchaseOrder.PurchaseOrderNumber;
             existing.OrderDate = purchaseOrder.OrderDate;
-            existing.ExpectedDeliveryDate = purchaseOrder.ExpectedDeliveryDate;
+            existing.ExpectedDeliveryDate =
+                purchaseOrder.ExpectedDeliveryDate;
             existing.Status = purchaseOrder.Status;
             existing.TotalAmount = purchaseOrder.TotalAmount;
             existing.Remarks = purchaseOrder.Remarks;
@@ -82,10 +113,14 @@ namespace Marketplacesellerportal.PurchaseOrders.Services
 
             return true;
         }
-      
+
+        // =====================================================
+        // DELETE
+        // =====================================================
         public async Task<bool> DeleteAsync(int purchaseOrderId)
         {
-            var existing = await _repository.GetByIdAsync(purchaseOrderId);
+            var existing =
+                await _repository.GetByIdAsync(purchaseOrderId);
 
             if (existing == null)
                 return false;

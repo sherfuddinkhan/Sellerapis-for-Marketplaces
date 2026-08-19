@@ -39,9 +39,9 @@ namespace Marketplacesellerportal.WarehouseLocations.Controllers
         }
 
         [HttpGet("{warehouseId}/{locationId}")]
-        public async Task<IActionResult> GetLocation(int warehouseId, int locationId)
+        public async Task<IActionResult> GetLocation(int warehouseId, int locationId,int customerId)
         {
-            var result = await _service.GetLocationAsync(warehouseId, locationId);
+            var result = await _service.GetLocationAsync(warehouseId,customerId,locationId);
 
             if (result == null)
                 return NotFound();

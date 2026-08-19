@@ -16,17 +16,11 @@ namespace Marketplacesellerportal.StockLedgers.Interfaces
 
         Task<IEnumerable<StockLedger>> GetByTransactionTypeAsync(string transactionType);
 
-        Task<StockLedger?> GetStockLedgerAsync(
-            int sellerId,
-            int productId,
-            int warehouseId,
-            int stockLedgerId);
+        Task<StockLedger?> GetStockLedgerAsync(int sellerId,int productId,int warehouseId,int stockLedgerId);
 
         Task<StockLedger> CreateAsync(StockLedger stockLedger);
 
-        Task<bool> UpdateAsync(
-            int stockLedgerId,
-            StockLedger stockLedger);
+        Task<bool> UpdateAsync(int stockLedgerId,StockLedger stockLedger);
 
         Task<bool> DeleteAsync(int stockLedgerId);
     }

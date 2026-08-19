@@ -10,7 +10,7 @@ namespace Marketplacesellerportal.WarehouseLocations.Interfaces
 
         Task<IEnumerable<WarehouseLocation>> GetByWarehouseIdAsync(int warehouseId);
 
-        Task<WarehouseLocation?> GetLocationAsync(int warehouseId, int locationId);
+        Task<WarehouseLocation?> GetLocationAsync(int warehouseId,int customerId,int locationId);
 
         Task<WarehouseLocation> CreateAsync(WarehouseLocation location);
 

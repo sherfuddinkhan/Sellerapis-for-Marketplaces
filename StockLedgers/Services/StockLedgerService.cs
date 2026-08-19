@@ -42,17 +42,9 @@ namespace Marketplacesellerportal.StockLedgers.Services
             return await _repository.GetByTransactionTypeAsync(transactionType);
         }
 
-        public async Task<StockLedger?> GetStockLedgerAsync(
-            int sellerId,
-            int productId,
-            int warehouseId,
-            int stockLedgerId)
+        public async Task<StockLedger?> GetStockLedgerAsync(int sellerId,int productId,int warehouseId,int stockLedgerId)
         {
-            return await _repository.GetStockLedgerAsync(
-                sellerId,
-                productId,
-                warehouseId,
-                stockLedgerId);
+          return await _repository.GetStockLedgerAsync(sellerId,productId,warehouseId,stockLedgerId);
         }
 
         public async Task<StockLedger> CreateAsync(StockLedger stockLedger)

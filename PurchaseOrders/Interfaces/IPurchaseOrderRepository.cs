@@ -6,8 +6,9 @@ public interface IPurchaseOrderRepository
 
     Task<PurchaseOrder?> GetByIdAsync(int purchaseOrderId);
 
-    Task<IEnumerable<PurchaseOrder>> GetBySellerIdAsync(int sellerId);
-
+    Task<IEnumerable<PurchaseOrder>> GetBySellerCustomerAsync(
+       int sellerId,
+       int customerId);
     Task<IEnumerable<PurchaseOrder>> GetBySupplierIdAsync(int supplierId);
 
     Task<PurchaseOrder?> GetBySellerAndPurchaseOrderIdAsync(

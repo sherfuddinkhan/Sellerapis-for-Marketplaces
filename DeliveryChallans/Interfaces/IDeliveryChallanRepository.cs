@@ -9,7 +9,9 @@ namespace Marketplacesellerportal.DeliveryChallans.Interfaces
         Task<DeliveryChallan?> GetByIdAsync(int deliveryChallanId);
 
         Task<IEnumerable<DeliveryChallan>> GetBySalesOrderAsync(int salesOrderId);
-
+        Task<IEnumerable<DeliveryChallan>> GetBySellerCustomerAsync(
+    int sellerId,
+    int customerId);
         Task<IEnumerable<DeliveryChallan>> GetByStatusAsync(string status);
 
         Task<DeliveryChallan?> GetByChallanNumberAsync(string challanNumber);

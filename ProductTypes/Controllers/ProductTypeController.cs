@@ -54,12 +54,13 @@ namespace Marketplacesellerportal.ProductTypes.Controllers
         {
             var productType = new ProductType
             {
+                SellerId = request.SellerId,
+                CustomerId = request.CustomerId,
                 ProductTypeName = request.ProductTypeName,
                 Description = request.Description,
                 IsActive = request.IsActive,
                 CreatedDate = DateTime.Now
             };
-
             return Ok(await _service.CreateAsync(productType));
         }
 

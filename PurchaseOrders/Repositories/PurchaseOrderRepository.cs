@@ -13,6 +13,15 @@ namespace Marketplacesellerportal.PurchaseOrders.Repositories
         {
             _context = context;
         }
+        public async Task<IEnumerable<PurchaseOrder>>
+    GetBySellerCustomerAsync(int sellerId, int customerId)
+        {
+            return await _context.PurchaseOrders
+                .Where(x =>
+                    x.SellerId == sellerId &&
+                    x.CustomerId == customerId)
+                .ToListAsync();
+        }
 
         public async Task<IEnumerable<PurchaseOrder>> GetAllAsync()
         {

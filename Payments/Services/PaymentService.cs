@@ -39,7 +39,7 @@ namespace Marketplacesellerportal.Payments.Services
 
         public async Task<Payment> CreateAsync(Payment payment)
         {
-            payment.CreatedDate = DateTime.Now;
+         
 
             if (payment.PaymentDate == DateTime.MinValue)
                 payment.PaymentDate = DateTime.Now;
@@ -63,7 +63,7 @@ namespace Marketplacesellerportal.Payments.Services
             existing.PaymentDate = payment.PaymentDate;
             existing.TransactionId = payment.TransactionId;
             existing.PaymentStatus = payment.PaymentStatus;
-            existing.Remarks = payment.Remarks;
+   
 
             await _repository.UpdateAsync(existing);
             await _repository.SaveChangesAsync();

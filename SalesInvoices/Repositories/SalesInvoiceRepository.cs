@@ -18,6 +18,16 @@ namespace Marketplacesellerportal.SalesInvoices.Repositories
         {
             return await _context.SalesInvoices.ToListAsync();
         }
+        public async Task<IEnumerable<SalesInvoice>> GetBySellerCustomerAsync(
+    int sellerId,
+    int customerId)
+        {
+            return await _context.SalesInvoices
+                .Where(x =>
+                    x.SellerId == sellerId &&
+                    x.CustomerId == customerId)
+                .ToListAsync();
+        }
 
         public async Task<SalesInvoice?> GetByIdAsync(int salesInvoiceId)
         {

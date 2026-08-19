@@ -70,7 +70,14 @@ namespace Marketplacesellerportal.SalesOrders.Repositories
             if (entity != null)
                 _context.SalesOrders.Remove(entity);
         }
-
+        public async Task<IEnumerable<SalesOrder>> GetBySellerCustomerAsync(int sellerId,int customerId)
+        {
+            return await _context.SalesOrders
+                .Where(x =>
+                    x.SellerId == sellerId &&
+                    x.CustomerId == customerId)
+                .ToListAsync();
+        }
         public async Task SaveChangesAsync()
         {
             await _context.SaveChangesAsync();

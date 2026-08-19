@@ -15,12 +15,8 @@ namespace Marketplacesellerportal.StockMovements.Interfaces
         Task<IEnumerable<StockMovement>> GetByWarehouseIdAsync(int warehouseId);
 
         Task<IEnumerable<StockMovement>> GetByMovementTypeAsync(string movementType);
-
-        Task<StockMovement?> GetStockMovementAsync(
-            int sellerId,
-            int productId,
-            int warehouseId,
-            int stockMovementId);
+        Task<IEnumerable<StockMovement>> GetBySellerCustomerAsync(int sellerId,int customerId);
+        Task<StockMovement?> GetStockMovementAsync(int sellerId,int productId,int warehouseId,int stockMovementId);
 
         Task AddAsync(StockMovement stockMovement);
 

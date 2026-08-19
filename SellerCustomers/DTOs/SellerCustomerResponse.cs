@@ -27,6 +27,19 @@
 
         // IMPORTANT
         public List<SellerCustomerProductResponse> Products { get; set; }
-            = new List<SellerCustomerProductResponse>();
+     = new List<SellerCustomerProductResponse>();
+
+        public List<SellerCustomerStockMovementResponse> StockMovements { get; set; }
+            = new List<SellerCustomerStockMovementResponse>();
+
+        public List<SellerCustomerStockLedgerResponse> StockLedgers { get; set; }
+            = new List<SellerCustomerStockLedgerResponse>();
+
+        public List<SellerCustomerWarehouseResponse> Warehouses { get; set; }
+            = new List<SellerCustomerWarehouseResponse>();
+
+        // Transaction mappings
+        public SellerCustomerTransactionResponse Transactions { get; set; }
+            = new();
     }
 }

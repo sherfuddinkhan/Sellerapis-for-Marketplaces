@@ -5,7 +5,9 @@
         public int SalesInvoiceId { get; set; }
 
         public int SalesOrderId { get; set; }
+        public int SellerId { get; set; }
 
+        public int CustomerId { get; set; }
         public string InvoiceNumber { get; set; } = string.Empty;
 
         public DateTime InvoiceDate { get; set; }

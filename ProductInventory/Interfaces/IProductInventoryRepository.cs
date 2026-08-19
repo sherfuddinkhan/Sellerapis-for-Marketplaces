@@ -5,7 +5,7 @@ namespace Marketplacesellerportal.ProductInventories.Interfaces
 {
     public interface IProductInventoryRepository : IGenericRepository<ProductInventory>
     {
-        Task<IEnumerable<ProductInventory>> GetAllAsync();
+       
 
         Task<ProductInventory?> GetByIdAsync(int productInventoryId);
 

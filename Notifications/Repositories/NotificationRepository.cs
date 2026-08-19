@@ -24,7 +24,16 @@ namespace Marketplacesellerportal.Notifications.Repositories
             return await _context.Notifications
                 .FirstOrDefaultAsync(x => x.NotificationId == notificationId);
         }
-
+        public async Task<IEnumerable<Notification>> GetBySellerCustomerAsync(
+    int sellerId,
+    int customerId)
+        {
+            return await _context.Notifications
+                .Where(x =>
+                    x.SellerId == sellerId &&
+                    x.CustomerId == customerId)
+                .ToListAsync();
+        }
         public async Task<IEnumerable<Notification>> GetByCustomerAsync(int customerId)
         {
             return await _context.Notifications

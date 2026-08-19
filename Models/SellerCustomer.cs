@@ -56,5 +56,21 @@ namespace Marketplacesellerportal.Models
         public DateTime CreatedDate { get; set; }
 
         public DateTime? UpdatedDate { get; set; }
+
+        // =========================================================
+        // RELATED ENTITIES
+        // =========================================================
+
+        [NotMapped]
+        public List<StockMovement> StockMovements { get; set; }
+            = new List<StockMovement>();
+
+        [NotMapped]
+        public List<StockLedger> StockLedgers { get; set; }
+            = new List<StockLedger>();
+
+        [NotMapped]
+        public List<Warehouse> Warehouses { get; set; }
+            = new List<Warehouse>();
     }
 }

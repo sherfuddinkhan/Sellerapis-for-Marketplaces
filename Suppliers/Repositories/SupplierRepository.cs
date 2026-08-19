@@ -24,7 +24,14 @@ namespace Marketplacesellerportal.Suppliers.Repositories
             return await _context.Suppliers
                 .FirstOrDefaultAsync(x => x.SupplierId == supplierId);
         }
-
+        public async Task<IEnumerable<Supplier>> GetBySellerCustomerAsync(int sellerId,int customerId)
+        {
+            return await _context.Suppliers
+                .Where(x =>
+                    x.SellerId == sellerId &&
+                    x.CustomerId == customerId)
+                .ToListAsync();
+        }
         public async Task<IEnumerable<Supplier>> GetBySellerIdAsync(int sellerId)
         {
             return await _context.Suppliers

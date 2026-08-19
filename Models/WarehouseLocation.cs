@@ -8,9 +8,9 @@ namespace Marketplacesellerportal.Models
     {
         [Key]
         public int LocationId { get; set; }
-        public int SellerId { get; set; }
 
         public int CustomerId { get; set; }
+
         public int WarehouseId { get; set; }
 
         public string LocationCode { get; set; } = string.Empty;

@@ -9,7 +9,9 @@ namespace Marketplacesellerportal.Notifications.Interfaces
         Task<Notification?> GetByIdAsync(int notificationId);
 
         Task<IEnumerable<Notification>> GetByCustomerAsync(int customerId);
-
+        Task<IEnumerable<Notification>> GetBySellerCustomerAsync(
+    int sellerId,
+    int customerId);
         Task<IEnumerable<Notification>> GetUnreadAsync(int customerId);
 
         Task AddAsync(Notification notification);

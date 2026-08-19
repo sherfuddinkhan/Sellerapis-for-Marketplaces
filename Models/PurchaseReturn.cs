@@ -5,7 +5,9 @@
         public int PurchaseReturnId { get; set; }
 
         public int PurchaseOrderId { get; set; }
+        public int SellerId { get; set; }
 
+        public int CustomerId { get; set; }
         public int GoodsReceiptNoteId { get; set; }
 
         public int SupplierId { get; set; }

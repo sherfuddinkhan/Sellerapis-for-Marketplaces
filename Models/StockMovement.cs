@@ -1,5 +1,8 @@
-﻿namespace Marketplacesellerportal.Models
+﻿using System.ComponentModel.DataAnnotations.Schema;
+
+namespace Marketplacesellerportal.Models
 {
+    [Table("StockMovement")]
     public class StockMovement
     {
         public int StockMovementId { get; set; }

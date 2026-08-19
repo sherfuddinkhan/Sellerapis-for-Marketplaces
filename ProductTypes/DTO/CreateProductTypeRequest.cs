@@ -2,6 +2,10 @@
 {
     public class CreateProductTypeRequest
     {
+        public int SellerId { get; set; }
+
+        public int CustomerId { get; set; }
+
         public string ProductTypeName { get; set; } = string.Empty;
 
         public string? Description { get; set; }

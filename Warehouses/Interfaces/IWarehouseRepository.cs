@@ -13,7 +13,7 @@ namespace Marketplacesellerportal.Warehouses.Interfaces
         Task<Warehouse?> GetWarehouseAsync(int sellerId, int warehouseId);
 
         Task AddAsync(Warehouse warehouse);
-
+        Task<IEnumerable<Warehouse>> GetBySellerCustomerAsync(int sellerId,int customerId);
         Task UpdateAsync(Warehouse warehouse);
 
         Task DeleteAsync(int warehouseId);

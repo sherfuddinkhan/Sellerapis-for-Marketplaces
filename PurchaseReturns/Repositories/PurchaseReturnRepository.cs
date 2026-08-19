@@ -18,7 +18,16 @@ namespace Marketplacesellerportal.PurchaseReturns.Repositories
         {
             return await _context.PurchaseReturns.ToListAsync();
         }
-
+        public async Task<IEnumerable<PurchaseReturn>> GetBySellerCustomerAsync(
+    int sellerId,
+    int customerId)
+        {
+            return await _context.PurchaseReturns
+                .Where(x =>
+                    x.SellerId == sellerId &&
+                    x.CustomerId == customerId)
+                .ToListAsync();
+        }
         public async Task<PurchaseReturn?> GetByIdAsync(int purchaseReturnId)
         {
             return await _context.PurchaseReturns

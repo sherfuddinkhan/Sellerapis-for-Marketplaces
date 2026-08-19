@@ -17,11 +17,8 @@ namespace Marketplacesellerportal.StockTransfers.Interfaces
         Task<IEnumerable<StockTransfer>> GetByToWarehouseIdAsync(int toWarehouseId);
 
         Task<IEnumerable<StockTransfer>> GetByStatusAsync(string status);
-
-        Task<StockTransfer?> GetStockTransferAsync(
-            int sellerId,
-            int productId,
-            int stockTransferId);
+        Task<IEnumerable<StockTransfer>> GetBySellerCustomerAsync(int sellerId,int customerId);
+        Task<StockTransfer?> GetStockTransferAsync(int sellerId,int productId,int stockTransferId);
 
         Task AddAsync(StockTransfer stockTransfer);
 

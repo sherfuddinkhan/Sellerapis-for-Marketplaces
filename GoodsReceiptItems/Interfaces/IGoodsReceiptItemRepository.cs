@@ -9,7 +9,9 @@ namespace Marketplacesellerportal.GoodsReceiptItems.Interfaces
         Task<GoodsReceiptItem?> GetByIdAsync(int goodsReceiptItemId);
 
         Task<IEnumerable<GoodsReceiptItem>> GetByGoodsReceiptNoteIdAsync(int goodsReceiptNoteId);
-
+        Task<IEnumerable<GoodsReceiptItem>> GetBySellerCustomerAsync(
+    int sellerId,
+    int customerId);
         Task<GoodsReceiptItem?> GetByGoodsReceiptNoteAndItemAsync(
             int goodsReceiptNoteId,
             int goodsReceiptItemId);

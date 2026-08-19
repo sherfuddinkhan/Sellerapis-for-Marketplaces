@@ -6,15 +6,28 @@ namespace Marketplacesellerportal.CustomerReturns.Interfaces
     {
         Task<IEnumerable<CustomerReturn>> GetAllAsync();
 
-        Task<CustomerReturn?> GetByIdAsync(int customerReturnId);
+        Task<CustomerReturn?> GetByIdAsync(
+            int customerReturnId);
 
-        Task<IEnumerable<CustomerReturn>> GetBySalesInvoiceAsync(int salesInvoiceId);
+        Task<IEnumerable<CustomerReturn>> GetBySellerIdAsync(
+            int sellerId);
 
-        Task<IEnumerable<CustomerReturn>> GetByProductAsync(int productId);
+        Task<IEnumerable<CustomerReturn>> GetByCustomerIdAsync(
+            int customerId);
+        Task<IEnumerable<CustomerReturn>> GetByStatusAsync(
+    string status);
+        Task<IEnumerable<CustomerReturn>> GetBySellerCustomerAsync(
+            int sellerId,
+            int customerId);
 
-        Task<IEnumerable<CustomerReturn>> GetByStatusAsync(string status);
+        Task<IEnumerable<CustomerReturn>> GetBySalesInvoiceAsync(
+            int salesInvoiceId);
 
-        Task<CustomerReturn?> GetByReturnNumberAsync(string returnNumber);
+        Task<IEnumerable<CustomerReturn>> GetByProductAsync(
+            int productId);
+
+        Task<CustomerReturn?> GetByReturnNumberAsync(
+            string returnNumber);
 
         Task AddAsync(CustomerReturn customerReturn);
 

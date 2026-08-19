@@ -13,7 +13,16 @@ namespace Marketplacesellerportal.DeliveryChallans.Repositories
         {
             _context = context;
         }
-
+        public async Task<IEnumerable<DeliveryChallan>> GetBySellerCustomerAsync(
+    int sellerId,
+    int customerId)
+        {
+            return await _context.DeliveryChallans
+                .Where(x =>
+                    x.SellerId == sellerId &&
+                    x.CustomerId == customerId)
+                .ToListAsync();
+        }
         public async Task<IEnumerable<DeliveryChallan>> GetAllAsync()
         {
             return await _context.DeliveryChallans.ToListAsync();
