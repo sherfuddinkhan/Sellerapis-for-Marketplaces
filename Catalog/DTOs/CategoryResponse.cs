@@ -1,9 +1,15 @@
-﻿namespace Marketplacesellerportal.Catalog.DTOs
+﻿namespace Marketplacesellerportal.Category.DTOs
 {
     public class CategoryResponse
     {
         public int CategoryId { get; set; }
 
         public string CategoryName { get; set; } = string.Empty;
+
+        public int? ParentCategoryId { get; set; }
+
+        public string? Description { get; set; }
+
+        public bool IsActive { get; set; }
     }
 }

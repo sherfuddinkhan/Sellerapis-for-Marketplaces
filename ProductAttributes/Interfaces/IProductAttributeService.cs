@@ -1,4 +1,5 @@
 ﻿using Marketplacesellerportal.Models;
+using Marketplacesellerportal.ProductAttributes.DTOs;
 
 namespace Marketplacesellerportal.ProductAttributes.Interfaces
 {
@@ -6,16 +7,54 @@ namespace Marketplacesellerportal.ProductAttributes.Interfaces
     {
         Task<IEnumerable<ProductAttribute>> GetAllAsync();
 
-        Task<ProductAttribute?> GetByIdAsync(int productAttributeId);
+        Task<ProductAttribute?> GetByIdAsync(
+            int productAttributeId);
 
-        Task<IEnumerable<ProductAttribute>> GetByProductIdAsync(int productId);
+        Task<IEnumerable<ProductAttribute>>
+            GetByProductIdAsync(
+                int productId);
+        Task<IEnumerable<ProductAttribute>>
+    GetBySellerCustomerAsync(
+        int sellerId,
+        int customerId);
+        Task<IEnumerable<ProductAttribute>>
+            GetByAttributeNameAsync(
+                string attributeName);
 
-        Task<IEnumerable<ProductAttribute>> GetByAttributeNameAsync(string attributeName);
+        // SEARCH
+        Task<IEnumerable<ProductAttribute>>
+            SearchAsync(
+                string? search);
 
-        Task<ProductAttribute> CreateAsync(ProductAttribute productAttribute);
+        // STATISTICS
+        Task<ProductAttributeStatistics>
+            GetStatisticsAsync();
 
-        Task<bool> UpdateAsync(int productAttributeId, ProductAttribute productAttribute);
+        // PAGINATION
+        Task<(IEnumerable<ProductAttribute> Items, int TotalCount)>
+            GetPagedAsync(
+                int page,
+                int limit);
 
-        Task<bool> DeleteAsync(int productAttributeId);
+        // SORTING
+        Task<IEnumerable<ProductAttribute>>
+            GetSortedAsync(
+                string? sort);
+
+        // CREATE
+        Task<ProductAttribute>
+            CreateAsync(
+                ProductAttribute productAttribute);
+
+        // UPDATE
+        Task<bool>
+            UpdateAsync(
+                int productAttributeId,
+                ProductAttribute productAttribute);
+
+        // DELETE
+        Task<bool>
+            DeleteAsync(
+                int productAttributeId);
     }
 }

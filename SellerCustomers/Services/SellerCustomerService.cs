@@ -315,66 +315,65 @@ namespace Marketplacesellerportal.SellerCustomers.Services
                 await _purchaseOrderRepository
                     .GetBySellerCustomerAsync(sellerId, customerId);
 
-            var purchaseOrderItems =
-     await _purchaseOrderItemRepository
-         .GetByPurchaseOrdersAsync(
-             sellerId,
-             customerId,
-             purchaseOrders
-                 .Select(x => x.PurchaseOrderId)
-                 .ToList());
-
-            var purchaseReturns =
-    await _purchaseReturnRepository
-        .GetBySellerCustomerAsync(sellerId, customerId);
-
-            var reviews =
-     await _reviewRepository
-         .GetBySellerCustomerAsync(
-             sellerId,
-             customerId);
-
-            var salesInvoices =
-                await _salesInvoiceRepository
-                    .GetBySellerCustomerAsync(sellerId, customerId);
-
-            var shipments =
-       await _shipmentRepository
-           .GetBySellerCustomerAsync(sellerId, customerId);
-
-            var wishlists =
-      await _wishlistRepository
-          .GetBySellerCustomerAsync(
-              sellerId,
-              customerId);
-
-            var wishlistItems =
-        await _wishlistItemRepository
-            .GetBySellerCustomerAsync(
-                sellerId,
-                customerId);
+   var purchaseOrderItems = await _purchaseOrderItemRepository.GetByPurchaseOrdersAsync(sellerId,customerId,purchaseOrders.Select(x => x.PurchaseOrderId).ToList());
+   var purchaseReturns = await _purchaseReturnRepository.GetBySellerCustomerAsync(sellerId, customerId);
+   var reviews = await _reviewRepository.GetBySellerCustomerAsync(sellerId,customerId);
+   var salesInvoices = await _salesInvoiceRepository.GetBySellerCustomerAsync(sellerId, customerId);
+   var shipments = await _shipmentRepository.GetBySellerCustomerAsync(sellerId, customerId);
+   var wishlists = await _wishlistRepository.GetBySellerCustomerAsync(sellerId,customerId);
+   var wishlistItems = await _wishlistItemRepository.GetBySellerCustomerAsync(sellerId,customerId);
             // =====================================================
             // MAP TRANSACTIONS
             // =====================================================
-
-
             var response = new SellerCustomerWithProductsResponse
             {
                 CustomerId = customer.CustomerId,
                 SellerId = customer.SellerId,
                 CustomerCode = customer.CustomerCode,
+
+                // =========================================================
+                // CUSTOMER / BUSINESS DETAILS
+                // =========================================================
+
                 CustomerName = customer.CustomerName,
+                TradeName = customer.TradeName,
+                LegalName = customer.LegalName,
+
                 ContactPerson = customer.ContactPerson,
                 Email = customer.Email,
                 Phone = customer.Phone,
+
+                // =========================================================
+                // TAX DETAILS
+                // =========================================================
+
                 GSTIN = customer.GSTIN,
+
+                // =========================================================
+                // ADDRESS DETAILS
+                // =========================================================
+
                 AddressLine1 = customer.AddressLine1,
                 AddressLine2 = customer.AddressLine2,
+                BuildingName = customer.BuildingName,
+                Location = customer.Location,
                 City = customer.City,
                 State = customer.State,
+                StateCode = customer.StateCode,
+                FloorNo = customer.FloorNo,
                 Country = customer.Country,
                 PostalCode = customer.PostalCode,
+
+                // =========================================================
+                // FINANCIAL DETAILS
+                // =========================================================
+
                 CreditLimit = customer.CreditLimit ?? 0,
+
+                // =========================================================
+                // STATUS / AUDIT
+                // =========================================================
+
                 IsActive = customer.IsActive,
                 CreatedDate = customer.CreatedDate,
                 UpdatedDate = customer.UpdatedDate
@@ -1042,7 +1041,7 @@ namespace Marketplacesellerportal.SellerCustomers.Services
         CustomerId = customerId,
         OrderId = x.OrderId,
         PaymentMethod = x.PaymentMethod,
-        Amount = x.Amount,
+        Amount = x.Amount ?? 0,
         PaymentStatus = x.PaymentStatus,
         TransactionId = x.TransactionId,
         PaymentDate = x.PaymentDate

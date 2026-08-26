@@ -20,5 +20,7 @@ namespace Marketplacesellerportal.Models
         public string? Remarks { get; set; }
 
         public DateTime? ChangedOn { get; set; }
+        // New field
+        public DateTime Timestamp { get; set; } = DateTime.Now;
     }
 }

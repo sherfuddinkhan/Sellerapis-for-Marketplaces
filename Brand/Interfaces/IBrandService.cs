@@ -4,6 +4,7 @@ namespace Marketplacesellerportal.Brand.Interfaces
 {
     public interface IBrandService
     {
+        // Existing APIs
         Task<IEnumerable<BrandResponse>> GetAllAsync();
 
         Task<BrandResponse?> GetByIdAsync(int brandId);
@@ -15,5 +16,13 @@ namespace Marketplacesellerportal.Brand.Interfaces
         Task<bool> UpdateAsync(UpdateBrandRequest request);
 
         Task<bool> DeleteAsync(int brandId);
+
+
+        // Statistics API
+        Task<BrandStatisticsResponse> GetStatisticsAsync();
+
+
+        // Filters API
+        Task<BrandFiltersResponse> GetFiltersAsync();
     }
 }

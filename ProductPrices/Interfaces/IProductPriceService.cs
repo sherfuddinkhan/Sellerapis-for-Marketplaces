@@ -1,4 +1,5 @@
 ﻿using Marketplacesellerportal.Models;
+using Marketplacesellerportal.ProductPrices.DTOs;
 
 namespace Marketplacesellerportal.ProductPrices.Interfaces
 {
@@ -6,25 +7,39 @@ namespace Marketplacesellerportal.ProductPrices.Interfaces
     {
         Task<IEnumerable<ProductPrice>> GetAllAsync();
 
-        Task<ProductPrice?> GetByIdAsync(int productPriceId);
+        Task<ProductPrice?> GetByIdAsync(
+            int productPriceId);
 
-        Task<IEnumerable<ProductPrice>> GetByProductIdAsync(int productId);
+        Task<IEnumerable<ProductPrice>> GetByProductIdAsync(
+            int productId);
 
-        Task<IEnumerable<ProductPrice>> GetBySellerIdAsync(int sellerId);
+        Task<IEnumerable<ProductPrice>> SearchAsync(
+            string? search,
+            decimal? min,
+            decimal? max);
 
-        Task<IEnumerable<ProductPrice>> GetByPriceTypeAsync(string priceType);
+        Task<ProductPriceStatistics>
+            GetStatisticsAsync();
 
-        Task<IEnumerable<ProductPrice>> GetActivePricesAsync();
+        Task<(
+            IEnumerable<ProductPrice> Items,
+            int TotalCount)>
+            GetPagedAsync(
+                int page,
+                int limit);
 
-        Task<ProductPrice?> GetProductPriceAsync(
-            int sellerId,
-            int productId,
-            string priceType);
+        Task<IEnumerable<ProductPrice>>
+            GetSortedAsync(string? sort);
 
-        Task<ProductPrice> CreateAsync(ProductPrice productPrice);
+        Task<ProductPrice>
+            CreateAsync(ProductPrice model);
 
-        Task<bool> UpdateAsync(int productPriceId, ProductPrice productPrice);
+        Task<bool>
+            UpdateAsync(
+                int productPriceId,
+                ProductPrice model);
 
-        Task<bool> DeleteAsync(int productPriceId);
+        Task<bool>
+            DeleteAsync(int productPriceId);
     }
 }

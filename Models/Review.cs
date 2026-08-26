@@ -6,7 +6,7 @@ namespace Marketplacesellerportal.Models
     public class Review
     {
         public int ReviewId { get; set; }
-
+        public string? Status { get; set; }
         public int CustomerId { get; set; }
 
         public int SellerId { get; set; }

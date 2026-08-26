@@ -1,26 +1,43 @@
-﻿
-using Marketplacesellerportal.Models;
+﻿using Marketplacesellerportal.Category.DTOs;
+using CategoryModel = Marketplacesellerportal.Models.Category;
 
 namespace Marketplacesellerportal.Categories.Interfaces
 {
     public interface ICategoryRepository
     {
-        Task<IEnumerable<Category>> GetAllAsync();
+        Task<IEnumerable<CategoryModel>> GetAllAsync();
 
-        Task<Category?> GetByIdAsync(int categoryId);
+        Task<CategoryModel?> GetByIdAsync(int categoryId);
 
-        Task<Category?> GetByNameAsync(string categoryName);
-        Task<IEnumerable<Category>> GetByIdsAsync(
+        Task<CategoryModel?> GetByNameAsync(
+            string categoryName);
+
+        Task<IEnumerable<CategoryModel>> GetByIdsAsync(
             IEnumerable<int> categoryIds);
-        Task<IEnumerable<Category>> GetActiveAsync();
 
-        Task AddAsync(Category category);
+        Task<IEnumerable<CategoryModel>> GetActiveAsync();
 
-        Task UpdateAsync(Category category);
+        Task AddAsync(CategoryModel category);
 
-        Task DeleteAsync(Category category);
+        Task UpdateAsync(CategoryModel category);
+
+        Task DeleteAsync(CategoryModel category);
 
         Task SaveChangesAsync();
+
+
+        // =====================================================
+        // SEARCH + FILTER + PAGINATION + SORTING
+        // =====================================================
+
+        Task<CategoryListResponse> GetCategoriesAsync(
+            CategoryListRequest request);
+
+
+        // =====================================================
+        // STATISTICS
+        // =====================================================
+
+        Task<CategoryStatisticsResponse> GetStatisticsAsync();
     }
 }
-

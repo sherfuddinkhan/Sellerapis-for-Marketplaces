@@ -3,8 +3,8 @@
   "WorkspaceRootPath": "C:\\Users\\Administrator\\source\\repos\\Marketplacesellerportal\\",
   "Documents": [
     {
-      "AbsoluteMoniker": "D:0:0:{2C9EC692-1B37-47B3-8E95-0F4CC9B4AD68}|Marketplacesellerportal.csproj|c:\\users\\administrator\\source\\repos\\marketplacesellerportal\\models\\wishlistitem.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{2C9EC692-1B37-47B3-8E95-0F4CC9B4AD68}|Marketplacesellerportal.csproj|solutionrelative:models\\wishlistitem.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+      "AbsoluteMoniker": "D:0:0:{2C9EC692-1B37-47B3-8E95-0F4CC9B4AD68}|Marketplacesellerportal.csproj|c:\\users\\administrator\\source\\repos\\marketplacesellerportal\\sellers\\controllers\\sellercontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{2C9EC692-1B37-47B3-8E95-0F4CC9B4AD68}|Marketplacesellerportal.csproj|solutionrelative:sellers\\controllers\\sellercontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     }
   ],
   "DocumentGroupContainers": [
@@ -23,14 +23,14 @@
             {
               "$type": "Document",
               "DocumentIndex": 0,
-              "Title": "WishlistItem.cs",
-              "DocumentMoniker": "C:\\Users\\Administrator\\source\\repos\\Marketplacesellerportal\\Models\\WishlistItem.cs",
-              "RelativeDocumentMoniker": "Models\\WishlistItem.cs",
-              "ToolTip": "C:\\Users\\Administrator\\source\\repos\\Marketplacesellerportal\\Models\\WishlistItem.cs",
-              "RelativeToolTip": "Models\\WishlistItem.cs",
-              "ViewState": "AgIAABYAAAAAAAAAAAA+wBcAAAAyAAAAAAAAAA==",
+              "Title": "SellerController.cs",
+              "DocumentMoniker": "C:\\Users\\Administrator\\source\\repos\\Marketplacesellerportal\\Sellers\\Controllers\\SellerController.cs",
+              "RelativeDocumentMoniker": "Sellers\\Controllers\\SellerController.cs",
+              "ToolTip": "C:\\Users\\Administrator\\source\\repos\\Marketplacesellerportal\\Sellers\\Controllers\\SellerController.cs",
+              "RelativeToolTip": "Sellers\\Controllers\\SellerController.cs",
+              "ViewState": "AgIAAA4BAAAAAAAAAAAqwC0BAAABAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2026-08-19T07:51:59.729Z",
+              "WhenOpened": "2026-08-26T10:15:03.222Z",
               "EditorCaption": ""
             }
           ]

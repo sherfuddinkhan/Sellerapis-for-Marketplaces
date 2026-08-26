@@ -1,4 +1,6 @@
-﻿using Marketplacesellerportal.Models;
+﻿
+using Marketplacesellerportal.Models;
+using Marketplacesellerportal.ProductTypes.DTOs;
 using Marketplacesellerportal.ProductTypes.Interfaces;
 
 namespace Marketplacesellerportal.ProductTypes.Services
@@ -7,61 +9,336 @@ namespace Marketplacesellerportal.ProductTypes.Services
     {
         private readonly IProductTypeRepository _repository;
 
-        public ProductTypeService(IProductTypeRepository repository)
+        public ProductTypeService(
+            IProductTypeRepository repository)
         {
             _repository = repository;
         }
 
-        public async Task<IEnumerable<ProductType>> GetAllAsync()
+        // =========================================================
+        // GET ALL
+        // =========================================================
+
+        public async Task<IEnumerable<ProductTypeModel>>
+            GetAllAsync()
         {
-            return await _repository.GetAllAsync();
+            var data =
+                await _repository.GetAllAsync();
+
+            return data.Select(MapToModel);
         }
 
-        public async Task<ProductType?> GetByIdAsync(int productTypeId)
+        // =========================================================
+        // GET BY ID
+        // =========================================================
+
+        public async Task<ProductTypeModel?>
+            GetByIdAsync(
+                int productTypeId)
         {
-            return await _repository.GetByIdAsync(productTypeId);
+            var data =
+                await _repository.GetByIdAsync(
+                    productTypeId);
+
+            if (data == null)
+                return null;
+
+            return MapToModel(data);
         }
 
-        public async Task<ProductType?> GetByNameAsync(string productTypeName)
+        // =========================================================
+        // GET BY NAME
+        // =========================================================
+
+        public async Task<ProductTypeModel?>
+            GetByNameAsync(
+                string productTypeName)
         {
-            return await _repository.GetByNameAsync(productTypeName);
+            var data =
+                await _repository.GetByNameAsync(
+                    productTypeName);
+
+            if (data == null)
+                return null;
+
+            return MapToModel(data);
         }
 
-        public async Task<IEnumerable<ProductType>> GetActiveAsync()
+        // =========================================================
+        // GET ACTIVE
+        // =========================================================
+
+        public async Task<IEnumerable<ProductTypeModel>>
+            GetActiveAsync()
         {
-            return await _repository.GetActiveAsync();
+            var data =
+                await _repository.GetActiveAsync();
+
+            return data.Select(MapToModel);
         }
 
-        public async Task<ProductType> CreateAsync(ProductType productType)
+        // =========================================================
+        // GET BY SELLER + CUSTOMER
+        // =========================================================
+
+        public async Task<IEnumerable<ProductTypeModel>>
+            GetBySellerCustomerAsync(
+                int sellerId,
+                int customerId)
         {
-            productType.CreatedDate = DateTime.Now;
-            await _repository.AddAsync(productType);
+            var data =
+                await _repository
+                    .GetBySellerCustomerAsync(
+                        sellerId,
+                        customerId);
+
+            return data.Select(MapToModel);
+        }
+
+        // =========================================================
+        // SEARCH + FILTER
+        //
+        // ?search=electronic
+        // ?status=active
+        // ?search=electronic&status=active
+        // =========================================================
+
+        public async Task<IEnumerable<ProductTypeModel>>
+            SearchAsync(
+                string? search,
+                string? status)
+        {
+            var data =
+                await _repository.SearchAsync(
+                    search,
+                    status);
+
+            return data.Select(MapToModel);
+        }
+
+        // =========================================================
+        // STATISTICS
+        // =========================================================
+
+        public async Task<ProductTypeStatistics>
+            GetStatisticsAsync()
+        {
+            return await _repository
+                .GetStatisticsAsync();
+        }
+
+        // =========================================================
+        // PAGINATION
+        // =========================================================
+
+        public async Task<(
+            IEnumerable<ProductTypeModel> Items,
+            int TotalCount)>
+            GetPagedAsync(
+                int page,
+                int limit)
+        {
+            if (page < 1)
+                page = 1;
+
+            if (limit < 1)
+                limit = 10;
+
+            if (limit > 100)
+                limit = 100;
+
+            var result =
+                await _repository.GetPagedAsync(
+                    page,
+                    limit);
+
+            return (
+                result.Items.Select(MapToModel),
+                result.TotalCount
+            );
+        }
+
+        // =========================================================
+        // SORTING
+        //
+        // name_asc
+        // name_desc
+        // created_asc
+        // created_desc
+        // =========================================================
+
+        public async Task<IEnumerable<ProductTypeModel>>
+            GetSortedAsync(
+                string? sort)
+        {
+            var data =
+                await _repository.GetSortedAsync(
+                    sort);
+
+            return data.Select(MapToModel);
+        }
+
+        // =========================================================
+        // CREATE
+        // =========================================================
+
+        public async Task<ProductTypeModel>
+            CreateAsync(
+                ProductTypeModel model)
+        {
+            // -----------------------------------------------------
+            // CHECK DUPLICATE NAME
+            // -----------------------------------------------------
+
+            var existing =
+                await _repository.GetByNameAsync(
+                    model.ProductTypeName);
+
+            if (existing != null)
+            {
+                throw new InvalidOperationException(
+                    $"Product type '{model.ProductTypeName}' already exists.");
+            }
+
+            // -----------------------------------------------------
+            // DTO → ENTITY
+            // -----------------------------------------------------
+
+            var productType = new ProductType
+            {
+                SellerId =
+                    model.SellerId,
+
+                CustomerId =
+                    model.CustomerId,
+
+                ProductTypeName =
+                    model.ProductTypeName,
+
+                Description =
+                    model.Description,
+
+                IsActive =
+                    model.IsActive,
+
+                CreatedDate =
+                    DateTime.Now,
+
+                UpdatedDate =
+                    null
+            };
+
+            await _repository.AddAsync(
+                productType);
+
             await _repository.SaveChangesAsync();
-            return productType;
+
+            return MapToModel(productType);
         }
 
-        public async Task<bool> UpdateAsync(int productTypeId, ProductType productType)
+        // =========================================================
+        // UPDATE
+        // =========================================================
+
+        public async Task<ProductTypeModel?>
+            UpdateAsync(
+                int productTypeId,
+                ProductTypeModel model)
         {
-            var existing = await _repository.GetByIdAsync(productTypeId);
+            var existing =
+                await _repository.GetByIdAsync(
+                    productTypeId);
+
+            if (existing == null)
+                return null;
+
+            // -----------------------------------------------------
+            // UPDATE FIELDS
+            // -----------------------------------------------------
+
+            existing.SellerId =
+                model.SellerId;
+
+            existing.CustomerId =
+                model.CustomerId;
+
+            existing.ProductTypeName =
+                model.ProductTypeName;
+
+            existing.Description =
+                model.Description;
+
+            existing.IsActive =
+                model.IsActive;
+
+            existing.UpdatedDate =
+                DateTime.Now;
+
+            await _repository.UpdateAsync(
+                existing);
+
+            await _repository.SaveChangesAsync();
+
+            return MapToModel(existing);
+        }
+
+        // =========================================================
+        // DELETE
+        // =========================================================
+
+        public async Task<bool>
+            DeleteAsync(
+                int productTypeId)
+        {
+            var existing =
+                await _repository.GetByIdAsync(
+                    productTypeId);
+
             if (existing == null)
                 return false;
-            existing.ProductTypeName = productType.ProductTypeName;
-            existing.Description = productType.Description;
-            existing.IsActive = productType.IsActive;
-            existing.UpdatedDate = DateTime.Now;
-            await _repository.UpdateAsync(existing);
+
+            await _repository.DeleteAsync(
+                productTypeId);
+
             await _repository.SaveChangesAsync();
+
             return true;
         }
 
-        public async Task<bool> DeleteAsync(int productTypeId)
+        // =========================================================
+        // ENTITY → DTO
+        // =========================================================
+
+        private static ProductTypeModel
+            MapToModel(
+                ProductType entity)
         {
-            var existing = await _repository.GetByIdAsync(productTypeId);
-            if (existing == null)
-                return false;
-            await _repository.DeleteAsync(productTypeId);
-            await _repository.SaveChangesAsync();
-            return true;
+            return new ProductTypeModel
+            {
+                ProductTypeId =
+                    entity.ProductTypeId,
+
+                SellerId =
+                    entity.SellerId,
+
+                CustomerId =
+                    entity.CustomerId,
+
+                ProductTypeName =
+                    entity.ProductTypeName,
+
+                Description =
+                    entity.Description,
+
+                IsActive =
+                    entity.IsActive,
+
+                CreatedDate =
+                    entity.CreatedDate,
+
+                UpdatedDate =
+                    entity.UpdatedDate
+            };
         }
     }
 }

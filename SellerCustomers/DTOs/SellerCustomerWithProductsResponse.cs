@@ -12,19 +12,54 @@
         public string CustomerCode { get; set; } = string.Empty;
         public string CustomerName { get; set; } = string.Empty;
 
+        // =========================================================
+        // BUSINESS / LEGAL DETAILS
+        // =========================================================
+
+        public string? TradeName { get; set; }
+        public string? LegalName { get; set; }
+
+        // =========================================================
+        // CONTACT DETAILS
+        // =========================================================
+
         public string? ContactPerson { get; set; }
         public string? Email { get; set; }
         public string? Phone { get; set; }
+
+        // =========================================================
+        // TAX DETAILS
+        // =========================================================
+
         public string? GSTIN { get; set; }
+
+        // =========================================================
+        // ADDRESS DETAILS
+        // =========================================================
 
         public string? AddressLine1 { get; set; }
         public string? AddressLine2 { get; set; }
+
+        public string? BuildingName { get; set; }
+        public string? Location { get; set; }
+
         public string? City { get; set; }
         public string? State { get; set; }
+        public string? StateCode { get; set; }
+        public string? FloorNo { get; set; }
+
         public string? Country { get; set; }
         public string? PostalCode { get; set; }
 
+        // =========================================================
+        // FINANCIAL DETAILS
+        // =========================================================
+
         public decimal CreditLimit { get; set; }
+
+        // =========================================================
+        // STATUS / AUDIT
+        // =========================================================
 
         public bool IsActive { get; set; }
 
@@ -81,11 +116,10 @@
         public List<SellerCustomerWarehouseResponse> Warehouses { get; set; }
             = new();
 
+
         // =========================================================
         // INVENTORY / STOCK
         // =========================================================
-
-     
 
         public List<SellerCustomerStockAdjustmentResponse> StockAdjustments { get; set; }
             = new();
@@ -94,13 +128,17 @@
             = new();
 
         public List<SellerCustomerWarehouseLocationResponse> WarehouseLocations { get; set; }
-      = new();
+            = new();
+
 
         // =========================================================
         // PROCUREMENT
         // =========================================================
 
-        public List<SellerCustomerSupplierResponse> Suppliers { get; set; }= new();
-       public SellerCustomerTransactionResponse Transactions { get; set; } = new();
+        public List<SellerCustomerSupplierResponse> Suppliers { get; set; }
+            = new();
+
+        public SellerCustomerTransactionResponse Transactions { get; set; }
+            = new();
     }
 }

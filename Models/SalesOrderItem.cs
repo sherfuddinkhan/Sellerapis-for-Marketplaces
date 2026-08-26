@@ -17,5 +17,16 @@
         public decimal TaxAmount { get; set; }
 
         public decimal TotalAmount { get; set; }
+
+
+        // =====================================================
+        // NAVIGATION PROPERTIES
+        // These do NOT create new columns by themselves
+        // =====================================================
+
+        public SalesOrder? SalesOrder { get; set; }
+
+        public Product? Product { get; set; }
     }
 }
+

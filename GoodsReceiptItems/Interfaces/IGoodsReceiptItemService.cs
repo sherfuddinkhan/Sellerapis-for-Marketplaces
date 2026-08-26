@@ -1,23 +1,127 @@
 ﻿using Marketplacesellerportal.Models;
+using Marketplacesellerportal.GoodsReceiptItems.DTOs;
 
 namespace Marketplacesellerportal.GoodsReceiptItems.Interfaces
 {
     public interface IGoodsReceiptItemService
     {
-        Task<IEnumerable<GoodsReceiptItem>> GetAllAsync();
+        // =========================================================
+        // BASIC
+        // =========================================================
 
-        Task<GoodsReceiptItem?> GetByIdAsync(int goodsReceiptItemId);
+        Task<IEnumerable<GoodsReceiptItem>>
+            GetAllAsync();
 
-        Task<IEnumerable<GoodsReceiptItem>> GetByGoodsReceiptNoteIdAsync(int goodsReceiptNoteId);
+        Task<GoodsReceiptItem?>
+            GetByIdAsync(
+                int goodsReceiptItemId);
 
-        Task<GoodsReceiptItem?> GetByGoodsReceiptNoteAndItemAsync(
-            int goodsReceiptNoteId,
-            int goodsReceiptItemId);
 
-        Task<GoodsReceiptItem> CreateAsync(GoodsReceiptItem goodsReceiptItem);
+        // =========================================================
+        // GOODS RECEIPT NOTE
+        // =========================================================
 
-        Task<bool> UpdateAsync(int goodsReceiptItemId, GoodsReceiptItem goodsReceiptItem);
+        Task<IEnumerable<GoodsReceiptItem>>
+            GetByGoodsReceiptNoteIdAsync(
+                int goodsReceiptNoteId);
 
-        Task<bool> DeleteAsync(int goodsReceiptItemId);
+        Task<GoodsReceiptItem?>
+            GetByGoodsReceiptNoteAndItemAsync(
+                int goodsReceiptNoteId,
+                int goodsReceiptItemId);
+
+
+        // =========================================================
+        // PRODUCT
+        // =========================================================
+
+        Task<IEnumerable<GoodsReceiptItem>>
+            GetByProductIdAsync(
+                int productId);
+
+
+        // =========================================================
+        // SELLER
+        // =========================================================
+
+        Task<IEnumerable<GoodsReceiptItem>>
+            GetBySellerIdAsync(
+                int sellerId);
+
+
+        // =========================================================
+        // CUSTOMER
+        // =========================================================
+
+        Task<IEnumerable<GoodsReceiptItem>>
+            GetByCustomerIdAsync(
+                int customerId);
+
+
+        // =========================================================
+        // SELLER + CUSTOMER
+        // =========================================================
+
+        Task<IEnumerable<GoodsReceiptItem>>
+            GetBySellerCustomerAsync(
+                int sellerId,
+                int customerId);
+
+
+        // =========================================================
+        // SEARCH
+        // =========================================================
+
+        Task<IEnumerable<GoodsReceiptItem>>
+            SearchAsync(
+                string? search);
+
+
+        // =========================================================
+        // STATISTICS
+        // =========================================================
+
+        Task<GoodsReceiptNoteItemStatistics>
+            GetStatisticsAsync();
+
+
+        // =========================================================
+        // PAGINATION
+        // =========================================================
+
+        Task<(
+            IEnumerable<GoodsReceiptItem> Items,
+            int TotalCount)>
+            GetPagedAsync(
+                int page,
+                int limit);
+
+
+        // =========================================================
+        // SORTING
+        // =========================================================
+
+        Task<IEnumerable<GoodsReceiptItem>>
+            GetSortedAsync(
+                string? sort);
+
+
+        // =========================================================
+        // CRUD
+        // =========================================================
+
+        Task<GoodsReceiptItem>
+            CreateAsync(
+                GoodsReceiptItem goodsReceiptItem);
+
+        Task<bool>
+            UpdateAsync(
+                int goodsReceiptItemId,
+                GoodsReceiptItem goodsReceiptItem);
+
+        Task<bool>
+            DeleteAsync(
+                int goodsReceiptItemId);
     }
 }
+

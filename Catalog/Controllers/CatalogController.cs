@@ -17,6 +17,7 @@ namespace Marketplacesellerportal.Catalog.Controllers
 
         // =========================================================
         // GET ALL PRODUCTS
+        // GET /api/catalog/products?sellerId=6&customerId=3
         // =========================================================
 
         [HttpGet("products")]
@@ -31,11 +32,13 @@ namespace Marketplacesellerportal.Catalog.Controllers
             return Ok(products);
         }
 
+
         // =========================================================
         // GET PRODUCT DETAILS
+        // GET /api/catalog/products/6?sellerId=6&customerId=3
         // =========================================================
 
-        [HttpGet("products/{id}")]
+        [HttpGet("products/{id:int}")]
         public async Task<IActionResult> GetProductDetails(
             int id,
             [FromQuery] int sellerId,
@@ -47,13 +50,20 @@ namespace Marketplacesellerportal.Catalog.Controllers
                 customerId);
 
             if (result == null)
-                return NotFound();
+            {
+                return NotFound(new
+                {
+                    message = "Product not found."
+                });
+            }
 
             return Ok(result);
         }
 
+
         // =========================================================
-        // SEARCH
+        // SEARCH PRODUCTS
+        // POST /api/catalog/search?sellerId=6&customerId=3
         // =========================================================
 
         [HttpPost("search")]
@@ -62,6 +72,14 @@ namespace Marketplacesellerportal.Catalog.Controllers
             [FromQuery] int customerId,
             [FromBody] ProductSearchRequest request)
         {
+            if (request == null)
+            {
+                return BadRequest(new
+                {
+                    message = "Search request is required."
+                });
+            }
+
             var result = await _service.SearchProductsAsync(
                 request,
                 sellerId,
@@ -70,16 +88,20 @@ namespace Marketplacesellerportal.Catalog.Controllers
             return Ok(result);
         }
 
+
         // =========================================================
         // CREATE PRODUCT
+        // POST /api/catalog/products
         // =========================================================
 
         [HttpPost("products")]
         public async Task<IActionResult> CreateProduct(
-            CreateProductRequest request)
+            [FromBody] CreateProductRequest request)
         {
             if (!ModelState.IsValid)
+            {
                 return BadRequest(ModelState);
+            }
 
             var createdProduct =
                 await _service.CreateProductAsync(request);
@@ -95,8 +117,10 @@ namespace Marketplacesellerportal.Catalog.Controllers
                 createdProduct);
         }
 
+
         // =========================================================
         // BRANDS
+        // GET /api/catalog/brands?sellerId=6&customerId=3
         // =========================================================
 
         [HttpGet("brands")]
@@ -104,14 +128,17 @@ namespace Marketplacesellerportal.Catalog.Controllers
             [FromQuery] int sellerId,
             [FromQuery] int customerId)
         {
-            return Ok(
-                await _service.GetBrandsAsync(
-                    sellerId,
-                    customerId));
+            var result = await _service.GetBrandsAsync(
+                sellerId,
+                customerId);
+
+            return Ok(result);
         }
+
 
         // =========================================================
         // CATEGORIES
+        // GET /api/catalog/categories?sellerId=6&customerId=3
         // =========================================================
 
         [HttpGet("categories")]
@@ -119,65 +146,76 @@ namespace Marketplacesellerportal.Catalog.Controllers
             [FromQuery] int sellerId,
             [FromQuery] int customerId)
         {
-            return Ok(
-                await _service.GetCategoriesAsync(
-                    sellerId,
-                    customerId));
+            var result = await _service.GetCategoriesAsync(
+                sellerId,
+                customerId);
+
+            return Ok(result);
         }
+
 
         // =========================================================
         // PRODUCTS BY BRAND
         // =========================================================
 
-        [HttpGet("brand/{brandId}")]
+        [HttpGet("brand/{brandId:int}")]
         public async Task<IActionResult> ProductsByBrand(
             int brandId,
             [FromQuery] int sellerId,
             [FromQuery] int customerId)
         {
-            return Ok(
+            var result =
                 await _service.GetProductsByBrandAsync(
                     brandId,
                     sellerId,
-                    customerId));
+                    customerId);
+
+            return Ok(result);
         }
+
 
         // =========================================================
         // PRODUCTS BY CATEGORY
         // =========================================================
 
-        [HttpGet("category/{categoryId}")]
+        [HttpGet("category/{categoryId:int}")]
         public async Task<IActionResult> ProductsByCategory(
             int categoryId,
             [FromQuery] int sellerId,
             [FromQuery] int customerId)
         {
-            return Ok(
+            var result =
                 await _service.GetProductsByCategoryAsync(
                     categoryId,
                     sellerId,
-                    customerId));
+                    customerId);
+
+            return Ok(result);
         }
+
 
         // =========================================================
         // PRODUCTS BY PRODUCT TYPE
         // =========================================================
 
-        [HttpGet("producttype/{productTypeId}")]
+        [HttpGet("producttype/{productTypeId:int}")]
         public async Task<IActionResult> ProductsByProductType(
             int productTypeId,
             [FromQuery] int sellerId,
             [FromQuery] int customerId)
         {
-            return Ok(
+            var result =
                 await _service.GetProductsByProductTypeAsync(
                     productTypeId,
                     sellerId,
-                    customerId));
+                    customerId);
+
+            return Ok(result);
         }
 
+
         // =========================================================
-        // LATEST
+        // LATEST PRODUCTS
         // =========================================================
 
         [HttpGet("latest")]
@@ -185,14 +223,17 @@ namespace Marketplacesellerportal.Catalog.Controllers
             [FromQuery] int sellerId,
             [FromQuery] int customerId)
         {
-            return Ok(
+            var result =
                 await _service.GetLatestProductsAsync(
                     sellerId,
-                    customerId));
+                    customerId);
+
+            return Ok(result);
         }
 
+
         // =========================================================
-        // FEATURED
+        // FEATURED PRODUCTS
         // =========================================================
 
         [HttpGet("featured")]
@@ -200,14 +241,17 @@ namespace Marketplacesellerportal.Catalog.Controllers
             [FromQuery] int sellerId,
             [FromQuery] int customerId)
         {
-            return Ok(
+            var result =
                 await _service.GetFeaturedProductsAsync(
                     sellerId,
-                    customerId));
+                    customerId);
+
+            return Ok(result);
         }
 
+
         // =========================================================
-        // TOP RATED
+        // TOP RATED PRODUCTS
         // =========================================================
 
         [HttpGet("toprated")]
@@ -215,14 +259,17 @@ namespace Marketplacesellerportal.Catalog.Controllers
             [FromQuery] int sellerId,
             [FromQuery] int customerId)
         {
-            return Ok(
+            var result =
                 await _service.GetTopRatedProductsAsync(
                     sellerId,
-                    customerId));
+                    customerId);
+
+            return Ok(result);
         }
 
+
         // =========================================================
-        // BEST SELLERS
+        // BEST SELLING PRODUCTS
         // =========================================================
 
         [HttpGet("bestsellers")]
@@ -230,78 +277,221 @@ namespace Marketplacesellerportal.Catalog.Controllers
             [FromQuery] int sellerId,
             [FromQuery] int customerId)
         {
-            return Ok(
+            var result =
                 await _service.GetBestSellingProductsAsync(
                     sellerId,
-                    customerId));
+                    customerId);
+
+            return Ok(result);
         }
 
+
         // =========================================================
-        // IMAGES
+        // PRODUCT IMAGES
+        // GET /api/catalog/6/images
         // =========================================================
 
-        [HttpGet("{productId}/images")]
+        [HttpGet("{productId:int}/images")]
         public async Task<IActionResult> Images(
             int productId,
             [FromQuery] int sellerId,
             [FromQuery] int customerId)
         {
-            return Ok(
+            var result =
                 await _service.GetProductImagesAsync(
                     productId,
                     sellerId,
-                    customerId));
+                    customerId);
+
+            return Ok(result);
         }
 
+
         // =========================================================
-        // ATTRIBUTES
+        // PRODUCT ATTRIBUTES
         // =========================================================
 
-        [HttpGet("{productId}/attributes")]
+        [HttpGet("{productId:int}/attributes")]
         public async Task<IActionResult> Attributes(
             int productId,
             [FromQuery] int sellerId,
             [FromQuery] int customerId)
         {
-            return Ok(
+            var result =
                 await _service.GetProductAttributesAsync(
                     productId,
                     sellerId,
-                    customerId));
+                    customerId);
+
+            return Ok(result);
         }
 
+
         // =========================================================
-        // REVIEWS
+        // PRODUCT REVIEWS
         // =========================================================
 
-        [HttpGet("{productId}/reviews")]
+        [HttpGet("{productId:int}/reviews")]
         public async Task<IActionResult> Reviews(
             int productId,
             [FromQuery] int sellerId,
             [FromQuery] int customerId)
         {
-            return Ok(
+            var result =
                 await _service.GetProductReviewsAsync(
                     productId,
                     sellerId,
-                    customerId));
+                    customerId);
+
+            return Ok(result);
         }
+
 
         // =========================================================
         // RELATED PRODUCTS
         // =========================================================
 
-        [HttpGet("{productId}/related")]
+        [HttpGet("{productId:int}/related")]
         public async Task<IActionResult> RelatedProducts(
             int productId,
             [FromQuery] int sellerId,
             [FromQuery] int customerId)
         {
-            return Ok(
+            var result =
                 await _service.GetRelatedProductsAsync(
                     productId,
                     sellerId,
-                    customerId));
+                    customerId);
+
+            return Ok(result);
+        }
+
+
+        // =========================================================
+        // UPDATE PRODUCT
+        // PUT /api/catalog/6?sellerId=6&customerId=3
+        // =========================================================
+
+        [HttpPut("{id:int}")]
+        public async Task<IActionResult> UpdateProduct(
+            int id,
+            [FromQuery] int sellerId,
+            [FromQuery] int customerId,
+            [FromBody] UpdateProductRequest request)
+        {
+            if (request == null)
+            {
+                return BadRequest(new
+                {
+                    message = "Request body is required."
+                });
+            }
+
+            var result =
+                await _service.UpdateProductAsync(
+                    id,
+                    sellerId,
+                    customerId,
+                    request);
+
+            if (!result)
+            {
+                return NotFound(new
+                {
+                    message =
+                        "Product not found for the specified seller and customer."
+                });
+            }
+
+            return Ok(new
+            {
+                message = "Product updated successfully.",
+                productId = id,
+                sellerId,
+                customerId
+            });
+        }
+
+
+        // =========================================================
+        // PATCH PRODUCT
+        // PATCH /api/catalog/6?sellerId=6&customerId=3
+        // =========================================================
+
+        [HttpPatch("{id:int}")]
+        public async Task<IActionResult> PatchProduct(
+            int id,
+            [FromQuery] int sellerId,
+            [FromQuery] int customerId,
+            [FromBody] UpdateProductRequest request)
+        {
+            if (request == null)
+            {
+                return BadRequest(new
+                {
+                    message = "Request body is required."
+                });
+            }
+
+            var result =
+                await _service.UpdateProductAsync(
+                    id,
+                    sellerId,
+                    customerId,
+                    request);
+
+            if (!result)
+            {
+                return NotFound(new
+                {
+                    message =
+                        "Product not found for the specified seller and customer."
+                });
+            }
+
+            return Ok(new
+            {
+                message = "Product updated successfully.",
+                productId = id,
+                sellerId,
+                customerId
+            });
+        }
+
+
+        // =========================================================
+        // DELETE PRODUCT
+        // DELETE /api/catalog/6?sellerId=6&customerId=3
+        // =========================================================
+
+        [HttpDelete("{id:int}")]
+        public async Task<IActionResult> DeleteProduct(
+            int id,
+            [FromQuery] int sellerId,
+            [FromQuery] int customerId)
+        {
+            var result =
+                await _service.DeleteProductAsync(
+                    id,
+                    sellerId,
+                    customerId);
+
+            if (!result)
+            {
+                return NotFound(new
+                {
+                    message =
+                        "Product not found for the specified seller and customer."
+                });
+            }
+
+            return Ok(new
+            {
+                message = "Product deleted successfully.",
+                productId = id,
+                sellerId,
+                customerId
+            });
         }
     }
 }

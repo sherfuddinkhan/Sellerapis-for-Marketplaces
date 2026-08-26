@@ -13,6 +13,10 @@ using Marketplacesellerportal.Catalog.Services;
 
 using Marketplacesellerportal.Configuration;
 
+using Marketplacesellerportal.Marketplaces.Interfaces;
+using Marketplacesellerportal.Marketplaces.Repositories;
+using Marketplacesellerportal.Marketplaces.Services;
+
 using Marketplacesellerportal.CustomerReturns.Interfaces;
 using Marketplacesellerportal.CustomerReturns.Repositories;
 using Marketplacesellerportal.CustomerReturns.Services;
@@ -21,6 +25,10 @@ using Marketplacesellerportal.Categories.Interfaces;
 using Marketplacesellerportal.Categories.Repositories;
 using Marketplacesellerportal.Categories.Services;
 using Marketplacesellerportal.Database;
+
+using Marketplacesellerportal.MarketplaceOrderItems.Interfaces;
+using Marketplacesellerportal.MarketplaceOrderItems.Repositories;
+using Marketplacesellerportal.MarketplaceOrderItems.Services;
 
 using Marketplacesellerportal.Products.Interfaces;
 using Marketplacesellerportal.Products.Repositories;
@@ -41,6 +49,10 @@ using Marketplacesellerportal.GoodsReceiptItems.Services;
 using Marketplacesellerportal.GoodsReceiptNotes.Interfaces;
 using Marketplacesellerportal.GoodsReceiptNotes.Repositories;
 using Marketplacesellerportal.GoodsReceiptNotes.Services;
+
+using Marketplacesellerportal.MarketplaceReturns.Interfaces;
+using Marketplacesellerportal.MarketplaceReturns.Repositories;
+using Marketplacesellerportal.MarketplaceReturns.Services;
 
 using Marketplacesellerportal.Notifications.Interfaces;
 using Marketplacesellerportal.Notifications.Repositories;
@@ -285,6 +297,40 @@ builder.Services.AddScoped<
     ISupplierService,
     SupplierService>();
 
+// =========================================================
+// MARKETPLACE RETURN
+// =========================================================
+
+builder.Services.AddScoped<
+    IMarketplaceReturnRepository,
+    MarketplaceReturnRepository>();
+
+builder.Services.AddScoped<
+    IMarketplaceReturnService,
+    MarketplaceReturnService>();
+// =========================================================
+// MARKETPLACE
+// =========================================================
+
+builder.Services.AddScoped<
+    IMarketplaceRepository,
+    MarketplaceRepository>();
+
+builder.Services.AddScoped<
+    IMarketplaceService,
+    MarketplaceService>();
+
+// =========================================================
+// MARKETPLACE ORDER ITEM
+// =========================================================
+
+builder.Services.AddScoped<
+    IMarketplaceOrderItemRepository,
+    MarketplaceOrderItemRepository>();
+
+builder.Services.AddScoped<
+    IMarketplaceOrderItemService,
+    MarketplaceOrderItemService>();
 
 // =========================================================
 // WAREHOUSE

@@ -1,11 +1,14 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Marketplacesellerportal.Categories.Interfaces;
+using Marketplacesellerportal.Category.DTOs;
 using Marketplacesellerportal.Models;
-using Marketplacesellerportal.Categories.Interfaces;
+using Microsoft.AspNetCore.Mvc;
+
+using CategoryModel = Marketplacesellerportal.Models.Category;
 
 namespace Marketplacesellerportal.Categories.Controllers
 {
     [ApiController]
-    [Route("api/[controller]")]
+    [Route("api/categories")]
     public class CategoryController : ControllerBase
     {
         private readonly ICategoryService _service;
@@ -15,15 +18,42 @@ namespace Marketplacesellerportal.Categories.Controllers
             _service = service;
         }
 
-        // GET: api/Category
+        // =========================================================
+        // GET ALL / SEARCH / FILTER / PAGINATION / SORT
+        // =========================================================
+        // GET:
+        // /api/categories
+        //
+        // Search:
+        // /api/categories?search=Mobile
+        //
+        // Status:
+        // /api/categories?status=active
+        //
+        // Pagination:
+        // /api/categories?page=1&limit=10
+        //
+        // Sorting:
+        // /api/categories?sort=name_asc
+        //
+        // Combined:
+        // /api/categories?search=Mobile&status=active&page=1&limit=10&sort=name_asc
+        // =========================================================
         [HttpGet]
-        public async Task<IActionResult> GetAll()
+        public async Task<IActionResult> GetCategories(
+            [FromQuery] CategoryListRequest request)
         {
-            return Ok(await _service.GetAllAsync());
+            var result = await _service.GetCategoriesAsync(request);
+
+            return Ok(result);
         }
 
-        // GET: api/Category/1
-        [HttpGet("{categoryId}")]
+        // =========================================================
+        // GET CATEGORY BY ID
+        // =========================================================
+        // GET: /api/categories/1
+        // =========================================================
+        [HttpGet("{categoryId:int}")]
         public async Task<IActionResult> GetById(int categoryId)
         {
             var result = await _service.GetByIdAsync(categoryId);
@@ -34,9 +64,14 @@ namespace Marketplacesellerportal.Categories.Controllers
             return Ok(result);
         }
 
-        // GET: api/Category/name/Mobile Phones
+        // =========================================================
+        // GET CATEGORY BY NAME
+        // =========================================================
+        // GET: /api/categories/name/Mobile Phones
+        // =========================================================
         [HttpGet("name/{categoryName}")]
-        public async Task<IActionResult> GetByName(string categoryName)
+        public async Task<IActionResult> GetByName(
+            string categoryName)
         {
             var result = await _service.GetByNameAsync(categoryName);
 
@@ -46,27 +81,55 @@ namespace Marketplacesellerportal.Categories.Controllers
             return Ok(result);
         }
 
-        // GET: api/Category/active
+        // =========================================================
+        // GET ACTIVE CATEGORIES
+        // =========================================================
+        // GET: /api/categories/active
+        // =========================================================
         [HttpGet("active")]
         public async Task<IActionResult> GetActive()
         {
-            return Ok(await _service.GetActiveAsync());
+            var result = await _service.GetActiveAsync();
+
+            return Ok(result);
         }
 
-        // POST: api/Category
+        // =========================================================
+        // CATEGORY STATISTICS
+        // =========================================================
+        // GET: /api/categories/stats
+        // =========================================================
+        [HttpGet("stats")]
+        public async Task<IActionResult> GetStatistics()
+        {
+            var result = await _service.GetStatisticsAsync();
+
+            return Ok(result);
+        }
+
+        // =========================================================
+        // CREATE CATEGORY
+        // =========================================================
+        // POST: /api/categories
+        // =========================================================
         [HttpPost]
-        public async Task<IActionResult> Create(Category category)
+        public async Task<IActionResult> Create(
+            [FromBody] CategoryModel category)
         {
             var result = await _service.CreateAsync(category);
 
             return Ok(result);
         }
 
-        // PUT: api/Category/1
-        [HttpPut("{categoryId}")]
+        // =========================================================
+        // UPDATE CATEGORY
+        // =========================================================
+        // PUT: /api/categories/1
+        // =========================================================
+        [HttpPut("{categoryId:int}")]
         public async Task<IActionResult> Update(
             int categoryId,
-            Category category)
+            [FromBody] CategoryModel category)
         {
             var result = await _service.UpdateAsync(
                 categoryId,
@@ -78,8 +141,12 @@ namespace Marketplacesellerportal.Categories.Controllers
             return Ok();
         }
 
-        // DELETE: api/Category/1
-        [HttpDelete("{categoryId}")]
+        // =========================================================
+        // DELETE CATEGORY
+        // =========================================================
+        // DELETE: /api/categories/1
+        // =========================================================
+        [HttpDelete("{categoryId:int}")]
         public async Task<IActionResult> Delete(int categoryId)
         {
             var result = await _service.DeleteAsync(categoryId);
@@ -91,4 +158,3 @@ namespace Marketplacesellerportal.Categories.Controllers
         }
     }
 }
-

@@ -9,7 +9,7 @@
 
         public int CustomerId { get; set; }
         public string AttributeName { get; set; } = string.Empty;
-
+        public bool IsActive { get; set; }
         public string AttributeValue { get; set; } = string.Empty;
 
         public DateTime? CreatedDate { get; set; }

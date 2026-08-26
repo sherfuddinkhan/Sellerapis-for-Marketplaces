@@ -1,4 +1,5 @@
 ﻿using Marketplacesellerportal.Models;
+using Marketplacesellerportal.SalesInvoices.DTOs;
 
 namespace Marketplacesellerportal.SalesInvoices.Interfaces
 {
@@ -18,7 +19,7 @@ namespace Marketplacesellerportal.SalesInvoices.Interfaces
 
         Task<SalesInvoice> CreateAsync(SalesInvoice salesInvoice);
 
-        Task<bool> UpdateAsync(int salesInvoiceId, SalesInvoice salesInvoice);
+        Task<bool> UpdateAsync(int salesInvoiceId,UpdateSalesInvoiceRequest request);
 
         Task<bool> DeleteAsync(int salesInvoiceId);
     }

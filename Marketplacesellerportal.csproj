@@ -28,9 +28,7 @@
   <ItemGroup>
     <Folder Include="Database\Migrations\" />
     <Folder Include="Database\SeedData\" />
-    <Folder Include="ProductInventory\DTOs\" />
-    <Folder Include="Marketplace\Amazon\" />
-    <Folder Include="Marketplace\Flipkart\" />
+    <Folder Include="Marketplaces\DTOs\" />
     <Folder Include="Orders\Controllers\" />
     <Folder Include="Orders\DTOs\" />
     <Folder Include="Orders\Interfaces\" />
@@ -48,7 +46,6 @@
     <Folder Include="SharedKernel\Utilities\" />
     <Folder Include="SharedKernel\Validators\" />
     <Folder Include="Suppliers\Models\" />
-    <Folder Include="Warehouses\Models\" />
   </ItemGroup>
 
 </Project>

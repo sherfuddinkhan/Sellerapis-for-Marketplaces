@@ -18,6 +18,7 @@ namespace Marketplacesellerportal.Catalog.Repositories
         // =========================================================
         // GET ALL PRODUCTS
         // =========================================================
+
         public async Task<IEnumerable<CatalogProductResponse>> GetProductsAsync(
             int sellerId,
             int customerId)
@@ -35,10 +36,10 @@ namespace Marketplacesellerportal.Catalog.Repositories
                 customerId);
         }
 
-
         // =========================================================
         // GET PRODUCT DETAILS
         // =========================================================
+
         public async Task<ProductDetailsResponse?> GetProductDetailsAsync(
             int productId,
             int sellerId,
@@ -90,10 +91,10 @@ namespace Marketplacesellerportal.Catalog.Repositories
             };
         }
 
-
         // =========================================================
         // CREATE PRODUCT
         // =========================================================
+
         public async Task<Product> CreateProductAsync(
             CreateProductRequest request)
         {
@@ -129,37 +130,40 @@ namespace Marketplacesellerportal.Catalog.Repositories
                 UpdatedDate = null
             };
 
-            _context.Products.Add(product);
-
+            await _context.Products.AddAsync(product);
             await _context.SaveChangesAsync();
 
             return product;
         }
 
-
         // =========================================================
         // SEARCH PRODUCTS
         // =========================================================
- public async Task<IEnumerable<CatalogProductResponse>> SearchProductsAsync(ProductSearchRequest request,int sellerId,int customerId)
+
+        public async Task<IEnumerable<CatalogProductResponse>>
+            SearchProductsAsync(
+                ProductSearchRequest request,
+                int sellerId,
+                int customerId)
         {
             var query = _context.Products
                 .AsNoTracking()
                 .Where(p =>
-                    p.SellerId == sellerId &&
-                    p.CustomerId == customerId &&
-                    p.IsActive == true)
+    p.SellerId == sellerId &&
+    p.CustomerId == customerId &&
+    p.IsActive == true)
                 .AsQueryable();
 
             if (request != null)
             {
-                // Search by product name
                 if (!string.IsNullOrWhiteSpace(request.SearchText))
                 {
+                    var searchText = request.SearchText.Trim();
+
                     query = query.Where(p =>
-                        p.ProductName.Contains(request.SearchText));
+                        p.ProductName.Contains(searchText));
                 }
 
-                // Brand
                 if (request.BrandId.HasValue &&
                     request.BrandId.Value > 0)
                 {
@@ -167,7 +171,6 @@ namespace Marketplacesellerportal.Catalog.Repositories
                         p.BrandId == request.BrandId.Value);
                 }
 
-                // Category
                 if (request.CategoryId.HasValue &&
                     request.CategoryId.Value > 0)
                 {
@@ -175,7 +178,6 @@ namespace Marketplacesellerportal.Catalog.Repositories
                         p.CategoryId == request.CategoryId.Value);
                 }
 
-                // Product Type
                 if (request.ProductTypeId.HasValue &&
                     request.ProductTypeId.Value > 0)
                 {
@@ -206,10 +208,10 @@ namespace Marketplacesellerportal.Catalog.Repositories
                 customerId);
         }
 
-
         // =========================================================
         // GET PRODUCTS BY BRAND
         // =========================================================
+
         public async Task<IEnumerable<CatalogProductResponse>>
             GetProductsByBrandAsync(
                 int brandId,
@@ -217,12 +219,11 @@ namespace Marketplacesellerportal.Catalog.Repositories
                 int customerId)
         {
             var products = await _context.Products
-                .AsNoTracking()
-                .Where(p =>
-                    p.SellerId == sellerId &&
-                    p.CustomerId == customerId &&
-                    p.BrandId == brandId &&
-                    p.IsActive == true)
+                .AsNoTracking().Where(p =>
+                   p.SellerId == sellerId &&
+                   p.CustomerId == customerId &&
+                   p.BrandId == brandId &&
+                   p.IsActive == true)
                 .ToListAsync();
 
             return await BuildProductResponsesAsync(
@@ -231,45 +232,60 @@ namespace Marketplacesellerportal.Catalog.Repositories
                 customerId);
         }
 
-
         // =========================================================
         // GET PRODUCTS BY CATEGORY
         // =========================================================
+
         public async Task<IEnumerable<CatalogProductResponse>>
-            GetProductsByCategoryAsync(int categoryId,int sellerId,int customerId)
+            GetProductsByCategoryAsync(
+                int categoryId,
+                int sellerId,
+                int customerId)
         {
             var products = await _context.Products
                 .AsNoTracking()
-                .Where(p =>
-                    p.SellerId == sellerId &&
-                    p.CustomerId == customerId &&
-                    p.CategoryId == categoryId &&
-                    p.IsActive == true)
+               .Where(p =>
+    p.SellerId == sellerId &&
+    p.CustomerId == customerId &&
+    p.CategoryId == categoryId &&
+    p.IsActive == true)
                 .ToListAsync();
-            return await BuildProductResponsesAsync(products,sellerId,customerId);
+
+            return await BuildProductResponsesAsync(
+                products,
+                sellerId,
+                customerId);
         }
+
         // =========================================================
         // GET PRODUCTS BY PRODUCT TYPE
         // =========================================================
+
         public async Task<IEnumerable<CatalogProductResponse>>
-            GetProductsByProductTypeAsync(int productTypeId,int sellerId,int customerId)
+            GetProductsByProductTypeAsync(
+                int productTypeId,
+                int sellerId,
+                int customerId)
         {
             var products = await _context.Products
                 .AsNoTracking()
-                .Where(p =>
-                    p.SellerId == sellerId &&
-                    p.CustomerId == customerId &&
-                    p.ProductTypeId == productTypeId &&
-                    p.IsActive == true)
+               .Where(p =>
+    p.SellerId == sellerId &&
+    p.CustomerId == customerId &&
+    p.ProductTypeId == productTypeId &&
+    p.IsActive == true)
                 .ToListAsync();
 
-            return await BuildProductResponsesAsync(products,sellerId,customerId);
+            return await BuildProductResponsesAsync(
+                products,
+                sellerId,
+                customerId);
         }
-
 
         // =========================================================
         // GET LATEST PRODUCTS
         // =========================================================
+
         public async Task<IEnumerable<CatalogProductResponse>>
             GetLatestProductsAsync(
                 int sellerId,
@@ -277,10 +293,10 @@ namespace Marketplacesellerportal.Catalog.Repositories
         {
             var products = await _context.Products
                 .AsNoTracking()
-                .Where(p =>
-                    p.SellerId == sellerId &&
-                    p.CustomerId == customerId &&
-                    p.IsActive == true)
+               .Where(p =>
+    p.SellerId == sellerId &&
+    p.CustomerId == customerId &&
+    p.IsActive == true)
                 .OrderByDescending(p => p.CreatedDate)
                 .Take(20)
                 .ToListAsync();
@@ -291,24 +307,24 @@ namespace Marketplacesellerportal.Catalog.Repositories
                 customerId);
         }
 
-
         // =========================================================
         // GET FEATURED PRODUCTS
         // =========================================================
+
         public async Task<IEnumerable<CatalogProductResponse>>
             GetFeaturedProductsAsync(
                 int sellerId,
                 int customerId)
         {
-            // Your current Product table does not have IsFeatured.
-            // Therefore, latest active products are returned.
+            // Product currently has no IsFeatured field.
+            // Return latest active products.
 
             var products = await _context.Products
                 .AsNoTracking()
-                .Where(p =>
-                    p.SellerId == sellerId &&
-                    p.CustomerId == customerId &&
-                    p.IsActive == true)
+              .Where(p =>
+    p.SellerId == sellerId &&
+    p.CustomerId == customerId &&
+    p.IsActive == true)
                 .OrderByDescending(p => p.CreatedDate)
                 .Take(20)
                 .ToListAsync();
@@ -319,10 +335,10 @@ namespace Marketplacesellerportal.Catalog.Repositories
                 customerId);
         }
 
-
         // =========================================================
         // GET TOP RATED PRODUCTS
         // =========================================================
+
         public async Task<IEnumerable<CatalogProductResponse>>
             GetTopRatedProductsAsync(
                 int sellerId,
@@ -330,10 +346,10 @@ namespace Marketplacesellerportal.Catalog.Repositories
         {
             var products = await _context.Products
                 .AsNoTracking()
-                .Where(p =>
-                    p.SellerId == sellerId &&
-                    p.CustomerId == customerId &&
-                    p.IsActive == true)
+              .Where(p =>
+    p.SellerId == sellerId &&
+    p.CustomerId == customerId &&
+    p.IsActive == true)
                 .ToListAsync();
 
             var responses = await BuildProductResponsesAsync(
@@ -347,24 +363,24 @@ namespace Marketplacesellerportal.Catalog.Repositories
                 .ToList();
         }
 
-
         // =========================================================
         // GET BEST SELLING PRODUCTS
         // =========================================================
+
         public async Task<IEnumerable<CatalogProductResponse>>
             GetBestSellingProductsAsync(
                 int sellerId,
                 int customerId)
         {
-            // Order/sales table is not currently connected.
-            // Return active products for this seller/customer.
+            // No sales/order relation currently used.
+            // Return latest active products.
 
             var products = await _context.Products
                 .AsNoTracking()
                 .Where(p =>
-                    p.SellerId == sellerId &&
-                    p.CustomerId == customerId &&
-                    p.IsActive == true)
+    p.SellerId == sellerId &&
+    p.CustomerId == customerId &&
+    p.IsActive == true)
                 .OrderByDescending(p => p.ProductId)
                 .Take(20)
                 .ToListAsync();
@@ -375,10 +391,10 @@ namespace Marketplacesellerportal.Catalog.Repositories
                 customerId);
         }
 
-
         // =========================================================
         // GET BRANDS
         // =========================================================
+
         public async Task<IEnumerable<BrandResponse>>
             GetBrandsAsync(
                 int sellerId,
@@ -413,11 +429,11 @@ namespace Marketplacesellerportal.Catalog.Repositories
                 .ToList();
         }
 
-
         // =========================================================
         // GET CATEGORIES
         // =========================================================
-        public async Task<IEnumerable<CategoryResponse>>
+
+        public async Task<IEnumerable<CatalogCategoryResponse>>
             GetCategoriesAsync(
                 int sellerId,
                 int customerId)
@@ -433,17 +449,18 @@ namespace Marketplacesellerportal.Catalog.Repositories
                 .ToListAsync();
 
             if (!categoryIds.Any())
-                return Enumerable.Empty<CategoryResponse>();
+                return Enumerable.Empty<CatalogCategoryResponse>();
 
             var categories = await _context.Categories
                 .AsNoTracking()
                 .Where(c =>
                     c.IsActive &&
                     categoryIds.Contains(c.CategoryId))
+                .OrderBy(c => c.CategoryName)
                 .ToListAsync();
 
             return categories
-                .Select(c => new CategoryResponse
+                .Select(c => new CatalogCategoryResponse
                 {
                     CategoryId = c.CategoryId,
                     CategoryName = c.CategoryName
@@ -454,6 +471,7 @@ namespace Marketplacesellerportal.Catalog.Repositories
         // =========================================================
         // GET PRODUCT IMAGES
         // =========================================================
+
         public async Task<IEnumerable<ProductImageResponse>>
             GetProductImagesAsync(
                 int productId,
@@ -491,10 +509,10 @@ namespace Marketplacesellerportal.Catalog.Repositories
                 .ToList();
         }
 
-
         // =========================================================
         // GET PRODUCT ATTRIBUTES
         // =========================================================
+
         public async Task<IEnumerable<ProductAttributeResponse>>
             GetProductAttributesAsync(
                 int productId,
@@ -513,8 +531,7 @@ namespace Marketplacesellerportal.Catalog.Repositories
 
             var attributes = await _context.ProductAttributes
                 .AsNoTracking()
-                .Where(x =>
-                    x.ProductId == productId)
+                .Where(x => x.ProductId == productId)
                 .ToListAsync();
 
             return attributes
@@ -531,9 +548,7 @@ namespace Marketplacesellerportal.Catalog.Repositories
         // =========================================================
         // GET PRODUCT REVIEWS
         // =========================================================
-        // =========================================================
-        // GET PRODUCT REVIEWS
-        // =========================================================
+
         public async Task<IEnumerable<ProductReviewResponse>>
             GetProductReviewsAsync(
                 int productId,
@@ -563,24 +578,19 @@ namespace Marketplacesellerportal.Catalog.Repositories
                 .Select(x => new ProductReviewResponse
                 {
                     ReviewId = x.ReviewId,
-
                     CustomerId = x.CustomerId,
-
                     ProductId = x.ProductId,
-
                     Rating = x.Rating,
-
                     ReviewText = x.ReviewText ?? "",
-
                     CreatedDate = x.CreatedDate ?? DateTime.Now
                 })
                 .ToList();
         }
 
-
         // =========================================================
         // GET RELATED PRODUCTS
         // =========================================================
+
         public async Task<IEnumerable<CatalogProductResponse>>
             GetRelatedProductsAsync(
                 int productId,
@@ -599,13 +609,13 @@ namespace Marketplacesellerportal.Catalog.Repositories
 
             var products = await _context.Products
                 .AsNoTracking()
-                .Where(p =>
-                    p.ProductId != productId &&
-                    p.SellerId == sellerId &&
-                    p.CustomerId == customerId &&
-                    p.IsActive == true &&
-                    p.CategoryId == currentProduct.CategoryId)
-                .OrderByDescending(p => p.ProductId)
+               .Where(p =>
+    p.ProductId != productId &&
+    p.SellerId == sellerId &&
+    p.CustomerId == customerId &&
+    p.IsActive == true &&
+    p.CategoryId == currentProduct.CategoryId)
+.OrderByDescending(p => p.ProductId)
                 .Take(10)
                 .ToListAsync();
 
@@ -615,10 +625,10 @@ namespace Marketplacesellerportal.Catalog.Repositories
                 customerId);
         }
 
-
         // =========================================================
         // COMMON PRODUCT RESPONSE BUILDER
         // =========================================================
+
         private async Task<List<CatalogProductResponse>>
             BuildProductResponsesAsync(
                 List<Product> products,
@@ -632,106 +642,92 @@ namespace Marketplacesellerportal.Catalog.Repositories
                 .Select(p => p.ProductId)
                 .ToList();
 
-
             // =====================================================
             // PRODUCT PRICES
             // =====================================================
-            // IMPORTANT:
-            // We intentionally DO NOT use x.SellerId here.
-            //
-            // Your SQL error was:
-            // Invalid column name 'SellerId'
-            //
-            // The product itself is already restricted by:
-            // SellerId + CustomerId.
-            //
-            var prices = await _context.ProductPrices
-     .AsNoTracking()
-     .Where(x =>
-         productIds.Contains(x.ProductId) &&
-         x.SellerId == sellerId &&
-         x.CustomerId == customerId &&
-         x.IsActive == true)
-     .ToListAsync();
 
+            var prices = await _context.ProductPrices
+                .AsNoTracking()
+              .Where(x =>
+    productIds.Contains(x.ProductId) &&
+    x.SellerId == sellerId &&
+    x.CustomerId == customerId &&
+    x.IsActive == true)
+                .ToListAsync();
 
             // =====================================================
             // PRODUCT INVENTORY
             // =====================================================
-            // Same principle:
-            // do not reference Inventory.SellerId unless the
-            // database table actually contains that column.
-            //
-      var inventories = await _context.ProductInventory.AsNoTracking()
-         .Where(x =>
-             productIds.Contains(x.ProductId) &&
-             x.SellerId == sellerId &&
-             x.CustomerId == customerId)
-         .ToListAsync();
+
+            var inventories = await _context.ProductInventory
+                .AsNoTracking()
+                .Where(x =>
+                    productIds.Contains(x.ProductId) &&
+                    x.SellerId == sellerId &&
+                    x.CustomerId == customerId)
+                .ToListAsync();
 
             // =====================================================
             // PRODUCT IMAGES
             // =====================================================
+
             var images = await _context.ProductImages
                 .AsNoTracking()
                 .Where(x =>
-                    productIds.Contains(x.ProductId))
+                    productIds.Contains(x.ProductId) &&
+                    x.SellerId == sellerId &&
+                    x.CustomerId == customerId)
                 .ToListAsync();
-
 
             // =====================================================
             // PRODUCT REVIEWS
             // =====================================================
+
             var reviews = await _context.Reviews
                 .AsNoTracking()
                 .Where(x =>
                     productIds.Contains(x.ProductId) &&
+                    x.SellerId == sellerId &&
                     x.CustomerId == customerId)
                 .ToListAsync();
-
 
             // =====================================================
             // BRANDS
             // =====================================================
+
             var brands = await _context.Brands
                 .AsNoTracking()
                 .ToListAsync();
 
-
             // =====================================================
             // CATEGORIES
             // =====================================================
+
             var categories = await _context.Categories
                 .AsNoTracking()
                 .ToListAsync();
 
-
             // =====================================================
             // PRODUCT TYPES
             // =====================================================
+
             var productTypes = await _context.ProductTypes
                 .AsNoTracking()
                 .ToListAsync();
 
-
             // =====================================================
             // BUILD RESPONSE
             // =====================================================
+
             return products
                 .Select(product =>
                 {
-                    // ---------------------------------------------
-                    // PRICES FOR THIS PRODUCT
-                    // ---------------------------------------------
                     var productPrices = prices
                         .Where(x =>
                             x.ProductId == product.ProductId)
                         .ToList();
 
-
-                    // ---------------------------------------------
-                    // NORMAL PRICE
-                    // ---------------------------------------------
+                    // Normal price
                     var normalPrice = productPrices
                         .Where(x =>
                             !string.Equals(
@@ -741,10 +737,7 @@ namespace Marketplacesellerportal.Catalog.Repositories
                         .OrderByDescending(x => x.EffectiveFrom)
                         .FirstOrDefault();
 
-
-                    // ---------------------------------------------
-                    // OFFER PRICE
-                    // ---------------------------------------------
+                    // Offer price
                     var offerPrice = productPrices
                         .Where(x =>
                             string.Equals(
@@ -754,20 +747,14 @@ namespace Marketplacesellerportal.Catalog.Repositories
                         .OrderByDescending(x => x.EffectiveFrom)
                         .FirstOrDefault();
 
-
-                    // ---------------------------------------------
-                    // STOCK
-                    // ---------------------------------------------
+                    // Stock
                     var stock = inventories
                         .Where(x =>
                             x.ProductId == product.ProductId)
                         .Sum(x =>
                             x.Quantity ?? 0);
 
-
-                    // ---------------------------------------------
-                    // PRIMARY IMAGE
-                    // ---------------------------------------------
+                    // Primary image
                     var primaryImage = images
                         .Where(x =>
                             x.ProductId == product.ProductId)
@@ -777,48 +764,33 @@ namespace Marketplacesellerportal.Catalog.Repositories
                             x.DisplayOrder)
                         .FirstOrDefault();
 
-
-                    // ---------------------------------------------
-                    // REVIEWS
-                    // ---------------------------------------------
+                    // Reviews
                     var productReviews = reviews
                         .Where(x =>
                             x.ProductId == product.ProductId)
                         .ToList();
 
-
-                    // ---------------------------------------------
-                    // BRAND
-                    // ---------------------------------------------
+                    // Brand
                     var brand = brands
                         .FirstOrDefault(x =>
                             x.BrandId == product.BrandId);
 
-
-                    // ---------------------------------------------
-                    // CATEGORY
-                    // ---------------------------------------------
+                    // Category
                     var category = categories
                         .FirstOrDefault(x =>
                             x.CategoryId == product.CategoryId);
 
-
-                    // ---------------------------------------------
-                    // PRODUCT TYPE
-                    // ---------------------------------------------
+                    // Product type
                     var productType = productTypes
                         .FirstOrDefault(x =>
                             x.ProductTypeId == product.ProductTypeId);
 
-
-                    // ---------------------------------------------
-                    // FINAL PRODUCT RESPONSE
-                    // ---------------------------------------------
                     return new CatalogProductResponse
                     {
                         ProductId = product.ProductId,
 
-                        ProductName = product.ProductName,
+                        ProductName =
+                            product.ProductName,
 
                         BrandName =
                             brand?.BrandName ?? "",
@@ -851,11 +823,59 @@ namespace Marketplacesellerportal.Catalog.Repositories
                             productReviews.Count,
 
                         IsAvailable =
-                            product.IsActive == true &&
-                            stock > 0
+    product.IsActive == true &&
+    stock > 0
                     };
                 })
                 .ToList();
+        }
+
+        // =========================================================
+        // GET PRODUCT FOR SELLER + CUSTOMER
+        // =========================================================
+
+        public async Task<Product?>
+            GetProductForSellerCustomerAsync(
+                int productId,
+                int sellerId,
+                int customerId)
+        {
+            return await _context.Products
+                .FirstOrDefaultAsync(p =>
+                    p.ProductId == productId &&
+                    p.SellerId == sellerId &&
+                    p.CustomerId == customerId);
+        }
+
+        // =========================================================
+        // UPDATE PRODUCT
+        // =========================================================
+
+        public Task UpdateProductAsync(Product product)
+        {
+            _context.Products.Update(product);
+
+            return Task.CompletedTask;
+        }
+
+        // =========================================================
+        // DELETE PRODUCT
+        // =========================================================
+
+        public Task DeleteProductAsync(Product product)
+        {
+            _context.Products.Remove(product);
+
+            return Task.CompletedTask;
+        }
+
+        // =========================================================
+        // SAVE CHANGES
+        // =========================================================
+
+        public async Task SaveChangesAsync()
+        {
+            await _context.SaveChangesAsync();
         }
     }
 }

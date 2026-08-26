@@ -1,4 +1,5 @@
 ﻿using Marketplacesellerportal.Models;
+using Marketplacesellerportal.Sellers.DTOs;
 using Marketplacesellerportal.Sellers.Interfaces;
 
 namespace Marketplacesellerportal.Sellers.Services
@@ -55,5 +56,48 @@ namespace Marketplacesellerportal.Sellers.Services
             await _repository.DeleteAsync(seller);
             await _repository.SaveChangesAsync();
         }
+    
+public async Task<IEnumerable<Seller>>
+    SearchAsync(string? search)
+        {
+            return await _repository.SearchAsync(search);
+        }
+
+
+        public async Task<SellerStatistics>
+            GetStatisticsAsync()
+        {
+            return await _repository.GetStatisticsAsync();
+        }
+
+
+        public async Task<(
+            IEnumerable<Seller> Items,
+            int TotalCount)>
+            GetPagedAsync(
+                int page,
+                int limit)
+        {
+            return await _repository.GetPagedAsync(
+                page,
+                limit);
+        }
+
+
+        public async Task<IEnumerable<Seller>>
+            GetSortedAsync(string? sort)
+        {
+            return await _repository.GetSortedAsync(sort);
+        }
+
+
+        public async Task<IEnumerable<Seller>>
+            GetByStatusAsync(bool isActive)
+        {
+            return await _repository.GetByStatusAsync(
+                isActive);
+        }
+
+
     }
 }
