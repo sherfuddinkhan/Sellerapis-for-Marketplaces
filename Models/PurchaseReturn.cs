@@ -6,7 +6,9 @@
 
         public int PurchaseOrderId { get; set; }
         public int SellerId { get; set; }
+       
 
+        public DateTime? UpdatedDate { get; set; }
         public int CustomerId { get; set; }
         public int GoodsReceiptNoteId { get; set; }
 

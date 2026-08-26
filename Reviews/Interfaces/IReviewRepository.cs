@@ -1,4 +1,5 @@
 ﻿using Marketplacesellerportal.Models;
+using Marketplacesellerportal.Reviews.DTOs;
 
 namespace Marketplacesellerportal.Reviews.Interfaces
 {
@@ -6,19 +7,53 @@ namespace Marketplacesellerportal.Reviews.Interfaces
     {
         Task<IEnumerable<Review>> GetAllAsync();
 
-        Task<Review?> GetByIdAsync(int reviewId);
+        Task<Review?> GetByIdAsync(
+            int reviewId);
 
-        Task<IEnumerable<Review>> GetByProductAsync(int productId);
+        Task<IEnumerable<Review>> GetBySellerIdAsync(
+            int sellerId);
 
-        Task<IEnumerable<Review>> GetByCustomerAsync(int customerId);
+        Task<IEnumerable<Review>> GetByCustomerIdAsync(
+            int customerId);
+
+        Task<IEnumerable<Review>> GetByProductIdAsync(
+            int productId);
+
         Task<IEnumerable<Review>> GetBySellerCustomerAsync(
-    int sellerId,
-    int customerId);
-        Task AddAsync(Review review);
+            int sellerId,
+            int customerId);
 
-        Task UpdateAsync(Review review);
+        Task<IEnumerable<Review>> GetByRatingAsync(
+            int rating);
 
-        Task DeleteAsync(int reviewId);
+        Task<IEnumerable<Review>> GetByStatusAsync(
+            string status);
+
+        Task<IEnumerable<Review>> SearchAsync(
+            string? search,
+            int? rating,
+            string? status);
+
+        Task<ReviewStatistics> GetStatisticsAsync();
+
+        Task<(
+            IEnumerable<Review> Items,
+            int TotalCount)>
+            GetPagedAsync(
+                int page,
+                int limit);
+
+        Task<IEnumerable<Review>> GetSortedAsync(
+            string? sort);
+
+        Task AddAsync(
+            Review review);
+
+        Task UpdateAsync(
+            Review review);
+
+        Task DeleteAsync(
+            int reviewId);
 
         Task SaveChangesAsync();
     }

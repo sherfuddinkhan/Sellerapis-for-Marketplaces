@@ -1,4 +1,5 @@
-﻿using BrandModel = Marketplacesellerportal.Models.Brand;
+﻿using Marketplacesellerportal.Brand.DTOs;
+using BrandModel = Marketplacesellerportal.Models.Brand;
 
 namespace Marketplacesellerportal.Brand.Interfaces
 {
@@ -21,5 +22,12 @@ namespace Marketplacesellerportal.Brand.Interfaces
         Task<bool> ExistsAsync(int brandId);
 
         Task SaveChangesAsync();
+
+        // Statistics
+        Task<BrandStatisticsResponse> GetStatisticsAsync();
+
+
+        // Filters
+        Task<BrandFiltersResponse> GetFiltersAsync();
     }
 }

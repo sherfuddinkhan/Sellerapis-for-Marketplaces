@@ -112,5 +112,14 @@ namespace Marketplacesellerportal.Brand.Services
 
             return true;
         }
+        public async Task<BrandStatisticsResponse> GetStatisticsAsync()
+        {
+            return await _repository.GetStatisticsAsync();
+        }
+
+        public async Task<BrandFiltersResponse> GetFiltersAsync()
+        {
+            return await _repository.GetFiltersAsync();
+        }
     }
 }

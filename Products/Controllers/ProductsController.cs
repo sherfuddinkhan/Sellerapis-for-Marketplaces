@@ -1,7 +1,9 @@
 ﻿
+using Marketplacesellerportal.Models;
 using Marketplacesellerportal.Products.DTOs;
 using Marketplacesellerportal.Products.Interfaces;
 using Microsoft.AspNetCore.Mvc;
+using static Microsoft.EntityFrameworkCore.DbLoggerCategory;
 
 namespace Marketplacesellerportal.Products.Controllers
 {
@@ -17,36 +19,306 @@ namespace Marketplacesellerportal.Products.Controllers
         }
 
         // =========================================================
-        // GET ALL PRODUCTS
+        // GET ALL
+        //
+        // GET /api/products
         // =========================================================
+
         [HttpGet]
         public async Task<IActionResult> GetAll()
         {
-            var products = await _service.GetAllAsync();
+            var result = await _service.GetAllAsync();
 
-            return Ok(products);
+            return Ok(result);
         }
 
+
         // =========================================================
-        // GET PRODUCT BY ID
+        // GET BY ID
+        //
+        // GET /api/products/1
         // =========================================================
+
         [HttpGet("{id:int}")]
         public async Task<IActionResult> GetById(int id)
         {
-            var product = await _service.GetByIdAsync(id);
+            var result =
+                await _service.GetByIdAsync(id);
 
-            if (product == null)
+            if (result == null)
+            {
                 return NotFound(new
                 {
                     message = "Product not found."
                 });
+            }
 
-            return Ok(product);
+            return Ok(result);
+        }
+
+
+        // =========================================================
+        // GET BY SKU
+        //
+        // GET /api/products/sku/ABC-001
+        // =========================================================
+
+        [HttpGet("sku/{sku}")]
+        public async Task<IActionResult> GetBySKU(string sku)
+        {
+            var result =
+                await _service.GetBySKUAsync(sku);
+
+            if (result == null)
+            {
+                return NotFound(new
+                {
+                    message = "Product with the specified SKU was not found."
+                });
+            }
+
+            return Ok(result);
+        }
+
+
+        // =========================================================
+        // GET BY SELLER
+        //
+        // GET /api/products/seller/1
+        // =========================================================
+
+        [HttpGet("seller/{sellerId:int}")]
+        public async Task<IActionResult> GetBySellerId(
+            int sellerId)
+        {
+            var result =
+                await _service.GetBySellerIdAsync(sellerId);
+
+            return Ok(result);
+        }
+
+
+        // =========================================================
+        // GET BY CUSTOMER
+        //
+        // GET /api/products/customer/1
+        // =========================================================
+
+        [HttpGet("customer/{customerId:int}")]
+        public async Task<IActionResult> GetByCustomerId(
+            int customerId)
+        {
+            var result =
+                await _service.GetByCustomerIdAsync(customerId);
+
+            return Ok(result);
+        }
+
+
+        // =========================================================
+        // GET BY SELLER + CUSTOMER
+        //
+        // GET /api/products/seller/1/customer/2
+        // =========================================================
+
+        [HttpGet(
+            "seller/{sellerId:int}/customer/{customerId:int}")]
+        public async Task<IActionResult> GetBySellerCustomer(
+            int sellerId,
+            int customerId)
+        {
+            var result =
+     await _service.GetBySellerCustomerAsync(
+         sellerId,
+         customerId);
+
+            return Ok(result);
+        }
+
+
+        // =========================================================
+        // GET BY BRAND
+        //
+        // GET /api/products/brand/1
+        // =========================================================
+
+        [HttpGet("brand/{brandId:int}")]
+        public async Task<IActionResult> GetByBrandId(
+            int brandId)
+        {
+            var result =
+                await _service.GetByBrandIdAsync(brandId);
+
+            return Ok(result);
+        }
+
+
+        // =========================================================
+        // GET BY CATEGORY
+        //
+        // GET /api/products/category/1
+        // =========================================================
+
+        [HttpGet("category/{categoryId:int}")]
+        public async Task<IActionResult> GetByCategoryId(
+            int categoryId)
+        {
+            var result =
+                await _service.GetByCategoryIdAsync(categoryId);
+
+            return Ok(result);
+        }
+
+
+        // =========================================================
+        // GET BY PRODUCT TYPE
+        //
+        // GET /api/products/product-type/1
+        // =========================================================
+
+        [HttpGet("product-type/{productTypeId:int}")]
+        public async Task<IActionResult> GetByProductTypeId(
+            int productTypeId)
+        {
+            var result =
+                await _service.GetByProductTypeIdAsync(
+                    productTypeId);
+
+            return Ok(result);
+        }
+
+
+        // =========================================================
+        // GET BY STATUS
+        //
+        // GET /api/products/status/Active
+        // =========================================================
+
+        [HttpGet("status/{status}")]
+        public async Task<IActionResult> GetByStatus(
+      string status)
+        {
+            var result =
+                await _service.SearchAsync(
+                    search: null,
+                    status: status,
+                    isActive: null,
+                    sellerId: null,
+                    customerId: null,
+                    brandId: null,
+                    categoryId: null,
+                    productTypeId: null);
+
+            return Ok(result);
         }
 
         // =========================================================
-        // CREATE PRODUCT
+        // SEARCH
+        //
+        // GET /api/products/search?search=phone
         // =========================================================
+
+        [HttpGet("search")]
+        public async Task<IActionResult> Search(
+            [FromQuery] string? search)
+        {
+            var result =
+              await _service.SearchAsync(
+        search: search,
+        status: null,
+        isActive: null,
+        sellerId: null,
+        customerId: null,
+        brandId: null,
+        categoryId: null,
+        productTypeId: null);
+
+            return Ok(result);
+        }
+
+
+        // =========================================================
+        // STATISTICS
+        //
+        // GET /api/products/stats
+        // =========================================================
+
+        [HttpGet("stats")]
+        public async Task<IActionResult> GetStatistics()
+        {
+            var result =
+                await _service.GetStatisticsAsync();
+
+            return Ok(result);
+        }
+
+
+        // =========================================================
+        // PAGINATION
+        //
+        // GET /api/products/paged?page=1&limit=15
+        // =========================================================
+
+        [HttpGet("paged")]
+        public async Task<IActionResult> GetPaged(
+            [FromQuery] int page = 1,
+            [FromQuery] int limit = 15)
+        {
+            if (page < 1)
+                page = 1;
+
+            if (limit < 1)
+                limit = 15;
+
+            if (limit > 100)
+                limit = 100;
+
+            var result =
+                await _service.GetPagedAsync(
+                    page,
+                    limit);
+
+            var totalPages =
+                result.TotalCount == 0
+                    ? 0
+                    : (int)Math.Ceiling(
+                        result.TotalCount /
+                        (double)limit);
+
+            return Ok(new
+            {
+                page,
+                limit,
+                totalCount = result.TotalCount,
+                totalPages,
+                items = result.Items
+            });
+        }
+
+
+        // =========================================================
+        // SORTING
+        //
+        // GET /api/products/sorted?sort=name_asc
+        // =========================================================
+
+        [HttpGet("sorted")]
+        public async Task<IActionResult> GetSorted(
+            [FromQuery] string? sort)
+        {
+            var result =
+                await _service.GetSortedAsync(sort);
+
+            return Ok(result);
+        }
+
+
+        // =========================================================
+        // CREATE
+        //
+        // POST /api/products
+        // =========================================================
+
         [HttpPost]
         public async Task<IActionResult> Create(
             [FromBody] CreateProductDto dto)
@@ -56,12 +328,16 @@ namespace Marketplacesellerportal.Products.Controllers
 
             try
             {
-                var product = await _service.CreateAsync(dto);
+                var result =
+                    await _service.CreateAsync(dto);
 
                 return CreatedAtAction(
                     nameof(GetById),
-                    new { id = product.ProductId },
-                    product);
+                    new
+                    {
+                        id = result.ProductId
+                    },
+                    result);
             }
             catch (InvalidOperationException ex)
             {
@@ -72,9 +348,13 @@ namespace Marketplacesellerportal.Products.Controllers
             }
         }
 
+
         // =========================================================
-        // UPDATE PRODUCT
+        // UPDATE
+        //
+        // PUT /api/products/1
         // =========================================================
+
         [HttpPut("{id:int}")]
         public async Task<IActionResult> Update(
             int id,
@@ -83,37 +363,59 @@ namespace Marketplacesellerportal.Products.Controllers
             if (!ModelState.IsValid)
                 return BadRequest(ModelState);
 
-            var product = await _service.UpdateAsync(id, dto);
+            try
+            {
+                var result =
+                    await _service.UpdateAsync(
+                        id,
+                        dto);
 
-            if (product == null)
-                return NotFound(new
+                if (result == null)
                 {
-                    message = "Product not found."
-                });
+                    return NotFound(new
+                    {
+                        message = "Product not found."
+                    });
+                }
 
-            return Ok(product);
+                return Ok(result);
+            }
+            catch (InvalidOperationException ex)
+            {
+                return Conflict(new
+                {
+                    message = ex.Message
+                });
+            }
         }
 
+
         // =========================================================
-        // DELETE PRODUCT
+        // DELETE
+        //
+        // DELETE /api/products/1
         // =========================================================
+
         [HttpDelete("{id:int}")]
-        public async Task<IActionResult> Delete(int id)
+        public async Task<IActionResult> Delete(
+            int id)
         {
-            var deleted = await _service.DeleteAsync(id);
+            var deleted =
+                await _service.DeleteAsync(id);
 
             if (!deleted)
+            {
                 return NotFound(new
                 {
                     message = "Product not found."
                 });
+            }
 
             return Ok(new
             {
-                message = "Product deleted successfully."
+                message =
+                    "Product deleted successfully."
             });
         }
     }
 }
-
-

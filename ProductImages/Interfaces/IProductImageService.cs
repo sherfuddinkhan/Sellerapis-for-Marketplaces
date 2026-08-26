@@ -1,23 +1,69 @@
-﻿using Marketplacesellerportal.Models;
+﻿using Marketplacesellerportal.ProductImages.DTOs;
 
 namespace Marketplacesellerportal.ProductImages.Interfaces
 {
     public interface IProductImageService
     {
-        Task<IEnumerable<ProductImage>> GetAllAsync();
+        // =========================================================
+        // BASIC CRUD
+        // =========================================================
 
-        Task<ProductImage?> GetByIdAsync(int productImageId);
+        Task<IEnumerable<ProductImageModel>> GetAllAsync();
 
-        Task<IEnumerable<ProductImage>> GetByProductIdAsync(int productId);
+        Task<ProductImageModel?> GetByIdAsync(
+            int productImageId);
 
-        Task<IEnumerable<ProductImage>> GetPrimaryImagesAsync();
+        Task<IEnumerable<ProductImageModel>> GetByProductIdAsync(
+            int productId);
 
-        Task<ProductImage?> GetPrimaryImageAsync(int productId);
+        Task<IEnumerable<ProductImageModel>> GetPrimaryImagesAsync();
 
-        Task<ProductImage> CreateAsync(ProductImage productImage);
+        Task<ProductImageModel?> GetPrimaryImageAsync(
+            int productId);
 
-        Task<bool> UpdateAsync(int productImageId, ProductImage productImage);
+        Task<ProductImageModel> CreateAsync(
+            ProductImageModel productImage);
 
-        Task<bool> DeleteAsync(int productImageId);
+        Task<bool> UpdateAsync(
+            int productImageId,
+            ProductImageModel productImage);
+
+        Task<bool> DeleteAsync(
+            int productImageId);
+
+
+        // =========================================================
+        // SEARCH
+        // =========================================================
+
+        Task<IEnumerable<ProductImageModel>> SearchAsync(
+            string? search);
+
+
+        // =========================================================
+        // STATISTICS
+        // =========================================================
+
+        Task<ProductImageStatistics> GetStatisticsAsync();
+
+
+        // =========================================================
+        // PAGINATION
+        // =========================================================
+
+        Task<(
+            IEnumerable<ProductImageModel> Items,
+            int TotalCount)>
+            GetPagedAsync(
+                int page,
+                int limit);
+
+
+        // =========================================================
+        // SORTING
+        // =========================================================
+
+        Task<IEnumerable<ProductImageModel>> GetSortedAsync(
+            string? sort);
     }
 }

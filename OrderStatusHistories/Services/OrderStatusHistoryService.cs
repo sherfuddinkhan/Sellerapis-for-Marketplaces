@@ -1,4 +1,5 @@
 ﻿using Marketplacesellerportal.Models;
+using Marketplacesellerportal.OrderStatusHistories.DTOs;
 using Marketplacesellerportal.OrderStatusHistories.Interfaces;
 using Marketplacesellerportal.OrderStatusHistories.Repositories;
 
@@ -42,7 +43,34 @@ namespace Marketplacesellerportal.OrderStatusHistories.Services
 
             return history;
         }
-
+        public async Task<IEnumerable<OrderStatusHistory>>
+    SearchAsync(string? search)
+        {
+            return await _repository.SearchAsync(search);
+        }
+        public async Task<OrderStatusHistoryStatistics>
+    GetStatisticsAsync()
+        {
+            return await _repository.GetStatisticsAsync();
+        }
+        public async Task<(
+    IEnumerable<OrderStatusHistory> Items,
+    int TotalCount)>
+    GetPagedByOrderIdAsync(
+        int orderId,
+        int page,
+        int limit)
+        {
+            return await _repository.GetPagedByOrderIdAsync(
+                orderId,
+                page,
+                limit);
+        }
+        public async Task<IEnumerable<OrderStatusHistory>>
+    GetSortedAsync(string? sort)
+        {
+            return await _repository.GetSortedAsync(sort);
+        }
         public async Task<bool> UpdateAsync(
             int orderStatusHistoryId,
             OrderStatusHistory history)

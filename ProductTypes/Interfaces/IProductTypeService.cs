@@ -1,21 +1,92 @@
-﻿using Marketplacesellerportal.Models;
+﻿
+using Marketplacesellerportal.ProductTypes.DTOs;
 
 namespace Marketplacesellerportal.ProductTypes.Interfaces
 {
     public interface IProductTypeService
     {
-        Task<IEnumerable<ProductType>> GetAllAsync();
+        // =========================================================
+        // BASIC
+        // =========================================================
 
-        Task<ProductType?> GetByIdAsync(int productTypeId);
+        Task<IEnumerable<ProductTypeModel>>
+            GetAllAsync();
 
-        Task<ProductType?> GetByNameAsync(string productTypeName);
+        Task<ProductTypeModel?>
+            GetByIdAsync(
+                int productTypeId);
 
-        Task<IEnumerable<ProductType>> GetActiveAsync();
+        Task<ProductTypeModel?>
+            GetByNameAsync(
+                string productTypeName);
 
-        Task<ProductType> CreateAsync(ProductType productType);
+        Task<IEnumerable<ProductTypeModel>>
+            GetActiveAsync();
 
-        Task<bool> UpdateAsync(int productTypeId, ProductType productType);
+        Task<IEnumerable<ProductTypeModel>>
+            GetBySellerCustomerAsync(
+                int sellerId,
+                int customerId);
 
-        Task<bool> DeleteAsync(int productTypeId);
+        // =========================================================
+        // CREATE
+        // =========================================================
+
+        Task<ProductTypeModel>
+            CreateAsync(
+                ProductTypeModel model);
+
+        // =========================================================
+        // UPDATE
+        // =========================================================
+
+        Task<ProductTypeModel?>
+            UpdateAsync(
+                int productTypeId,
+                ProductTypeModel model);
+
+        // =========================================================
+        // DELETE
+        // =========================================================
+
+        Task<bool>
+            DeleteAsync(
+                int productTypeId);
+
+        // =========================================================
+        // SEARCH / FILTER
+        // =========================================================
+
+        Task<IEnumerable<ProductTypeModel>>
+            SearchAsync(
+                string? search,
+                string? status);
+
+        // =========================================================
+        // STATISTICS
+        // =========================================================
+
+        Task<ProductTypeStatistics>
+            GetStatisticsAsync();
+
+        // =========================================================
+        // PAGINATION
+        // =========================================================
+
+        Task<(
+            IEnumerable<ProductTypeModel> Items,
+            int TotalCount)>
+            GetPagedAsync(
+                int page,
+                int limit);
+
+        // =========================================================
+        // SORTING
+        // =========================================================
+
+        Task<IEnumerable<ProductTypeModel>>
+            GetSortedAsync(
+                string? sort);
     }
 }
+

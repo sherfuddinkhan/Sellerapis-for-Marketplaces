@@ -38,15 +38,54 @@ namespace Marketplacesellerportal.Warehouses.Controllers
             return Ok(await _service.GetBySellerIdAsync(sellerId));
         }
 
-        [HttpGet("{sellerId}/{warehouseId}")]
-        public async Task<IActionResult> GetWarehouse(int sellerId, int warehouseId)
+        [HttpGet("seller/{sellerId}/customer/{customerId}/warehouse/{warehouseId}")]
+        public async Task<IActionResult> GetWarehouse(
+      int sellerId,
+      int customerId,
+      int warehouseId)
         {
-            var warehouse = await _service.GetWarehouseAsync(sellerId, warehouseId);
+            var result = await _service.GetWarehouseAsync(
+                sellerId,
+                customerId,
+                warehouseId);
 
-            if (warehouse == null)
-                return NotFound();
+            if (result == null)
+            {
+                return NotFound(new
+                {
+                    message = "Warehouse not found."
+                });
+            }
 
-            return Ok(warehouse);
+            return Ok(result);
+        }
+        // =========================================================
+        // STATISTICS
+        // GET /api/warehouses/statistics
+        // =========================================================
+
+        [HttpGet("statistics")]
+        public async Task<IActionResult> GetStatistics()
+        {
+            var result =
+                await _service.GetStatisticsAsync();
+
+            return Ok(result);
+        }
+
+
+        // =========================================================
+        // FILTERS
+        // GET /api/warehouses/filters
+        // =========================================================
+
+        [HttpGet("filters")]
+        public async Task<IActionResult> GetFilters()
+        {
+            var result =
+                await _service.GetFiltersAsync();
+
+            return Ok(result);
         }
 
         [HttpPost]

@@ -1,4 +1,5 @@
 ﻿using Marketplacesellerportal.Models;
+using Marketplacesellerportal.StockLedgers.DTOs;
 using Marketplacesellerportal.StockLedgers.Interfaces;
 
 namespace Marketplacesellerportal.StockLedgers.Services
@@ -7,95 +8,301 @@ namespace Marketplacesellerportal.StockLedgers.Services
     {
         private readonly IStockLedgerRepository _repository;
 
-        public StockLedgerService(IStockLedgerRepository repository)
+        public StockLedgerService(
+            IStockLedgerRepository repository)
         {
             _repository = repository;
         }
 
-        public async Task<IEnumerable<StockLedger>> GetAllAsync()
+        // =========================================================
+        // GET ALL
+        // =========================================================
+
+        public async Task<IEnumerable<StockLedger>>
+            GetAllAsync()
         {
             return await _repository.GetAllAsync();
         }
 
-        public async Task<StockLedger?> GetByIdAsync(int stockLedgerId)
+        // =========================================================
+        // GET BY ID
+        // =========================================================
+
+        public async Task<StockLedger?>
+            GetByIdAsync(
+                int stockLedgerId)
         {
-            return await _repository.GetByIdAsync(stockLedgerId);
+            return await _repository.GetByIdAsync(
+                stockLedgerId);
         }
 
-        public async Task<IEnumerable<StockLedger>> GetBySellerIdAsync(int sellerId)
+        // =========================================================
+        // GET BY SELLER
+        // =========================================================
+
+        public async Task<IEnumerable<StockLedger>>
+            GetBySellerIdAsync(
+                int sellerId)
         {
-            return await _repository.GetBySellerIdAsync(sellerId);
+            return await _repository.GetBySellerIdAsync(
+                sellerId);
         }
 
-        public async Task<IEnumerable<StockLedger>> GetByProductIdAsync(int productId)
+        // =========================================================
+        // GET BY CUSTOMER
+        // =========================================================
+
+        public async Task<IEnumerable<StockLedger>>
+            GetByCustomerIdAsync(
+                int customerId)
         {
-            return await _repository.GetByProductIdAsync(productId);
+            return await _repository.GetByCustomerIdAsync(
+                customerId);
         }
 
-        public async Task<IEnumerable<StockLedger>> GetByWarehouseIdAsync(int warehouseId)
+        // =========================================================
+        // GET BY PRODUCT
+        // =========================================================
+
+        public async Task<IEnumerable<StockLedger>>
+            GetByProductIdAsync(
+                int productId)
         {
-            return await _repository.GetByWarehouseIdAsync(warehouseId);
+            return await _repository.GetByProductIdAsync(
+                productId);
         }
 
-        public async Task<IEnumerable<StockLedger>> GetByTransactionTypeAsync(string transactionType)
+        // =========================================================
+        // GET BY WAREHOUSE
+        // =========================================================
+
+        public async Task<IEnumerable<StockLedger>>
+            GetByWarehouseIdAsync(
+                int warehouseId)
         {
-            return await _repository.GetByTransactionTypeAsync(transactionType);
+            return await _repository.GetByWarehouseIdAsync(
+                warehouseId);
         }
 
-        public async Task<StockLedger?> GetStockLedgerAsync(int sellerId,int productId,int warehouseId,int stockLedgerId)
+        // =========================================================
+        // GET BY SELLER + CUSTOMER
+        // =========================================================
+
+        public async Task<IEnumerable<StockLedger>>
+            GetBySellerCustomerAsync(
+                int sellerId,
+                int customerId)
         {
-          return await _repository.GetStockLedgerAsync(sellerId,productId,warehouseId,stockLedgerId);
+            return await _repository.GetBySellerCustomerAsync(
+                sellerId,
+                customerId);
         }
 
-        public async Task<StockLedger> CreateAsync(StockLedger stockLedger)
+        // =========================================================
+        // GET BY TRANSACTION TYPE
+        // =========================================================
+
+        public async Task<IEnumerable<StockLedger>>
+            GetByTransactionTypeAsync(
+                string transactionType)
         {
-            stockLedger.CreatedDate = DateTime.Now;
+            return await _repository
+                .GetByTransactionTypeAsync(
+                    transactionType);
+        }
 
-            if (stockLedger.TransactionDate == null)
-                stockLedger.TransactionDate = DateTime.Now;
+        // =========================================================
+        // GET SPECIFIC STOCK LEDGER
+        // =========================================================
 
-            await _repository.AddAsync(stockLedger);
+        public async Task<StockLedger?>
+            GetStockLedgerAsync(
+                int sellerId,
+                int productId,
+                int warehouseId,
+                int stockLedgerId)
+        {
+            return await _repository
+                .GetStockLedgerAsync(
+                    sellerId,
+                    productId,
+                    warehouseId,
+                    stockLedgerId);
+        }
+
+        // =========================================================
+        // SEARCH
+        // =========================================================
+
+        public async Task<IEnumerable<StockLedger>>
+            SearchAsync(
+                string? search,
+                string? transactionType)
+        {
+            return await _repository.SearchAsync(
+                search,
+                transactionType);
+        }
+
+        // =========================================================
+        // STATISTICS
+        // =========================================================
+
+        public async Task<StockLedgerStatistics>
+            GetStatisticsAsync()
+        {
+            return await _repository
+                .GetStatisticsAsync();
+        }
+
+        // =========================================================
+        // FILTERS
+        // =========================================================
+
+        public async Task<StockLedgerFilters>
+            GetFiltersAsync()
+        {
+            return await _repository
+                .GetFiltersAsync();
+        }
+
+        // =========================================================
+        // PAGINATION
+        // =========================================================
+
+        public async Task<(
+            IEnumerable<StockLedger> Items,
+            int TotalCount)>
+            GetPagedAsync(
+                int page,
+                int limit)
+        {
+            if (page < 1)
+                page = 1;
+
+            if (limit < 1)
+                limit = 25;
+
+            if (limit > 100)
+                limit = 100;
+
+            return await _repository.GetPagedAsync(
+                page,
+                limit);
+        }
+
+        // =========================================================
+        // SORTING
+        // =========================================================
+
+        public async Task<IEnumerable<StockLedger>>
+            GetSortedAsync(
+                string? sort)
+        {
+            return await _repository.GetSortedAsync(
+                sort);
+        }
+
+        // =========================================================
+        // CREATE
+        // =========================================================
+
+        public async Task<StockLedger>
+            CreateAsync(
+                StockLedger stockLedger)
+        {
+            stockLedger.CreatedDate =
+                stockLedger.CreatedDate ??
+                DateTime.Now;
+
+            stockLedger.TransactionDate =
+                stockLedger.TransactionDate ??
+                DateTime.Now;
+
+            await _repository.AddAsync(
+                stockLedger);
+
             await _repository.SaveChangesAsync();
 
             return stockLedger;
         }
 
-        public async Task<bool> UpdateAsync(
-            int stockLedgerId,
-            StockLedger stockLedger)
+        // =========================================================
+        // UPDATE
+        // =========================================================
+
+        public async Task<bool>
+            UpdateAsync(
+                int stockLedgerId,
+                StockLedger stockLedger)
         {
-            var existing = await _repository.GetByIdAsync(stockLedgerId);
+            var existing =
+                await _repository.GetByIdAsync(
+                    stockLedgerId);
 
             if (existing == null)
                 return false;
 
-            existing.SellerId = stockLedger.SellerId;
-            existing.ProductId = stockLedger.ProductId;
-            existing.WarehouseId = stockLedger.WarehouseId;
-            existing.TransactionType = stockLedger.TransactionType;
-            existing.ReferenceNumber = stockLedger.ReferenceNumber;
-            existing.Quantity = stockLedger.Quantity;
-            existing.BalanceQuantity = stockLedger.BalanceQuantity;
-            existing.Remarks = stockLedger.Remarks;
-            existing.TransactionDate = stockLedger.TransactionDate;
+            existing.SellerId =
+                stockLedger.SellerId;
 
-            await _repository.UpdateAsync(existing);
+            existing.CustomerId =
+                stockLedger.CustomerId;
+
+            existing.ProductId =
+                stockLedger.ProductId;
+
+            existing.WarehouseId =
+                stockLedger.WarehouseId;
+
+            existing.TransactionType =
+                stockLedger.TransactionType;
+
+            existing.ReferenceNumber =
+                stockLedger.ReferenceNumber;
+
+            existing.Quantity =
+                stockLedger.Quantity;
+
+            existing.BalanceQuantity =
+                stockLedger.BalanceQuantity;
+
+            existing.Remarks =
+                stockLedger.Remarks;
+
+            existing.TransactionDate =
+                stockLedger.TransactionDate;
+
+            await _repository.UpdateAsync(
+                existing);
+
             await _repository.SaveChangesAsync();
 
             return true;
         }
 
-        public async Task<bool> DeleteAsync(int stockLedgerId)
+        // =========================================================
+        // DELETE
+        // =========================================================
+
+        public async Task<bool>
+            DeleteAsync(
+                int stockLedgerId)
         {
-            var existing = await _repository.GetByIdAsync(stockLedgerId);
+            var existing =
+                await _repository.GetByIdAsync(
+                    stockLedgerId);
 
             if (existing == null)
                 return false;
 
-            await _repository.DeleteAsync(stockLedgerId);
+            await _repository.DeleteAsync(
+                stockLedgerId);
+
             await _repository.SaveChangesAsync();
 
             return true;
         }
     }
 }
+

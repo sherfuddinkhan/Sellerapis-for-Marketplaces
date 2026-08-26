@@ -1,5 +1,9 @@
 ﻿using Marketplacesellerportal.Models;
 using Marketplacesellerportal.SalesOrderItems.Interfaces;
+using Marketplacesellerportal.Models;
+using Marketplacesellerportal.SalesOrderItems.DTOs;
+using Marketplacesellerportal.SalesOrderItems.Interfaces;
+
 
 namespace Marketplacesellerportal.SalesOrderItems.Services
 {
@@ -11,7 +15,36 @@ namespace Marketplacesellerportal.SalesOrderItems.Services
         {
             _repository = repository;
         }
+        public async Task<IEnumerable<SalesOrderItem>> SearchAsync(
+    string? search)
+        {
+            return await _repository.SearchAsync(search);
+        }
 
+        public async Task<SalesOrderItemStatistics>
+            GetStatisticsAsync()
+        {
+            return await _repository.GetStatisticsAsync();
+        }
+
+        public async Task<(
+            IEnumerable<SalesOrderItem> Items,
+            int TotalCount)>
+            GetPagedAsync(
+                int page,
+                int limit)
+        {
+            return await _repository.GetPagedAsync(
+                page,
+                limit);
+        }
+
+        public async Task<IEnumerable<SalesOrderItem>>
+            GetSortedAsync(
+                string? sort)
+        {
+            return await _repository.GetSortedAsync(sort);
+        }
         public async Task<IEnumerable<SalesOrderItem>> GetAllAsync()
         {
             return await _repository.GetAllAsync();

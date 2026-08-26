@@ -1,6 +1,7 @@
-﻿using Microsoft.AspNetCore.Mvc;
-using Marketplacesellerportal.Brand.DTOs;
+﻿using Marketplacesellerportal.Brand.DTOs;
 using Marketplacesellerportal.Brand.Interfaces;
+using Marketplacesellerportal.Brand.Services;
+using Microsoft.AspNetCore.Mvc;
 
 namespace Marketplacesellerportal.Brand.Controllers
 {
@@ -194,6 +195,21 @@ namespace Marketplacesellerportal.Brand.Controllers
                 Success = true,
                 Message = "Brand deleted successfully."
             });
+        }
+        [HttpGet("statistics")]
+        public async Task<IActionResult> GetStatistics()
+        {
+            var result = await _service.GetStatisticsAsync();
+
+            return Ok(result);
+        }
+
+        [HttpGet("filters")]
+        public async Task<IActionResult> GetFilters()
+        {
+            var result = await _service.GetFiltersAsync();
+
+            return Ok(result);
         }
     }
 }

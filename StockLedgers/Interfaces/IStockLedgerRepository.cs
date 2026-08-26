@@ -1,29 +1,152 @@
 ﻿using Marketplacesellerportal.Models;
+using Marketplacesellerportal.StockLedgers.DTOs;
 
 namespace Marketplacesellerportal.StockLedgers.Interfaces
 {
     public interface IStockLedgerRepository
     {
+        // =========================================================
+        // BASIC
+        // =========================================================
+
         Task<IEnumerable<StockLedger>> GetAllAsync();
 
-        Task<StockLedger?> GetByIdAsync(int stockLedgerId);
+        Task<StockLedger?> GetByIdAsync(
+            int stockLedgerId);
 
-        Task<IEnumerable<StockLedger>> GetBySellerIdAsync(int sellerId);
 
-        Task<IEnumerable<StockLedger>> GetByProductIdAsync(int productId);
+        // =========================================================
+        // SELLER
+        // =========================================================
 
-        Task<IEnumerable<StockLedger>> GetByWarehouseIdAsync(int warehouseId);
+        Task<IEnumerable<StockLedger>> GetBySellerIdAsync(
+            int sellerId);
 
-        Task<IEnumerable<StockLedger>> GetByTransactionTypeAsync(string transactionType);
-        Task<IEnumerable<StockLedger>> GetBySellerCustomerAsync(int sellerId,int customerId);
-        Task<StockLedger?> GetStockLedgerAsync(int sellerId,int productId,int warehouseId,int stockLedgerId);
 
-        Task AddAsync(StockLedger stockLedger);
+        // =========================================================
+        // CUSTOMER
+        // =========================================================
 
-        Task UpdateAsync(StockLedger stockLedger);
+        Task<IEnumerable<StockLedger>> GetByCustomerIdAsync(
+            int customerId);
 
-        Task DeleteAsync(int stockLedgerId);
+
+        // =========================================================
+        // PRODUCT
+        // =========================================================
+
+        Task<IEnumerable<StockLedger>> GetByProductIdAsync(
+            int productId);
+
+
+        // =========================================================
+        // WAREHOUSE
+        // =========================================================
+
+        Task<IEnumerable<StockLedger>> GetByWarehouseIdAsync(
+            int warehouseId);
+
+
+        // =========================================================
+        // SELLER + CUSTOMER
+        // =========================================================
+
+        Task<IEnumerable<StockLedger>> GetBySellerCustomerAsync(
+            int sellerId,
+            int customerId);
+
+
+        // =========================================================
+        // TRANSACTION TYPE
+        // =========================================================
+
+        Task<IEnumerable<StockLedger>> GetByTransactionTypeAsync(
+            string transactionType);
+
+
+        // =========================================================
+        // SPECIFIC STOCK LEDGER
+        // =========================================================
+
+        Task<StockLedger?> GetStockLedgerAsync(
+            int sellerId,
+            int productId,
+            int warehouseId,
+            int stockLedgerId);
+
+
+        // =========================================================
+        // SEARCH
+        // =========================================================
+
+        Task<IEnumerable<StockLedger>> SearchAsync(
+            string? search,
+            string? transactionType);
+
+
+        // =========================================================
+        // STATISTICS
+        // =========================================================
+
+        Task<StockLedgerStatistics> GetStatisticsAsync();
+
+
+        // =========================================================
+        // FILTERS
+        // =========================================================
+
+        Task<StockLedgerFilters> GetFiltersAsync();
+
+
+        // =========================================================
+        // PAGINATION
+        // =========================================================
+
+        Task<(
+            IEnumerable<StockLedger> Items,
+            int TotalCount)>
+            GetPagedAsync(
+                int page,
+                int limit);
+
+
+        // =========================================================
+        // SORTING
+        // =========================================================
+
+        Task<IEnumerable<StockLedger>> GetSortedAsync(
+            string? sort);
+
+
+        // =========================================================
+        // CREATE
+        // =========================================================
+
+        Task AddAsync(
+            StockLedger stockLedger);
+
+
+        // =========================================================
+        // UPDATE
+        // =========================================================
+
+        Task UpdateAsync(
+            StockLedger stockLedger);
+
+
+        // =========================================================
+        // DELETE
+        // =========================================================
+
+        Task DeleteAsync(
+            int stockLedgerId);
+
+
+        // =========================================================
+        // SAVE
+        // =========================================================
 
         Task SaveChangesAsync();
     }
 }
+

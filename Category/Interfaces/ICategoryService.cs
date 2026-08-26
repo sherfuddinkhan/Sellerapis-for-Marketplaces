@@ -1,23 +1,49 @@
-﻿
-using Marketplacesellerportal.Models;
+﻿using Marketplacesellerportal.Category.DTOs;
+using CategoryModel = Marketplacesellerportal.Models.Category;
 
 namespace Marketplacesellerportal.Categories.Interfaces
 {
     public interface ICategoryService
     {
-        Task<IEnumerable<Category>> GetAllAsync();
+        // =====================================================
+        // EXISTING CATEGORY APIs
+        // =====================================================
 
-        Task<Category?> GetByIdAsync(int categoryId);
+        Task<IEnumerable<CategoryModel>> GetAllAsync();
 
-        Task<Category?> GetByNameAsync(string categoryName);
+        Task<CategoryModel?> GetByIdAsync(
+            int categoryId);
 
-        Task<IEnumerable<Category>> GetActiveAsync();
+        Task<CategoryModel?> GetByNameAsync(
+            string categoryName);
 
-        Task<Category> CreateAsync(Category category);
+        Task<IEnumerable<CategoryModel>> GetActiveAsync();
 
-        Task<bool> UpdateAsync(int categoryId, Category category);
+        Task<CategoryModel> CreateAsync(
+            CategoryModel category);
 
-        Task<bool> DeleteAsync(int categoryId);
+        Task<bool> UpdateAsync(
+            int categoryId,
+            CategoryModel category);
+
+        Task<bool> DeleteAsync(
+            int categoryId);
+
+
+        // =====================================================
+        // SEARCH + FILTER + PAGINATION + SORTING
+        // GET /api/categories
+        // =====================================================
+
+        Task<CategoryListResponse> GetCategoriesAsync(
+            CategoryListRequest request);
+
+
+        // =====================================================
+        // STATISTICS
+        // GET /api/categories/stats
+        // =====================================================
+
+        Task<CategoryStatisticsResponse> GetStatisticsAsync();
     }
 }
-

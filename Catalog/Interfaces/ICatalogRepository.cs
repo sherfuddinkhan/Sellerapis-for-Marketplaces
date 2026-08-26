@@ -5,6 +5,10 @@ namespace Marketplacesellerportal.Catalog.Interfaces
 {
     public interface ICatalogRepository
     {
+        // =========================================================
+        // PRODUCTS
+        // =========================================================
+
         Task<IEnumerable<CatalogProductResponse>> GetProductsAsync(
             int sellerId,
             int customerId);
@@ -18,9 +22,13 @@ namespace Marketplacesellerportal.Catalog.Interfaces
             CreateProductRequest request);
 
         Task<IEnumerable<CatalogProductResponse>> SearchProductsAsync(
-        ProductSearchRequest request,
-        int sellerId,
-        int customerId);
+            ProductSearchRequest request,
+            int sellerId,
+            int customerId);
+
+        // =========================================================
+        // PRODUCT FILTERS
+        // =========================================================
 
         Task<IEnumerable<CatalogProductResponse>> GetProductsByBrandAsync(
             int brandId,
@@ -36,6 +44,10 @@ namespace Marketplacesellerportal.Catalog.Interfaces
             int productTypeId,
             int sellerId,
             int customerId);
+
+        // =========================================================
+        // PRODUCT LISTS
+        // =========================================================
 
         Task<IEnumerable<CatalogProductResponse>> GetLatestProductsAsync(
             int sellerId,
@@ -53,13 +65,25 @@ namespace Marketplacesellerportal.Catalog.Interfaces
             int sellerId,
             int customerId);
 
+        // =========================================================
+        // BRANDS
+        // =========================================================
+
         Task<IEnumerable<BrandResponse>> GetBrandsAsync(
             int sellerId,
             int customerId);
 
-        Task<IEnumerable<CategoryResponse>> GetCategoriesAsync(
+        // =========================================================
+        // CATEGORIES
+        // =========================================================
+
+        Task<IEnumerable<CatalogCategoryResponse>> GetCategoriesAsync(
             int sellerId,
             int customerId);
+
+        // =========================================================
+        // PRODUCT DETAILS
+        // =========================================================
 
         Task<IEnumerable<ProductImageResponse>> GetProductImagesAsync(
             int productId,
@@ -80,5 +104,22 @@ namespace Marketplacesellerportal.Catalog.Interfaces
             int productId,
             int sellerId,
             int customerId);
+
+        // =========================================================
+        // UPDATE / DELETE
+        // =========================================================
+
+        Task<Product?> GetProductForSellerCustomerAsync(
+            int productId,
+            int sellerId,
+            int customerId);
+
+        Task UpdateProductAsync(
+            Product product);
+
+        Task DeleteProductAsync(
+            Product product);
+
+        Task SaveChangesAsync();
     }
 }
