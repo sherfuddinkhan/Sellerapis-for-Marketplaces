@@ -1,4 +1,5 @@
 ﻿using Marketplacesellerportal.Models;
+using Marketplacesellerportal.Suppliers.DTOs;
 using Marketplacesellerportal.Suppliers.Interfaces;
 
 namespace Marketplacesellerportal.Suppliers.Services
@@ -71,6 +72,52 @@ namespace Marketplacesellerportal.Suppliers.Services
 
             return true;
         }
+        
+// =====================================================
+// SEARCH
+// =====================================================
+
+public async Task<IEnumerable<Supplier>> SearchAsync(
+    string search)
+        {
+            return await _repository.SearchAsync(search);
+        }
+
+
+        // =====================================================
+        // SORT
+        // =====================================================
+
+        public async Task<IEnumerable<Supplier>> GetSortedAsync(
+            string? sort)
+        {
+            return await _repository.GetSortedAsync(sort);
+        }
+
+
+        // =====================================================
+        // PAGINATION
+        // =====================================================
+
+        public async Task<PagedResult<Supplier>> GetPagedAsync(
+            int page,
+            int limit)
+        {
+            return await _repository.GetPagedAsync(
+                page,
+                limit);
+        }
+
+
+        // =====================================================
+        // STATISTICS
+        // =====================================================
+
+        public async Task<SupplierStatistics> GetStatisticsAsync()
+        {
+            return await _repository.GetStatisticsAsync();
+        }
+
 
         public async Task<bool> DeleteAsync(int supplierId)
         {

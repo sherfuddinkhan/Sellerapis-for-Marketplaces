@@ -1,4 +1,5 @@
 ﻿using Marketplacesellerportal.Models;
+using Marketplacesellerportal.StockAdjustments.DTOs;
 using Marketplacesellerportal.StockAdjustments.Interfaces;
 
 namespace Marketplacesellerportal.StockAdjustments.Services
@@ -16,7 +17,40 @@ namespace Marketplacesellerportal.StockAdjustments.Services
         {
             return await _repository.GetAllAsync();
         }
+        public async Task<IEnumerable<StockAdjustment>> SearchAsync(
+    string search)
+        {
+            return await _repository.SearchAsync(search);
+        }
 
+        public async Task<IEnumerable<StockAdjustment>> GetSortedAsync(
+            string? sort)
+        {
+            return await _repository.GetSortedAsync(sort);
+        }
+
+        public async Task<PagedResult<StockAdjustment>> GetPagedAsync(
+            int page,
+            int limit)
+        {
+            return await _repository.GetPagedAsync(
+                page,
+                limit);
+        }
+
+        public async Task<StockAdjustmentStatistics> GetStatisticsAsync()
+        {
+            return await _repository.GetStatisticsAsync();
+        }
+
+        public async Task<IEnumerable<StockAdjustment>> GetBySellerCustomerAsync(
+            int sellerId,
+            int customerId)
+        {
+            return await _repository.GetBySellerCustomerAsync(
+                sellerId,
+                customerId);
+        }
         public async Task<StockAdjustment?> GetByIdAsync(int stockAdjustmentId)
         {
             return await _repository.GetByIdAsync(stockAdjustmentId);

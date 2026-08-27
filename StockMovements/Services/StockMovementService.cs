@@ -1,6 +1,8 @@
 ﻿using Marketplacesellerportal.Models;
 using Marketplacesellerportal.StockMovements.Interfaces;
-
+using Marketplacesellerportal.Models;
+using Marketplacesellerportal.StockMovements.DTOs;
+using Marketplacesellerportal.StockMovements.Interfaces;
 namespace Marketplacesellerportal.StockMovements.Services
 {
     public class StockMovementService : IStockMovementService
@@ -15,6 +17,44 @@ namespace Marketplacesellerportal.StockMovements.Services
         public async Task<IEnumerable<StockMovement>> GetAllAsync()
         {
             return await _repository.GetAllAsync();
+        }
+
+        // =====================================================
+        // GET BY SELLER + CUSTOMER
+        // =====================================================
+
+        public async Task<IEnumerable<StockMovement>> GetBySellerCustomerAsync(
+            int sellerId,
+            int customerId)
+        {
+            return await _repository.GetBySellerCustomerAsync(
+                sellerId,
+                customerId);
+        }
+        public async Task<IEnumerable<StockMovement>> SearchAsync(
+            string search)
+        {
+            return await _repository.SearchAsync(search);
+        }
+
+        public async Task<IEnumerable<StockMovement>> GetSortedAsync(
+            string? sort)
+        {
+            return await _repository.GetSortedAsync(sort);
+        }
+
+        public async Task<PagedResult<StockMovement>> GetPagedAsync(
+            int page,
+            int limit)
+        {
+            return await _repository.GetPagedAsync(
+                page,
+                limit);
+        }
+
+        public async Task<StockMovementStatistics> GetStatisticsAsync()
+        {
+            return await _repository.GetStatisticsAsync();
         }
 
         public async Task<StockMovement?> GetByIdAsync(int stockMovementId)
@@ -54,7 +94,7 @@ namespace Marketplacesellerportal.StockMovements.Services
                 warehouseId,
                 stockMovementId);
         }
-
+       
         public async Task<StockMovement> CreateAsync(StockMovement stockMovement)
         {
             if (stockMovement.MovementDate == null)

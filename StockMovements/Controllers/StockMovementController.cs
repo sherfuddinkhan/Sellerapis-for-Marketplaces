@@ -91,7 +91,108 @@ namespace Marketplacesellerportal.StockMovements.Controllers
 
             return Ok();
         }
+        // =====================================================
+        // GET BY SELLER + CUSTOMER
+        // GET:
+        // /api/StockMovement/seller/6/customer/3
+        // =====================================================
 
+        [HttpGet("seller/{sellerId}/customer/{customerId}")]
+        public async Task<IActionResult> GetBySellerCustomer(
+            int sellerId,
+            int customerId)
+        {
+            var result =
+                await _service.GetBySellerCustomerAsync(
+                    sellerId,
+                    customerId);
+
+            return Ok(result);
+        }
+
+
+        // =====================================================
+        // SEARCH
+        // GET:
+        // /api/StockMovement/search?search=Purchase
+        // =====================================================
+
+        [HttpGet("search")]
+        public async Task<IActionResult> Search(
+            [FromQuery] string search)
+        {
+            if (string.IsNullOrWhiteSpace(search))
+            {
+                return BadRequest(new
+                {
+                    message = "Search value is required"
+                });
+            }
+
+            var result =
+                await _service.SearchAsync(search);
+
+            return Ok(result);
+        }
+
+
+        // =====================================================
+        // SORT
+        // GET:
+        // /api/StockMovement/sort?sort=date_desc
+        // =====================================================
+
+        [HttpGet("sort")]
+        public async Task<IActionResult> Sort(
+            [FromQuery] string? sort)
+        {
+            var result =
+                await _service.GetSortedAsync(sort);
+
+            return Ok(result);
+        }
+
+
+        // =====================================================
+        // PAGINATION
+        // GET:
+        // /api/StockMovement/page?page=1&limit=15
+        // =====================================================
+
+        [HttpGet("page")]
+        public async Task<IActionResult> GetPaged(
+            [FromQuery] int page = 1,
+            [FromQuery] int limit = 15)
+        {
+            if (page < 1)
+                page = 1;
+
+            if (limit < 1)
+                limit = 15;
+
+            var result =
+                await _service.GetPagedAsync(
+                    page,
+                    limit);
+
+            return Ok(result);
+        }
+
+
+        // =====================================================
+        // STATISTICS
+        // GET:
+        // /api/StockMovement/statistics
+        // =====================================================
+
+        [HttpGet("statistics")]
+        public async Task<IActionResult> GetStatistics()
+        {
+            var result =
+                await _service.GetStatisticsAsync();
+
+            return Ok(result);
+        }
         [HttpDelete("{stockMovementId}")]
         public async Task<IActionResult> Delete(int stockMovementId)
         {
