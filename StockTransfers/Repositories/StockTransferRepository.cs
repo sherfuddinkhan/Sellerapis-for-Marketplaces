@@ -2,7 +2,8 @@
 using Marketplacesellerportal.Database;
 using Marketplacesellerportal.Models;
 using Marketplacesellerportal.StockTransfers.Interfaces;
-
+using Microsoft.EntityFrameworkCore;
+using Marketplacesellerportal.Models;
 namespace Marketplacesellerportal.StockTransfers.Repositories
 {
     public class StockTransferRepository : IStockTransferRepository
@@ -38,7 +39,98 @@ namespace Marketplacesellerportal.StockTransfers.Repositories
                 .Where(x => x.ProductId == productId)
                 .ToListAsync();
         }
+        public async Task<IEnumerable<StockTransfer>> SearchAsync(
+    string search)
+        {
+            if (string.IsNullOrWhiteSpace(search))
+            {
+                return await _context.StockTransfers
+                    .AsNoTracking()
+                    .ToListAsync();
+            }
 
+            search = search.Trim().ToLower();
+
+            return await _context.StockTransfers
+                .AsNoTracking()
+                .Where(x =>
+                    x.Status.ToLower().Contains(search))
+                .ToListAsync();
+        }
+        public async Task<IEnumerable<StockTransfer>> GetSortedAsync(
+    string? sort)
+        {
+            var query = _context.StockTransfers
+                .AsNoTracking()
+                .AsQueryable();
+
+            return sort?.ToLower() switch
+            {
+                "date_asc" =>
+                    await query
+                        .OrderBy(x => x.TransferDate)
+                        .ToListAsync(),
+
+                "date_desc" =>
+                    await query
+                        .OrderByDescending(x => x.TransferDate)
+                        .ToListAsync(),
+
+                "quantity_asc" =>
+                    await query
+                        .OrderBy(x => x.Quantity)
+                        .ToListAsync(),
+
+                "quantity_desc" =>
+                    await query
+                        .OrderByDescending(x => x.Quantity)
+                        .ToListAsync(),
+
+                "status_asc" =>
+                    await query
+                        .OrderBy(x => x.Status)
+                        .ToListAsync(),
+
+                "status_desc" =>
+                    await query
+                        .OrderByDescending(x => x.Status)
+                        .ToListAsync(),
+
+                _ =>
+                    await query
+                        .OrderByDescending(x => x.TransferDate)
+                        .ToListAsync()
+            };
+        }
+        public async Task<PagedResult<StockTransfer>> GetPagedAsync(
+    int page,
+    int limit)
+        {
+            if (page < 1)
+                page = 1;
+
+            if (limit < 1)
+                limit = 15;
+
+            var query = _context.StockTransfers
+                .AsNoTracking()
+                .OrderByDescending(x => x.TransferDate);
+
+            var totalCount = await query.CountAsync();
+
+            var items = await query
+                .Skip((page - 1) * limit)
+                .Take(limit)
+                .ToListAsync();
+
+            return new PagedResult<StockTransfer>
+            {
+                Page = page,
+                Limit = limit,
+                TotalCount = totalCount,
+                Items = items
+            };
+        }
         public async Task<IEnumerable<StockTransfer>> GetByFromWarehouseIdAsync(int fromWarehouseId)
         {
             return await _context.StockTransfers
@@ -86,7 +178,36 @@ namespace Marketplacesellerportal.StockTransfers.Repositories
             _context.StockTransfers.Update(stockTransfer);
             return Task.CompletedTask;
         }
+        public async Task<StockTransferStatistics> GetStatisticsAsync()
+        {
+            var totalTransfers =
+                await _context.StockTransfers.CountAsync();
 
+            var pendingTransfers =
+                await _context.StockTransfers
+                    .CountAsync(x => x.Status == "Pending");
+
+            var completedTransfers =
+                await _context.StockTransfers
+                    .CountAsync(x => x.Status == "Completed");
+
+            var cancelledTransfers =
+                await _context.StockTransfers
+                    .CountAsync(x => x.Status == "Cancelled");
+
+            var totalQuantity =
+                await _context.StockTransfers
+                    .SumAsync(x => (decimal?)x.Quantity) ?? 0;
+
+            return new StockTransferStatistics
+            {
+                TotalTransfers = totalTransfers,
+                PendingTransfers = pendingTransfers,
+                CompletedTransfers = completedTransfers,
+                CancelledTransfers = cancelledTransfers,
+                TotalQuantity = totalQuantity
+            };
+        }
         public async Task DeleteAsync(int stockTransferId)
         {
             var entity = await GetByIdAsync(stockTransferId);

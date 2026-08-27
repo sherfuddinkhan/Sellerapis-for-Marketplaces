@@ -21,7 +21,29 @@ namespace Marketplacesellerportal.StockTransfers.Services
         {
             return await _repository.GetByIdAsync(stockTransferId);
         }
+        public async Task<IEnumerable<StockTransfer>> SearchAsync(
+    string search)
+        {
+            return await _repository.SearchAsync(search);
+        }
 
+        public async Task<IEnumerable<StockTransfer>> GetSortedAsync(
+            string? sort)
+        {
+            return await _repository.GetSortedAsync(sort);
+        }
+
+        public async Task<PagedResult<StockTransfer>> GetPagedAsync(
+            int page,
+            int limit)
+        {
+            return await _repository.GetPagedAsync(page, limit);
+        }
+
+        public async Task<StockTransferStatistics> GetStatisticsAsync()
+        {
+            return await _repository.GetStatisticsAsync();
+        }
         public async Task<IEnumerable<StockTransfer>> GetBySellerIdAsync(int sellerId)
         {
             return await _repository.GetBySellerIdAsync(sellerId);
@@ -94,7 +116,14 @@ namespace Marketplacesellerportal.StockTransfers.Services
 
             return true;
         }
-
+        public async Task<IEnumerable<StockTransfer>> GetBySellerCustomerAsync(
+    int sellerId,
+    int customerId)
+        {
+            return await _repository.GetBySellerCustomerAsync(
+                sellerId,
+                customerId);
+        }
         public async Task<bool> DeleteAsync(int stockTransferId)
         {
             var existing = await _repository.GetByIdAsync(stockTransferId);

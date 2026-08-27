@@ -1,20 +1,7 @@
 {
   "Version": 1,
   "WorkspaceRootPath": "C:\\Users\\Administrator\\source\\repos\\Marketplacesellerportal\\",
-  "Documents": [
-    {
-      "AbsoluteMoniker": "D:0:0:{2C9EC692-1B37-47B3-8E95-0F4CC9B4AD68}|Marketplacesellerportal.csproj|c:\\users\\administrator\\source\\repos\\marketplacesellerportal\\notifications\\interfaces\\inotificationservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{2C9EC692-1B37-47B3-8E95-0F4CC9B4AD68}|Marketplacesellerportal.csproj|solutionrelative:notifications\\interfaces\\inotificationservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{2C9EC692-1B37-47B3-8E95-0F4CC9B4AD68}|Marketplacesellerportal.csproj|c:\\users\\administrator\\source\\repos\\marketplacesellerportal\\notifications\\repositories\\notificationrepository.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{2C9EC692-1B37-47B3-8E95-0F4CC9B4AD68}|Marketplacesellerportal.csproj|solutionrelative:notifications\\repositories\\notificationrepository.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{2C9EC692-1B37-47B3-8E95-0F4CC9B4AD68}|Marketplacesellerportal.csproj|c:\\users\\administrator\\source\\repos\\marketplacesellerportal\\notifications\\dtos\\notificationstatistics.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{2C9EC692-1B37-47B3-8E95-0F4CC9B4AD68}|Marketplacesellerportal.csproj|solutionrelative:notifications\\dtos\\notificationstatistics.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    }
-  ],
+  "Documents": [],
   "DocumentGroupContainers": [
     {
       "Orientation": 0,
@@ -22,50 +9,11 @@
       "DocumentGroups": [
         {
           "DockedWidth": 200,
-          "SelectedChildIndex": 1,
+          "SelectedChildIndex": -1,
           "Children": [
             {
               "$type": "Bookmark",
               "Name": "ST:0:0:{1c4feeaa-4718-4aa9-859d-94ce25d182ba}"
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 0,
-              "Title": "INotificationService.cs",
-              "DocumentMoniker": "C:\\Users\\Administrator\\source\\repos\\Marketplacesellerportal\\Notifications\\Interfaces\\INotificationService.cs",
-              "RelativeDocumentMoniker": "Notifications\\Interfaces\\INotificationService.cs",
-              "ToolTip": "C:\\Users\\Administrator\\source\\repos\\Marketplacesellerportal\\Notifications\\Interfaces\\INotificationService.cs",
-              "RelativeToolTip": "Notifications\\Interfaces\\INotificationService.cs",
-              "ViewState": "AgIAADwAAAAAAAAAAAA8wFsAAAABAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2026-08-26T12:53:15.776Z",
-              "EditorCaption": ""
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 1,
-              "Title": "NotificationRepository.cs",
-              "DocumentMoniker": "C:\\Users\\Administrator\\source\\repos\\Marketplacesellerportal\\Notifications\\Repositories\\NotificationRepository.cs",
-              "RelativeDocumentMoniker": "Notifications\\Repositories\\NotificationRepository.cs",
-              "ToolTip": "C:\\Users\\Administrator\\source\\repos\\Marketplacesellerportal\\Notifications\\Repositories\\NotificationRepository.cs",
-              "RelativeToolTip": "Notifications\\Repositories\\NotificationRepository.cs",
-              "ViewState": "AgIAAEsAAAAAAAAAAAAswE0AAABAAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2026-08-26T12:49:57.529Z",
-              "EditorCaption": ""
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 2,
-              "Title": "NotificationStatistics.cs",
-              "DocumentMoniker": "C:\\Users\\Administrator\\source\\repos\\Marketplacesellerportal\\Notifications\\DTOs\\NotificationStatistics.cs",
-              "RelativeDocumentMoniker": "Notifications\\DTOs\\NotificationStatistics.cs",
-              "ToolTip": "C:\\Users\\Administrator\\source\\repos\\Marketplacesellerportal\\Notifications\\DTOs\\NotificationStatistics.cs",
-              "RelativeToolTip": "Notifications\\DTOs\\NotificationStatistics.cs",
-              "ViewState": "AgIAAAkAAAAAAAAAAAAowAoAAAAuAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2026-08-26T12:48:56.382Z",
-              "EditorCaption": ""
             }
           ]
         }

@@ -1,4 +1,5 @@
 ﻿using Marketplacesellerportal.Models;
+using Marketplacesellerportal.StockAdjustments.DTOs;
 
 namespace Marketplacesellerportal.StockAdjustments.Interfaces
 {
@@ -6,22 +7,59 @@ namespace Marketplacesellerportal.StockAdjustments.Interfaces
     {
         Task<IEnumerable<StockAdjustment>> GetAllAsync();
 
-        Task<StockAdjustment?> GetByIdAsync(int stockAdjustmentId);
+        Task<StockAdjustment?> GetByIdAsync(
+            int stockAdjustmentId);
 
-        Task<IEnumerable<StockAdjustment>> GetBySellerIdAsync(int sellerId);
+        Task<IEnumerable<StockAdjustment>> GetBySellerIdAsync(
+            int sellerId);
 
-        Task<IEnumerable<StockAdjustment>> GetByProductIdAsync(int productId);
+        Task<IEnumerable<StockAdjustment>> GetByProductIdAsync(
+            int productId);
 
-        Task<IEnumerable<StockAdjustment>> GetByWarehouseIdAsync(int warehouseId);
+        Task<IEnumerable<StockAdjustment>> GetByWarehouseIdAsync(
+            int warehouseId);
 
-        Task<IEnumerable<StockAdjustment>> GetByAdjustmentTypeAsync(string adjustmentType);
+        Task<IEnumerable<StockAdjustment>> GetByAdjustmentTypeAsync(
+            string adjustmentType);
 
-        Task<StockAdjustment?> GetStockAdjustmentAsync(int sellerId,int productId,int warehouseId,int stockAdjustmentId);
+        Task<StockAdjustment?> GetStockAdjustmentAsync(
+            int sellerId,
+            int productId,
+            int warehouseId,
+            int stockAdjustmentId);
 
-        Task<StockAdjustment> CreateAsync(StockAdjustment stockAdjustment);
+        Task<IEnumerable<StockAdjustment>> GetBySellerCustomerAsync(
+            int sellerId,
+            int customerId);
 
-        Task<bool> UpdateAsync(int stockAdjustmentId,StockAdjustment stockAdjustment);
+        // =====================================================
+        // 4 NEW APIs
+        // =====================================================
 
-        Task<bool> DeleteAsync(int stockAdjustmentId);
+        Task<IEnumerable<StockAdjustment>> SearchAsync(
+            string search);
+
+        Task<IEnumerable<StockAdjustment>> GetSortedAsync(
+            string? sort);
+
+        Task<PagedResult<StockAdjustment>> GetPagedAsync(
+            int page,
+            int limit);
+
+        Task<StockAdjustmentStatistics> GetStatisticsAsync();
+
+        // =====================================================
+        // CRUD
+        // =====================================================
+
+        Task<StockAdjustment> CreateAsync(
+            StockAdjustment stockAdjustment);
+
+        Task<bool> UpdateAsync(
+            int stockAdjustmentId,
+            StockAdjustment stockAdjustment);
+
+        Task<bool> DeleteAsync(
+            int stockAdjustmentId);
     }
 }

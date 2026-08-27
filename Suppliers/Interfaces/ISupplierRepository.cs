@@ -1,4 +1,5 @@
 ﻿using Marketplacesellerportal.Models;
+using Marketplacesellerportal.Suppliers.DTOs;
 
 namespace Marketplacesellerportal.Suppliers.Interfaces
 {
@@ -9,7 +10,15 @@ namespace Marketplacesellerportal.Suppliers.Interfaces
         Task<Supplier?> GetByIdAsync(int supplierId);
 
         Task<IEnumerable<Supplier>> GetBySellerIdAsync(int sellerId);
+        Task<IEnumerable<Supplier>> SearchAsync(string search);
 
+        Task<IEnumerable<Supplier>> GetSortedAsync(string? sort);
+
+        Task<PagedResult<Supplier>> GetPagedAsync(
+            int page,
+            int limit);
+
+        Task<SupplierStatistics> GetStatisticsAsync();
         Task<Supplier?> GetSupplierAsync(int sellerId, int supplierId);
 
         Task AddAsync(Supplier supplier);

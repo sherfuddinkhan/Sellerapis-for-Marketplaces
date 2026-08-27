@@ -45,7 +45,6 @@
     <Folder Include="SharedKernel\Services\" />
     <Folder Include="SharedKernel\Utilities\" />
     <Folder Include="SharedKernel\Validators\" />
-    <Folder Include="Suppliers\Models\" />
   </ItemGroup>
 
 </Project>
