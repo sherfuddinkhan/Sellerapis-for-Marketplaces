@@ -1,23 +1,92 @@
 ﻿using Marketplacesellerportal.Models;
+using Marketplacesellerportal.Notifications.DTOs;
 
 namespace Marketplacesellerportal.Notifications.Interfaces
 {
     public interface INotificationService
     {
+        // =====================================================
+        // GET ALL
+        // =====================================================
+
         Task<IEnumerable<Notification>> GetAllAsync();
 
-        Task<Notification?> GetByIdAsync(int notificationId);
+        // =====================================================
+        // GET BY ID
+        // =====================================================
 
-        Task<IEnumerable<Notification>> GetByCustomerAsync(int customerId);
+        Task<Notification?> GetByIdAsync(
+            int notificationId);
 
-        Task<IEnumerable<Notification>> GetUnreadAsync(int customerId);
+        // =====================================================
+        // GET BY CUSTOMER
+        // =====================================================
 
-        Task<Notification> CreateAsync(Notification notification);
+        Task<IEnumerable<Notification>> GetByCustomerAsync(
+            int customerId);
 
-        Task<bool> MarkAsReadAsync(int notificationId);
+        // =====================================================
+        // GET UNREAD
+        // =====================================================
 
-        Task<bool> UpdateAsync(int notificationId, Notification notification);
+        Task<IEnumerable<Notification>> GetUnreadAsync(
+            int customerId);
 
-        Task<bool> DeleteAsync(int notificationId);
+        // =====================================================
+        // SEARCH
+        // =====================================================
+
+        Task<IEnumerable<Notification>> SearchAsync(
+            string search);
+
+        // =====================================================
+        // SORT
+        // =====================================================
+
+        Task<IEnumerable<Notification>> GetSortedAsync(
+            string? sort);
+
+        // =====================================================
+        // PAGINATION
+        // =====================================================
+
+        Task<PagedResult<Notification>> GetPagedAsync(
+            int page,
+            int limit);
+
+        // =====================================================
+        // STATISTICS
+        // =====================================================
+
+        Task<NotificationStatistics> GetStatisticsAsync();
+
+        // =====================================================
+        // CREATE
+        // =====================================================
+
+        Task<Notification> CreateAsync(
+            Notification notification);
+
+        // =====================================================
+        // MARK AS READ
+        // =====================================================
+
+        Task<bool> MarkAsReadAsync(
+            int notificationId);
+
+        // =====================================================
+        // UPDATE
+        // =====================================================
+
+        Task<bool> UpdateAsync(
+            int notificationId,
+            Notification notification);
+
+        // =====================================================
+        // DELETE
+        // =====================================================
+
+        Task<bool> DeleteAsync(
+            int notificationId);
     }
 }
