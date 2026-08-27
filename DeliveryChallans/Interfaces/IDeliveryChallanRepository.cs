@@ -4,24 +4,65 @@ namespace Marketplacesellerportal.DeliveryChallans.Interfaces
 {
     public interface IDeliveryChallanRepository
     {
+        // =====================================================
+        // BASIC
+        // =====================================================
+
         Task<IEnumerable<DeliveryChallan>> GetAllAsync();
 
-        Task<DeliveryChallan?> GetByIdAsync(int deliveryChallanId);
+        Task<DeliveryChallan?> GetByIdAsync(int id);
 
-        Task<IEnumerable<DeliveryChallan>> GetBySalesOrderAsync(int salesOrderId);
-        Task<IEnumerable<DeliveryChallan>> GetBySellerCustomerAsync(
-    int sellerId,
-    int customerId);
-        Task<IEnumerable<DeliveryChallan>> GetByStatusAsync(string status);
+        Task<IEnumerable<DeliveryChallan>>
+            GetBySalesOrderAsync(int salesOrderId);
 
-        Task<DeliveryChallan?> GetByChallanNumberAsync(string challanNumber);
+        Task<IEnumerable<DeliveryChallan>>
+            GetByStatusAsync(string status);
 
-        Task AddAsync(DeliveryChallan deliveryChallan);
+        Task<DeliveryChallan?>
+            GetByChallanNumberAsync(string challanNumber);
 
-        Task UpdateAsync(DeliveryChallan deliveryChallan);
+        // =====================================================
+        // SELLER + CUSTOMER
+        // =====================================================
 
-        Task DeleteAsync(int deliveryChallanId);
+        Task<IEnumerable<DeliveryChallan>>
+            GetBySellerCustomerAsync(
+                int sellerId,
+                int customerId);
+
+        // =====================================================
+        // SEARCH / SORT / PAGINATION
+        // =====================================================
+
+        Task<IEnumerable<DeliveryChallan>>
+            SearchAsync(string search);
+
+        Task<IEnumerable<DeliveryChallan>>
+            GetSortedAsync(string? sort);
+
+        Task<PagedResult<DeliveryChallan>>
+            GetPagedAsync(int page, int limit);
+
+        // =====================================================
+        // STATISTICS
+        // =====================================================
+
+        Task<DeliveryChallanStatistics>
+            GetStatisticsAsync();
+
+        // =====================================================
+        // CRUD
+        // =====================================================
+
+        Task AddAsync(
+            DeliveryChallan deliveryChallan);
+
+        Task UpdateAsync(
+            DeliveryChallan deliveryChallan);
+
+        Task DeleteAsync(int id);
 
         Task SaveChangesAsync();
     }
 }
+

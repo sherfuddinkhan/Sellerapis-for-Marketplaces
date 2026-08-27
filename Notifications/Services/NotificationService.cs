@@ -1,4 +1,5 @@
 ﻿using Marketplacesellerportal.Models;
+using Marketplacesellerportal.Notifications.DTOs;
 using Marketplacesellerportal.Notifications.Interfaces;
 
 namespace Marketplacesellerportal.Notifications.Services
@@ -7,24 +8,114 @@ namespace Marketplacesellerportal.Notifications.Services
     {
         private readonly INotificationRepository _repository;
 
-        public NotificationService(INotificationRepository repository)
+        public NotificationService(
+            INotificationRepository repository)
         {
             _repository = repository;
         }
 
+        // =====================================================
+        // GET ALL
+        // =====================================================
+
         public async Task<IEnumerable<Notification>> GetAllAsync()
-            => await _repository.GetAllAsync();
+        {
+            return await _repository.GetAllAsync();
+        }
 
-        public async Task<Notification?> GetByIdAsync(int notificationId)
-            => await _repository.GetByIdAsync(notificationId);
+        // =====================================================
+        // GET BY ID
+        // =====================================================
 
-        public async Task<IEnumerable<Notification>> GetByCustomerAsync(int customerId)
-            => await _repository.GetByCustomerAsync(customerId);
+        public async Task<Notification?> GetByIdAsync(
+            int notificationId)
+        {
+            return await _repository.GetByIdAsync(notificationId);
+        }
 
-        public async Task<IEnumerable<Notification>> GetUnreadAsync(int customerId)
-            => await _repository.GetUnreadAsync(customerId);
+        // =====================================================
+        // GET BY CUSTOMER
+        // =====================================================
 
-        public async Task<Notification> CreateAsync(Notification notification)
+        public async Task<IEnumerable<Notification>> GetByCustomerAsync(
+            int customerId)
+        {
+            return await _repository.GetByCustomerAsync(customerId);
+        }
+
+        // =====================================================
+        // GET UNREAD
+        // =====================================================
+
+        public async Task<IEnumerable<Notification>> GetUnreadAsync(
+            int customerId)
+        {
+            return await _repository.GetUnreadAsync(customerId);
+        }
+
+        // =====================================================
+        // GET BY SELLER + CUSTOMER
+        // =====================================================
+
+        public async Task<IEnumerable<Notification>>
+            GetBySellerCustomerAsync(
+                int sellerId,
+                int customerId)
+        {
+            return await _repository.GetBySellerCustomerAsync(
+                sellerId,
+                customerId);
+        }
+
+        // =====================================================
+        // SEARCH
+        // =====================================================
+
+        public async Task<IEnumerable<Notification>> SearchAsync(
+            string search)
+        {
+            return await _repository.SearchAsync(search);
+        }
+
+        // =====================================================
+        // SORT
+        // =====================================================
+
+        public async Task<IEnumerable<Notification>> GetSortedAsync(
+            string? sort)
+        {
+            return await _repository.GetSortedAsync(sort);
+        }
+
+        // =====================================================
+        // PAGINATION
+        // =====================================================
+
+        public async Task<PagedResult<Notification>> GetPagedAsync(
+            int page,
+            int limit)
+        {
+            return await _repository.GetPagedAsync(
+                page,
+                limit);
+        }
+
+        // =====================================================
+        // STATISTICS
+        // =====================================================
+
+        public async Task<NotificationStatistics>
+            GetStatisticsAsync()
+        {
+            return await _repository.GetStatisticsAsync();
+        }
+
+        // =====================================================
+        // CREATE
+        // =====================================================
+
+        public async Task<Notification> CreateAsync(
+            Notification notification)
         {
             notification.CreatedDate = DateTime.Now;
             notification.IsRead = false;
@@ -35,9 +126,15 @@ namespace Marketplacesellerportal.Notifications.Services
             return notification;
         }
 
-        public async Task<bool> MarkAsReadAsync(int notificationId)
+        // =====================================================
+        // MARK AS READ
+        // =====================================================
+
+        public async Task<bool> MarkAsReadAsync(
+            int notificationId)
         {
-            var notification = await _repository.GetByIdAsync(notificationId);
+            var notification =
+                await _repository.GetByIdAsync(notificationId);
 
             if (notification == null)
                 return false;
@@ -50,9 +147,16 @@ namespace Marketplacesellerportal.Notifications.Services
             return true;
         }
 
-        public async Task<bool> UpdateAsync(int notificationId, Notification notification)
+        // =====================================================
+        // UPDATE
+        // =====================================================
+
+        public async Task<bool> UpdateAsync(
+            int notificationId,
+            Notification notification)
         {
-            var existing = await _repository.GetByIdAsync(notificationId);
+            var existing =
+                await _repository.GetByIdAsync(notificationId);
 
             if (existing == null)
                 return false;
@@ -68,9 +172,15 @@ namespace Marketplacesellerportal.Notifications.Services
             return true;
         }
 
-        public async Task<bool> DeleteAsync(int notificationId)
+        // =====================================================
+        // DELETE
+        // =====================================================
+
+        public async Task<bool> DeleteAsync(
+            int notificationId)
         {
-            var existing = await _repository.GetByIdAsync(notificationId);
+            var existing =
+                await _repository.GetByIdAsync(notificationId);
 
             if (existing == null)
                 return false;
@@ -82,3 +192,4 @@ namespace Marketplacesellerportal.Notifications.Services
         }
     }
 }
+

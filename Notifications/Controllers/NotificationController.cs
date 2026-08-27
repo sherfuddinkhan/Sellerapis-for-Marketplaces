@@ -59,7 +59,35 @@ namespace Marketplacesellerportal.Notifications.Controllers
 
             return Ok();
         }
+        [HttpGet("search")]
+        public async Task<IActionResult> Search(
+    [FromQuery] string search)
+        {
+            return Ok(await _service.SearchAsync(search));
+        }
 
+        [HttpGet("sort")]
+        public async Task<IActionResult> Sort(
+            [FromQuery] string? sort)
+        {
+            return Ok(await _service.GetSortedAsync(sort));
+        }
+
+        [HttpGet("paged")]
+        public async Task<IActionResult> GetPaged(
+            [FromQuery] int page = 1,
+            [FromQuery] int limit = 15)
+        {
+            return Ok(
+                await _service.GetPagedAsync(page, limit));
+        }
+
+        [HttpGet("statistics")]
+        public async Task<IActionResult> GetStatistics()
+        {
+            return Ok(
+                await _service.GetStatisticsAsync());
+        }
         [HttpDelete("{id}")]
         public async Task<IActionResult> Delete(int id)
         {

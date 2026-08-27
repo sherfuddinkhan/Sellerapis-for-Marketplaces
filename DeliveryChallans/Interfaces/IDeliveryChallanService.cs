@@ -6,18 +6,38 @@ namespace Marketplacesellerportal.DeliveryChallans.Interfaces
     {
         Task<IEnumerable<DeliveryChallan>> GetAllAsync();
 
-        Task<DeliveryChallan?> GetByIdAsync(int deliveryChallanId);
+        Task<DeliveryChallan?> GetByIdAsync(int id);
 
-        Task<IEnumerable<DeliveryChallan>> GetBySalesOrderAsync(int salesOrderId);
+        Task<IEnumerable<DeliveryChallan>>
+            GetBySalesOrderAsync(int salesOrderId);
 
-        Task<IEnumerable<DeliveryChallan>> GetByStatusAsync(string status);
+        Task<IEnumerable<DeliveryChallan>>
+            GetByStatusAsync(string status);
 
-        Task<DeliveryChallan?> GetByChallanNumberAsync(string challanNumber);
+        Task<DeliveryChallan?>
+            GetByChallanNumberAsync(string challanNumber);
 
-        Task<DeliveryChallan> CreateAsync(DeliveryChallan deliveryChallan);
+        Task<IEnumerable<DeliveryChallan>>
+            SearchAsync(string search);
 
-        Task<bool> UpdateAsync(int deliveryChallanId, DeliveryChallan deliveryChallan);
+        Task<IEnumerable<DeliveryChallan>>
+            GetSortedAsync(string? sort);
 
-        Task<bool> DeleteAsync(int deliveryChallanId);
+        Task<PagedResult<DeliveryChallan>>
+            GetPagedAsync(int page, int limit);
+
+        Task<DeliveryChallanStatistics>
+            GetStatisticsAsync();
+
+        Task<DeliveryChallan>
+            CreateAsync(DeliveryChallan deliveryChallan);
+
+        Task<bool>
+            UpdateAsync(
+                int id,
+                DeliveryChallan deliveryChallan);
+
+        Task<bool>
+            DeleteAsync(int id);
     }
 }
