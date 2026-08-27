@@ -1,4 +1,5 @@
 ﻿using Marketplacesellerportal.Models;
+using Marketplacesellerportal.Shipments.DTOs;
 using Marketplacesellerportal.Shipments.Interfaces;
 
 namespace Marketplacesellerportal.Shipments.Services
@@ -16,7 +17,33 @@ namespace Marketplacesellerportal.Shipments.Services
         {
             return await _repository.GetAllAsync();
         }
+        public async Task<IEnumerable<Shipment>>
+    SearchAsync(string search)
+        {
+            return await _repository.SearchAsync(search);
+        }
 
+        public async Task<IEnumerable<Shipment>>
+            GetSortedAsync(string? sort)
+        {
+            return await _repository.GetSortedAsync(sort);
+        }
+
+        public async Task<PagedResult<Shipment>>
+            GetPagedAsync(
+                int page,
+                int limit)
+        {
+            return await _repository.GetPagedAsync(
+                page,
+                limit);
+        }
+
+        public async Task<ShipmentStatistics>
+            GetStatisticsAsync()
+        {
+            return await _repository.GetStatisticsAsync();
+        }
         public async Task<Shipment?> GetByIdAsync(int shipmentId)
         {
             return await _repository.GetByIdAsync(shipmentId);

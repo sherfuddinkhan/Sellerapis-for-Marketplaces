@@ -5501,6 +5501,69 @@
   },
   {
     "ContainingType": "Marketplacesellerportal.Shipments.Controllers.ShipmentController",
+    "Method": "GetPaged",
+    "RelativePath": "api/Shipment/page",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "page",
+        "Type": "System.Int32",
+        "IsRequired": false
+      },
+      {
+        "Name": "limit",
+        "Type": "System.Int32",
+        "IsRequired": false
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "Marketplacesellerportal.Shipments.Controllers.ShipmentController",
+    "Method": "Search",
+    "RelativePath": "api/Shipment/search",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "search",
+        "Type": "System.String",
+        "IsRequired": false
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "Marketplacesellerportal.Shipments.Controllers.ShipmentController",
+    "Method": "Sort",
+    "RelativePath": "api/Shipment/sort",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "sort",
+        "Type": "System.String",
+        "IsRequired": false
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "Marketplacesellerportal.Shipments.Controllers.ShipmentController",
+    "Method": "GetStatistics",
+    "RelativePath": "api/Shipment/statistics",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "Marketplacesellerportal.Shipments.Controllers.ShipmentController",
     "Method": "GetByStatus",
     "RelativePath": "api/Shipment/status/{status}",
     "HttpMethod": "GET",
@@ -6865,6 +6928,69 @@
         "IsRequired": false
       }
     ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "Marketplacesellerportal.WarehouseLocations.Controllers.WarehouseLocationController",
+    "Method": "GetPaged",
+    "RelativePath": "api/WarehouseLocation/page",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "page",
+        "Type": "System.Int32",
+        "IsRequired": false
+      },
+      {
+        "Name": "limit",
+        "Type": "System.Int32",
+        "IsRequired": false
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "Marketplacesellerportal.WarehouseLocations.Controllers.WarehouseLocationController",
+    "Method": "Search",
+    "RelativePath": "api/WarehouseLocation/search",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "search",
+        "Type": "System.String",
+        "IsRequired": false
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "Marketplacesellerportal.WarehouseLocations.Controllers.WarehouseLocationController",
+    "Method": "Sort",
+    "RelativePath": "api/WarehouseLocation/sort",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "sort",
+        "Type": "System.String",
+        "IsRequired": false
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "Marketplacesellerportal.WarehouseLocations.Controllers.WarehouseLocationController",
+    "Method": "GetStatistics",
+    "RelativePath": "api/WarehouseLocation/statistics",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [],
     "ReturnTypes": []
   },
   {

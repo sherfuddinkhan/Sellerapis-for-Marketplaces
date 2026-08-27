@@ -1,7 +1,16 @@
 {
   "Version": 1,
   "WorkspaceRootPath": "C:\\Users\\Administrator\\source\\repos\\Marketplacesellerportal\\",
-  "Documents": [],
+  "Documents": [
+    {
+      "AbsoluteMoniker": "D:0:0:{2C9EC692-1B37-47B3-8E95-0F4CC9B4AD68}|Marketplacesellerportal.csproj|c:\\users\\administrator\\source\\repos\\marketplacesellerportal\\shipments\\repositories\\shipmentrepository.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{2C9EC692-1B37-47B3-8E95-0F4CC9B4AD68}|Marketplacesellerportal.csproj|solutionrelative:shipments\\repositories\\shipmentrepository.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{2C9EC692-1B37-47B3-8E95-0F4CC9B4AD68}|Marketplacesellerportal.csproj|c:\\users\\administrator\\source\\repos\\marketplacesellerportal\\shipments\\interfaces\\ishipmentrepository.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{2C9EC692-1B37-47B3-8E95-0F4CC9B4AD68}|Marketplacesellerportal.csproj|solutionrelative:shipments\\interfaces\\ishipmentrepository.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    }
+  ],
   "DocumentGroupContainers": [
     {
       "Orientation": 0,
@@ -9,11 +18,37 @@
       "DocumentGroups": [
         {
           "DockedWidth": 200,
-          "SelectedChildIndex": -1,
+          "SelectedChildIndex": 1,
           "Children": [
             {
               "$type": "Bookmark",
               "Name": "ST:0:0:{1c4feeaa-4718-4aa9-859d-94ce25d182ba}"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 0,
+              "Title": "ShipmentRepository.cs",
+              "DocumentMoniker": "C:\\Users\\Administrator\\source\\repos\\Marketplacesellerportal\\Shipments\\Repositories\\ShipmentRepository.cs",
+              "RelativeDocumentMoniker": "Shipments\\Repositories\\ShipmentRepository.cs",
+              "ToolTip": "C:\\Users\\Administrator\\source\\repos\\Marketplacesellerportal\\Shipments\\Repositories\\ShipmentRepository.cs",
+              "RelativeToolTip": "Shipments\\Repositories\\ShipmentRepository.cs",
+              "ViewState": "AgIAACMAAAAAAAAAAAAgwDYAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-08-27T04:17:13.134Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 1,
+              "Title": "IShipmentRepository.cs",
+              "DocumentMoniker": "C:\\Users\\Administrator\\source\\repos\\Marketplacesellerportal\\Shipments\\Interfaces\\IShipmentRepository.cs",
+              "RelativeDocumentMoniker": "Shipments\\Interfaces\\IShipmentRepository.cs",
+              "ToolTip": "C:\\Users\\Administrator\\source\\repos\\Marketplacesellerportal\\Shipments\\Interfaces\\IShipmentRepository.cs",
+              "RelativeToolTip": "Shipments\\Interfaces\\IShipmentRepository.cs",
+              "ViewState": "AgIAAC0AAAAAAAAAAAAqwEwAAAABAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-08-27T04:16:59.459Z",
+              "EditorCaption": ""
             }
           ]
         }

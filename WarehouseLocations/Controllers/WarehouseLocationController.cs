@@ -63,6 +63,80 @@ namespace Marketplacesellerportal.WarehouseLocations.Controllers
 
             return Ok();
         }
+        // =====================================================
+        // SEARCH
+        // GET: /api/WarehouseLocation/search?search=aisle
+        // =====================================================
+
+        [HttpGet("search")]
+        public async Task<IActionResult> Search(
+            [FromQuery] string search)
+        {
+            if (string.IsNullOrWhiteSpace(search))
+            {
+                return BadRequest(new
+                {
+                    message = "Search value is required"
+                });
+            }
+
+            var result = await _service.SearchAsync(search);
+
+            return Ok(result);
+        }
+
+
+        // =====================================================
+        // SORT
+        // GET: /api/WarehouseLocation/sort?sort=name_asc
+        // =====================================================
+
+        [HttpGet("sort")]
+        public async Task<IActionResult> Sort(
+            [FromQuery] string? sort)
+        {
+            var result = await _service.GetSortedAsync(sort);
+
+            return Ok(result);
+        }
+
+
+        // =====================================================
+        // PAGINATION
+        // GET: /api/WarehouseLocation/page?page=1&limit=15
+        // =====================================================
+
+        [HttpGet("page")]
+        public async Task<IActionResult> GetPaged(
+            [FromQuery] int page = 1,
+            [FromQuery] int limit = 15)
+        {
+            if (page < 1)
+                page = 1;
+
+            if (limit < 1)
+                limit = 15;
+
+            var result = await _service.GetPagedAsync(
+                page,
+                limit);
+
+            return Ok(result);
+        }
+
+
+        // =====================================================
+        // STATISTICS
+        // GET: /api/WarehouseLocation/statistics
+        // =====================================================
+
+        [HttpGet("statistics")]
+        public async Task<IActionResult> GetStatistics()
+        {
+            var result = await _service.GetStatisticsAsync();
+
+            return Ok(result);
+        }
 
         [HttpDelete("{locationId}")]
         public async Task<IActionResult> Delete(int locationId)
