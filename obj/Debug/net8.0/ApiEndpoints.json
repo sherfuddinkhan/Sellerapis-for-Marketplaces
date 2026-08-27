@@ -5963,6 +5963,27 @@
   },
   {
     "ContainingType": "Marketplacesellerportal.StockAdjustments.Controllers.StockAdjustmentController",
+    "Method": "GetPaged",
+    "RelativePath": "api/StockAdjustment/page",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "page",
+        "Type": "System.Int32",
+        "IsRequired": false
+      },
+      {
+        "Name": "limit",
+        "Type": "System.Int32",
+        "IsRequired": false
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "Marketplacesellerportal.StockAdjustments.Controllers.StockAdjustmentController",
     "Method": "GetByProduct",
     "RelativePath": "api/StockAdjustment/product/{productId}",
     "HttpMethod": "GET",
@@ -5973,6 +5994,22 @@
         "Name": "productId",
         "Type": "System.Int32",
         "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "Marketplacesellerportal.StockAdjustments.Controllers.StockAdjustmentController",
+    "Method": "Search",
+    "RelativePath": "api/StockAdjustment/search",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "search",
+        "Type": "System.String",
+        "IsRequired": false
       }
     ],
     "ReturnTypes": []
@@ -5991,6 +6028,32 @@
         "IsRequired": true
       }
     ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "Marketplacesellerportal.StockAdjustments.Controllers.StockAdjustmentController",
+    "Method": "Sort",
+    "RelativePath": "api/StockAdjustment/sort",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "sort",
+        "Type": "System.String",
+        "IsRequired": false
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "Marketplacesellerportal.StockAdjustments.Controllers.StockAdjustmentController",
+    "Method": "GetStatistics",
+    "RelativePath": "api/StockAdjustment/statistics",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [],
     "ReturnTypes": []
   },
   {
