@@ -1,5 +1,5 @@
 ﻿using Marketplacesellerportal.Models;
-
+using Marketplacesellerportal.WarehouseLocations.DTOs;
 namespace Marketplacesellerportal.WarehouseLocations.Interfaces
 {
     public interface IWarehouseLocationRepository
@@ -10,7 +10,17 @@ namespace Marketplacesellerportal.WarehouseLocations.Interfaces
 
         Task<IEnumerable<WarehouseLocation>> GetByWarehouseIdAsync(
             int warehouseId);
+        Task<IEnumerable<WarehouseLocation>> SearchAsync(
+    string search);
 
+        Task<IEnumerable<WarehouseLocation>> GetSortedAsync(
+            string? sort);
+
+        Task<PagedResult<WarehouseLocation>> GetPagedAsync(
+            int page,
+            int limit);
+
+        Task<WarehouseLocationStatistics> GetStatisticsAsync();
         Task<IEnumerable<WarehouseLocation>> GetByCustomerIdAsync(
             int customerId);
 

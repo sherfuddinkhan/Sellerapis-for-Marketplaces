@@ -1,6 +1,7 @@
 ﻿using Marketplacesellerportal.Brand.DTOs;
 using Marketplacesellerportal.Brand.Interfaces;
-using BrandModel = Marketplacesellerportal.Models.Brand;
+
+using BrandEntity = Marketplacesellerportal.Models.Brand;
 
 namespace Marketplacesellerportal.Brand.Services
 {
@@ -13,6 +14,9 @@ namespace Marketplacesellerportal.Brand.Services
             _repository = repository;
         }
 
+        // =========================================================
+        // GET ALL BRANDS
+        // =========================================================
         public async Task<IEnumerable<BrandResponse>> GetAllAsync()
         {
             var brands = await _repository.GetAllAsync();
@@ -28,6 +32,9 @@ namespace Marketplacesellerportal.Brand.Services
             });
         }
 
+        // =========================================================
+        // GET BRAND BY ID
+        // =========================================================
         public async Task<BrandResponse?> GetByIdAsync(int brandId)
         {
             var brand = await _repository.GetByIdAsync(brandId);
@@ -46,6 +53,9 @@ namespace Marketplacesellerportal.Brand.Services
             };
         }
 
+        // =========================================================
+        // GET ACTIVE BRANDS
+        // =========================================================
         public async Task<IEnumerable<BrandResponse>> GetActiveBrandsAsync()
         {
             var brands = await _repository.GetActiveBrandsAsync();
@@ -61,14 +71,19 @@ namespace Marketplacesellerportal.Brand.Services
             });
         }
 
+        // =========================================================
+        // CREATE BRAND
+        // =========================================================
         public async Task<bool> CreateAsync(CreateBrandRequest request)
         {
-            var existing = await _repository.GetByNameAsync(request.BrandName);
+            var existing =
+                await _repository.GetByNameAsync(
+                    request.BrandName);
 
             if (existing != null)
                 return false;
 
-            var brand = new BrandModel
+            var brand = new BrandEntity
             {
                 BrandName = request.BrandName,
                 Description = request.Description,
@@ -82,9 +97,14 @@ namespace Marketplacesellerportal.Brand.Services
             return true;
         }
 
+        // =========================================================
+        // UPDATE BRAND
+        // =========================================================
         public async Task<bool> UpdateAsync(UpdateBrandRequest request)
         {
-            var brand = await _repository.GetByIdAsync(request.BrandId);
+            var brand =
+                await _repository.GetByIdAsync(
+                    request.BrandId);
 
             if (brand == null)
                 return false;
@@ -100,9 +120,13 @@ namespace Marketplacesellerportal.Brand.Services
             return true;
         }
 
+        // =========================================================
+        // DELETE BRAND
+        // =========================================================
         public async Task<bool> DeleteAsync(int brandId)
         {
-            var brand = await _repository.GetByIdAsync(brandId);
+            var brand =
+                await _repository.GetByIdAsync(brandId);
 
             if (brand == null)
                 return false;
@@ -112,14 +136,24 @@ namespace Marketplacesellerportal.Brand.Services
 
             return true;
         }
-        public async Task<BrandStatisticsResponse> GetStatisticsAsync()
+
+        // =========================================================
+        // STATISTICS
+        // =========================================================
+        public async Task<BrandStatisticsResponse>
+            GetStatisticsAsync()
         {
             return await _repository.GetStatisticsAsync();
         }
 
-        public async Task<BrandFiltersResponse> GetFiltersAsync()
+        // =========================================================
+        // FILTERS
+        // =========================================================
+        public async Task<BrandFiltersResponse>
+            GetFiltersAsync()
         {
             return await _repository.GetFiltersAsync();
         }
     }
 }
+

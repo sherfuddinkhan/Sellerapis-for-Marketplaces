@@ -1,4 +1,6 @@
 ﻿
+using Marketplacesellerportal.BrandModel.Interfaces;
+using Marketplacesellerportal.BrandModel.Repositories;
 using Marketplacesellerportal.Categories.Interfaces;
 using Marketplacesellerportal.CustomerReturns.Interfaces;
 using Marketplacesellerportal.DeliveryChallans.Interfaces;
@@ -36,11 +38,17 @@ using Marketplacesellerportal.WarehouseLocations.Interfaces;
 using Marketplacesellerportal.WarehouseLocations.Interfaces;
 using Marketplacesellerportal.WarehouseLocations.Repositories;
 using Marketplacesellerportal.Warehouses.Interfaces;
+using Marketplacesellerportal.Brand.Interfaces;
+using Marketplacesellerportal.Models;
 using Marketplacesellerportal.Warehouses.Repositories;
 using Marketplacesellerportal.WishlistItems.Interfaces;
 using Marketplacesellerportal.Wishlists.Interfaces;
+using Marketplacesellerportal.Brand.Interfaces;
+using Marketplacesellerportal.BrandModel.Interfaces;
 using Microsoft.EntityFrameworkCore;
+using BrandEntity = Marketplacesellerportal.Models.Brand;
 using static System.Net.Mime.MediaTypeNames;
+
 
 namespace Marketplacesellerportal.SellerCustomers.Services
 {
@@ -84,6 +92,8 @@ namespace Marketplacesellerportal.SellerCustomers.Services
         private readonly IShipmentRepository _shipmentRepository;
         private readonly IWishlistRepository _wishlistRepository;
         private readonly IWishlistItemRepository _wishlistItemRepository;
+        private readonly IBrandModelRepository _brandModelRepository;
+        private readonly IBrandRepository _brandRepository;
         public SellerCustomerService(
        ISellerCustomerRepository repository,
        IProductRepository productRepository,
@@ -116,7 +126,9 @@ namespace Marketplacesellerportal.SellerCustomers.Services
        ISalesInvoiceRepository salesInvoiceRepository,
        IShipmentRepository shipmentRepository,
        IWishlistRepository wishlistRepository,
-       IWishlistItemRepository wishlistItemRepository)
+       IWishlistItemRepository wishlistItemRepository,
+       IBrandModelRepository brandModelRepository,
+       IBrandRepository brandRepository)
         
         {
             _repository = repository;
@@ -152,6 +164,8 @@ namespace Marketplacesellerportal.SellerCustomers.Services
             _shipmentRepository = shipmentRepository;
             _wishlistRepository = wishlistRepository;
             _wishlistItemRepository = wishlistItemRepository;
+            _brandModelRepository = brandModelRepository;
+            _brandRepository = brandRepository;
         }
         // =========================================================
         // GET ALL SELLER CUSTOMERS
@@ -206,13 +220,43 @@ namespace Marketplacesellerportal.SellerCustomers.Services
             // =====================================================
 
        var products = await _productRepository.GetProductsBySellerCustomerAsync(sellerId,customerId);
+            // =====================================================
+            // GET BRAND MODELS
+            // Based on BrandId used by customer's products
+            // =====================================================
+            var brandIds = products
+    .Where(p => p.BrandId.HasValue)
+    .Select(p => p.BrandId!.Value)
+    .Distinct()
+    .ToList();
+            // =====================================================
+            // GET BRANDS
+            // =====================================================
 
+            var brands = new List<BrandEntity>();
+
+            foreach (var brandId in brandIds)
+            {
+                var brand = await _brandRepository.GetByIdAsync(brandId);
+
+                if (brand != null)
+                {
+                    brands.Add(brand);
+                }
+            }
+
+            var brandModels =
+                await _brandModelRepository
+                    .GetByBrandIdsAsync(brandIds);
+           
+
+            
             // =====================================================
             // GET INVENTORIES
             // Separate from Products
             // Only Seller + Customer inventories
             // =====================================================
-      var inventories = await _inventoryRepository.GetBySellerCustomerAsync(sellerId,customerId);
+            var inventories = await _inventoryRepository.GetBySellerCustomerAsync(sellerId,customerId);
             // =====================================================
             // GET attributes
             // Separate from Products
@@ -409,7 +453,7 @@ namespace Marketplacesellerportal.SellerCustomers.Services
                     UpdatedDate = p.UpdatedDate
                 })
                 .ToList();
-
+           
             // =====================================================
             // MAP INVENTORIES
             // Completely separate from Products
@@ -803,6 +847,43 @@ namespace Marketplacesellerportal.SellerCustomers.Services
         CreatedDate = l.CreatedDate
     })
     .ToList();
+            // =====================================================
+            // MAP BRAND MODELS and Brands
+            // Based on BrandIds used by customer products
+            // =====================================================
+            // =====================================================
+            // MAP BRANDS
+            // =====================================================
+
+            response.Brands = brands
+                .Select(b => new SellerCustomerBrandResponse
+                {
+                    BrandId = b.BrandId,
+                    BrandName = b.BrandName,
+                    Description = b.Description,
+                    IsActive = b.IsActive,
+                    CreatedDate = b.CreatedDate,
+                    UpdatedDate = b.UpdatedDate
+                })
+                .ToList();
+            response.BrandModels = brandModels
+                .Select(m => new SellerCustomerBrandModelResponse
+                {
+                    BrandModelId = m.BrandModelId,
+
+                    BrandId = m.BrandId,
+
+                    ModelName = m.ModelName,
+
+                    Description = m.Description,
+
+                    IsActive = m.IsActive,
+
+                    CreatedDate = m.CreatedDate,
+
+                    UpdatedDate = m.UpdatedDate
+                })
+                .ToList();
             // =====================================================
             // MAP SALES ORDERS
             // Seller + Customer specific

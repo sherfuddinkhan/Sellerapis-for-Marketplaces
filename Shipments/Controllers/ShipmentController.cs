@@ -69,7 +69,84 @@ namespace Marketplacesellerportal.Shipments.Controllers
 
             return Ok();
         }
+        // =====================================================
+        // SEARCH
+        // GET: /api/Shipment/search?search=ABC
+        // =====================================================
 
+        [HttpGet("search")]
+        public async Task<IActionResult> Search(
+            [FromQuery] string search)
+        {
+            if (string.IsNullOrWhiteSpace(search))
+            {
+                return BadRequest(new
+                {
+                    message = "Search value is required"
+                });
+            }
+
+            var result =
+                await _service.SearchAsync(search);
+
+            return Ok(result);
+        }
+
+
+        // =====================================================
+        // SORT All the Shipment 
+        // GET: /api/Shipment/sort?sort=id_asc
+        // =====================================================
+
+        [HttpGet("sort")]
+        public async Task<IActionResult> Sort(
+            [FromQuery] string? sort)
+        {
+            var result =
+                await _service.GetSortedAsync(sort);
+
+            return Ok(result);
+        }
+
+
+        // =====================================================
+        // PAGINATION
+        // GET: /api/Shipment/page?page=1&limit=15
+        // =====================================================
+
+        [HttpGet("page")]
+        public async Task<IActionResult> GetPaged(
+            [FromQuery] int page = 1,
+            [FromQuery] int limit = 15)
+        {
+            if (page < 1)
+                page = 1;
+
+            if (limit < 1)
+                limit = 15;
+
+            var result =
+                await _service.GetPagedAsync(
+                    page,
+                    limit);
+
+            return Ok(result);
+        }
+
+
+        // =====================================================
+        // STATISTICS
+        // GET: /api/Shipment/statistics
+        // =====================================================
+
+        [HttpGet("statistics")]
+        public async Task<IActionResult> GetStatistics()
+        {
+            var result =
+                await _service.GetStatisticsAsync();
+
+            return Ok(result);
+        }
         [HttpDelete("{id}")]
         public async Task<IActionResult> Delete(int id)
         {

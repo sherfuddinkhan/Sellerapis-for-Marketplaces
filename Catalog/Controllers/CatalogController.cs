@@ -1,4 +1,5 @@
-﻿using Marketplacesellerportal.Catalog.DTOs;
+﻿
+using Marketplacesellerportal.Catalog.DTOs;
 using Marketplacesellerportal.Catalog.Interfaces;
 using Microsoft.AspNetCore.Mvc;
 
@@ -16,7 +17,7 @@ namespace Marketplacesellerportal.Catalog.Controllers
         }
 
         // =========================================================
-        // GET ALL PRODUCTS
+        // GET PRODUCTS FOR SELLER + CUSTOMER
         // GET /api/catalog/products?sellerId=6&customerId=3
         // =========================================================
 
@@ -34,6 +35,65 @@ namespace Marketplacesellerportal.Catalog.Controllers
 
 
         // =========================================================
+        // GET ALL CATALOG PRODUCTS
+        // GET /api/catalog/products/all
+        // =========================================================
+
+        [HttpGet("products/all")]
+        public async Task<IActionResult> GetAllCatalogProducts()
+        {
+            var products =
+                await _service.GetAllCatalogProductsAsync();
+
+            return Ok(products);
+        }
+
+
+        // =========================================================
+        // GET ALL PRODUCTS
+        // GET /api/catalog/all
+        // =========================================================
+
+        [HttpGet("all")]
+        public async Task<IActionResult> GetAll()
+        {
+            var products =
+                await _service.GetAllAsync();
+
+            return Ok(products);
+        }
+
+
+        // =========================================================
+        // GET PRODUCT BY ID
+        // GET /api/catalog/6?sellerId=6&customerId=3
+        // =========================================================
+
+        [HttpGet("{productId:int}")]
+        public async Task<IActionResult> GetById(
+            int productId,
+            [FromQuery] int sellerId,
+            [FromQuery] int customerId)
+        {
+            var product =
+                await _service.GetByIdAsync(
+                    productId,
+                    sellerId,
+                    customerId);
+
+            if (product == null)
+            {
+                return NotFound(new
+                {
+                    message = "Product not found."
+                });
+            }
+
+            return Ok(product);
+        }
+
+
+        // =========================================================
         // GET PRODUCT DETAILS
         // GET /api/catalog/products/6?sellerId=6&customerId=3
         // =========================================================
@@ -44,10 +104,11 @@ namespace Marketplacesellerportal.Catalog.Controllers
             [FromQuery] int sellerId,
             [FromQuery] int customerId)
         {
-            var result = await _service.GetProductDetailsAsync(
-                id,
-                sellerId,
-                customerId);
+            var result =
+                await _service.GetProductDetailsAsync(
+                    id,
+                    sellerId,
+                    customerId);
 
             if (result == null)
             {
@@ -80,10 +141,11 @@ namespace Marketplacesellerportal.Catalog.Controllers
                 });
             }
 
-            var result = await _service.SearchProductsAsync(
-                request,
-                sellerId,
-                customerId);
+            var result =
+                await _service.SearchProductsAsync(
+                    request,
+                    sellerId,
+                    customerId);
 
             return Ok(result);
         }
@@ -119,7 +181,7 @@ namespace Marketplacesellerportal.Catalog.Controllers
 
 
         // =========================================================
-        // BRANDS
+        // GET BRANDS
         // GET /api/catalog/brands?sellerId=6&customerId=3
         // =========================================================
 
@@ -128,16 +190,17 @@ namespace Marketplacesellerportal.Catalog.Controllers
             [FromQuery] int sellerId,
             [FromQuery] int customerId)
         {
-            var result = await _service.GetBrandsAsync(
-                sellerId,
-                customerId);
+            var result =
+                await _service.GetBrandsAsync(
+                    sellerId,
+                    customerId);
 
             return Ok(result);
         }
 
 
         // =========================================================
-        // CATEGORIES
+        // GET CATEGORIES
         // GET /api/catalog/categories?sellerId=6&customerId=3
         // =========================================================
 
@@ -146,16 +209,18 @@ namespace Marketplacesellerportal.Catalog.Controllers
             [FromQuery] int sellerId,
             [FromQuery] int customerId)
         {
-            var result = await _service.GetCategoriesAsync(
-                sellerId,
-                customerId);
+            var result =
+                await _service.GetCategoriesAsync(
+                    sellerId,
+                    customerId);
 
             return Ok(result);
         }
 
 
         // =========================================================
-        // PRODUCTS BY BRAND
+        // GET PRODUCTS BY BRAND
+        // GET /api/catalog/brand/1?sellerId=6&customerId=3
         // =========================================================
 
         [HttpGet("brand/{brandId:int}")]
@@ -175,7 +240,8 @@ namespace Marketplacesellerportal.Catalog.Controllers
 
 
         // =========================================================
-        // PRODUCTS BY CATEGORY
+        // GET PRODUCTS BY CATEGORY
+        // GET /api/catalog/category/1?sellerId=6&customerId=3
         // =========================================================
 
         [HttpGet("category/{categoryId:int}")]
@@ -195,7 +261,8 @@ namespace Marketplacesellerportal.Catalog.Controllers
 
 
         // =========================================================
-        // PRODUCTS BY PRODUCT TYPE
+        // GET PRODUCTS BY PRODUCT TYPE
+        // GET /api/catalog/producttype/1?sellerId=6&customerId=3
         // =========================================================
 
         [HttpGet("producttype/{productTypeId:int}")]
@@ -215,7 +282,8 @@ namespace Marketplacesellerportal.Catalog.Controllers
 
 
         // =========================================================
-        // LATEST PRODUCTS
+        // GET LATEST PRODUCTS
+        // GET /api/catalog/latest?sellerId=6&customerId=3
         // =========================================================
 
         [HttpGet("latest")]
@@ -233,7 +301,8 @@ namespace Marketplacesellerportal.Catalog.Controllers
 
 
         // =========================================================
-        // FEATURED PRODUCTS
+        // GET FEATURED PRODUCTS
+        // GET /api/catalog/featured?sellerId=6&customerId=3
         // =========================================================
 
         [HttpGet("featured")]
@@ -251,7 +320,8 @@ namespace Marketplacesellerportal.Catalog.Controllers
 
 
         // =========================================================
-        // TOP RATED PRODUCTS
+        // GET TOP RATED PRODUCTS
+        // GET /api/catalog/toprated?sellerId=6&customerId=3
         // =========================================================
 
         [HttpGet("toprated")]
@@ -269,7 +339,8 @@ namespace Marketplacesellerportal.Catalog.Controllers
 
 
         // =========================================================
-        // BEST SELLING PRODUCTS
+        // GET BEST SELLING PRODUCTS
+        // GET /api/catalog/bestsellers?sellerId=6&customerId=3
         // =========================================================
 
         [HttpGet("bestsellers")]
@@ -287,8 +358,8 @@ namespace Marketplacesellerportal.Catalog.Controllers
 
 
         // =========================================================
-        // PRODUCT IMAGES
-        // GET /api/catalog/6/images
+        // GET PRODUCT IMAGES
+        // GET /api/catalog/6/images?sellerId=6&customerId=3
         // =========================================================
 
         [HttpGet("{productId:int}/images")]
@@ -308,7 +379,8 @@ namespace Marketplacesellerportal.Catalog.Controllers
 
 
         // =========================================================
-        // PRODUCT ATTRIBUTES
+        // GET PRODUCT ATTRIBUTES
+        // GET /api/catalog/6/attributes?sellerId=6&customerId=3
         // =========================================================
 
         [HttpGet("{productId:int}/attributes")]
@@ -328,7 +400,8 @@ namespace Marketplacesellerportal.Catalog.Controllers
 
 
         // =========================================================
-        // PRODUCT REVIEWS
+        // GET PRODUCT REVIEWS
+        // GET /api/catalog/6/reviews?sellerId=6&customerId=3
         // =========================================================
 
         [HttpGet("{productId:int}/reviews")]
@@ -348,7 +421,8 @@ namespace Marketplacesellerportal.Catalog.Controllers
 
 
         // =========================================================
-        // RELATED PRODUCTS
+        // GET RELATED PRODUCTS
+        // GET /api/catalog/6/related?sellerId=6&customerId=3
         // =========================================================
 
         [HttpGet("{productId:int}/related")]

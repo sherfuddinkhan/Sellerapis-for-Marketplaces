@@ -1,6 +1,6 @@
 ﻿using Marketplacesellerportal.Models;
 using Marketplacesellerportal.WarehouseLocations.Interfaces;
-
+using Marketplacesellerportal.WarehouseLocations.DTOs;
 namespace Marketplacesellerportal.WarehouseLocations.Services
 {
     public class WarehouseLocationService : IWarehouseLocationService
@@ -16,7 +16,46 @@ namespace Marketplacesellerportal.WarehouseLocations.Services
         {
             return await _repository.GetAllAsync();
         }
+        public async Task<IEnumerable<WarehouseLocation>>
+    GetByCustomerIdAsync(int customerId)
+        {
+            return await _repository.GetByCustomerIdAsync(customerId);
+        }
 
+        public async Task<IEnumerable<WarehouseLocation>>
+            GetByWarehouseCustomerAsync(
+                int warehouseId,
+                int customerId)
+        {
+            return await _repository.GetByWarehouseCustomerAsync(
+                warehouseId,
+                customerId);
+        }
+        public async Task<IEnumerable<WarehouseLocation>> SearchAsync(
+    string search)
+        {
+            return await _repository.SearchAsync(search);
+        }
+
+        public async Task<IEnumerable<WarehouseLocation>> GetSortedAsync(
+            string? sort)
+        {
+            return await _repository.GetSortedAsync(sort);
+        }
+
+        public async Task<PagedResult<WarehouseLocation>> GetPagedAsync(
+            int page,
+            int limit)
+        {
+            return await _repository.GetPagedAsync(
+                page,
+                limit);
+        }
+
+        public async Task<WarehouseLocationStatistics> GetStatisticsAsync()
+        {
+            return await _repository.GetStatisticsAsync();
+        }
         public async Task<WarehouseLocation?> GetByIdAsync(int locationId)
         {
             return await _repository.GetByIdAsync(locationId);

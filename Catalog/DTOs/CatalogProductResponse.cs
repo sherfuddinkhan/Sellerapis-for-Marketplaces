@@ -4,13 +4,19 @@
     {
         public int ProductId { get; set; }
 
-        public string ProductName { get; set; } = string.Empty;
+        public int SellerId { get; set; }
 
-        public string BrandName { get; set; } = string.Empty;
+        public int CustomerId { get; set; }
 
-        public string CategoryName { get; set; } = string.Empty;
+        public string? ProductName { get; set; }
 
-        public string ProductType { get; set; } = string.Empty;
+        public string? SKU { get; set; }
+
+        public string? BrandName { get; set; }
+
+        public string? CategoryName { get; set; }
+
+        public string? ProductType { get; set; }
 
         public decimal Price { get; set; }
 

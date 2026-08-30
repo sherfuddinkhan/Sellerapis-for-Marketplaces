@@ -34,12 +34,31 @@ namespace Marketplacesellerportal.Catalog.Services
         {
             return await _repository.GetProductsByBrandAsync(brandId,sellerId,customerId);
         }
-
+        public async Task<IEnumerable<CatalogProductResponse>>
+    GetAllCatalogProductsAsync()
+        {
+            return await _repository.GetAllCatalogProductsAsync();
+        }
         public async Task<IEnumerable<CatalogProductResponse>> GetProductsByCategoryAsync(int categoryId,int sellerId,int customerId)
         {
             return await _repository.GetProductsByCategoryAsync(categoryId,sellerId,customerId);
         }
+        public async Task<List<CatalogProductResponse>> GetAllAsync()
+        {
+            return await _repository.GetAllAsync();
+        }
 
+        public async Task<CatalogProductResponse?> GetByIdAsync(
+            int productId,
+            int sellerId,
+            int customerId)
+        {
+            return await _repository.GetByIdAsync(
+                productId,
+                sellerId,
+                customerId
+            );
+        }
         public async Task<IEnumerable<CatalogProductResponse>> GetProductsByProductTypeAsync(int productTypeId,int sellerId,int customerId)
         {
             return await _repository.GetProductsByProductTypeAsync(productTypeId,sellerId,customerId);

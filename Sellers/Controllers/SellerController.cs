@@ -34,6 +34,43 @@ namespace Marketplacesellerportal.Sellers.Controllers
         // PAGINATION:
         // /api/sellers?page=1&limit=15
         // =====================================================
+        
+// =====================================================
+// GET SELLER LIST
+//
+// Purpose:
+// Used for dropdowns / selection
+//
+// GET:
+// /api/sellers/list
+//
+// Response:
+// [
+//     {
+//         "sellerId": 1,
+//         "sellerName": "ABC Traders"
+//     },
+//     {
+//         "sellerId": 2,
+//         "sellerName": "XYZ Electronics"
+//     }
+// ]
+// =====================================================
+
+[HttpGet("list")]
+public async Task<IActionResult> GetSellerList()
+        {
+            var sellers = await _service.GetAllAsync();
+
+            var result = sellers.Select(s => new
+            {
+                sellerId = s.SellerId,
+                sellerName = s.SellerName
+            }).ToList();
+
+            return Ok(result);
+        }
+
 
         [HttpGet]
         public async Task<IActionResult> GetAll(

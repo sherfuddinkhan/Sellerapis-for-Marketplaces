@@ -25,7 +25,7 @@ namespace Marketplacesellerportal.Catalog.Interfaces
             ProductSearchRequest request,
             int sellerId,
             int customerId);
-
+        Task<IEnumerable<CatalogProductResponse>> GetAllCatalogProductsAsync();
         // =========================================================
         // PRODUCT FILTERS
         // =========================================================
@@ -44,7 +44,13 @@ namespace Marketplacesellerportal.Catalog.Interfaces
             int productTypeId,
             int sellerId,
             int customerId);
+        Task<List<CatalogProductResponse>> GetAllAsync();
 
+        Task<CatalogProductResponse?> GetByIdAsync(
+            int productId,
+            int sellerId,
+            int customerId
+        );
         // =========================================================
         // PRODUCT LISTS
         // =========================================================

@@ -1,4 +1,5 @@
 ﻿using Marketplacesellerportal.Models;
+using Marketplacesellerportal.Shipments.DTOs;
 
 namespace Marketplacesellerportal.Shipments.Interfaces
 {
@@ -6,18 +7,45 @@ namespace Marketplacesellerportal.Shipments.Interfaces
     {
         Task<IEnumerable<Shipment>> GetAllAsync();
 
-        Task<Shipment?> GetByIdAsync(int shipmentId);
+        Task<Shipment?> GetByIdAsync(int id);
 
-        Task<IEnumerable<Shipment>> GetByOrderAsync(int orderId);
+        Task<IEnumerable<Shipment>> GetByOrderAsync(
+            int orderId);
 
-        Task<IEnumerable<Shipment>> GetByStatusAsync(string shipmentStatus);
+        Task<IEnumerable<Shipment>> GetByStatusAsync(
+            string status);
 
-        Task<Shipment?> GetByTrackingNumberAsync(string trackingNumber);
+        Task<Shipment?> GetByTrackingNumberAsync(
+            string trackingNumber);
 
-        Task<Shipment> CreateAsync(Shipment shipment);
+        // =====================================================
+        // NEW 4 APIs
+        // =====================================================
 
-        Task<bool> UpdateAsync(int shipmentId, Shipment shipment);
+        Task<IEnumerable<Shipment>> SearchAsync(
+            string search);
 
-        Task<bool> DeleteAsync(int shipmentId);
+        Task<IEnumerable<Shipment>> GetSortedAsync(
+            string? sort);
+
+        Task<PagedResult<Shipment>> GetPagedAsync(
+            int page,
+            int limit);
+
+        Task<ShipmentStatistics> GetStatisticsAsync();
+
+        // =====================================================
+        // CRUD
+        // =====================================================
+
+        Task<Shipment> CreateAsync(
+            Shipment shipment);
+
+        Task<bool> UpdateAsync(
+            int id,
+            Shipment shipment);
+
+        Task<bool> DeleteAsync(
+            int id);
     }
 }
