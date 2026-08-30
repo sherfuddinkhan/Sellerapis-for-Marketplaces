@@ -1,33 +1,66 @@
-﻿using Marketplacesellerportal.Brand.DTOs;
-using BrandModel = Marketplacesellerportal.Models.Brand;
+﻿
+using Marketplacesellerportal.Brand.DTOs;
+
+using BrandEntity =
+    Marketplacesellerportal.Models.Brand;
 
 namespace Marketplacesellerportal.Brand.Interfaces
 {
     public interface IBrandRepository
     {
-        Task<IEnumerable<BrandModel>> GetAllAsync();
+        // =========================================================
+        // GET ALL
+        // =========================================================
+        Task<IEnumerable<BrandEntity>> GetAllAsync();
 
-        Task<BrandModel?> GetByIdAsync(int brandId);
+        // =========================================================
+        // GET BY ID
+        // =========================================================
+        Task<BrandEntity?> GetByIdAsync(int brandId);
 
-        Task<BrandModel?> GetByNameAsync(string brandName);
+        // =========================================================
+        // GET BY NAME
+        // =========================================================
+        Task<BrandEntity?> GetByNameAsync(string brandName);
 
-        Task<IEnumerable<BrandModel>> GetActiveBrandsAsync();
+        // =========================================================
+        // GET ACTIVE
+        // =========================================================
+        Task<IEnumerable<BrandEntity>> GetActiveBrandsAsync();
 
-        Task AddAsync(BrandModel brand);
+        // =========================================================
+        // ADD
+        // =========================================================
+        Task AddAsync(BrandEntity brand);
 
-        Task UpdateAsync(BrandModel brand);
+        // =========================================================
+        // UPDATE
+        // =========================================================
+        Task UpdateAsync(BrandEntity brand);
 
-        Task DeleteAsync(BrandModel brand);
+        // =========================================================
+        // DELETE
+        // =========================================================
+        Task DeleteAsync(BrandEntity brand);
 
+        // =========================================================
+        // EXISTS
+        // =========================================================
         Task<bool> ExistsAsync(int brandId);
 
+        // =========================================================
+        // SAVE
+        // =========================================================
         Task SaveChangesAsync();
 
-        // Statistics
+        // =========================================================
+        // STATISTICS
+        // =========================================================
         Task<BrandStatisticsResponse> GetStatisticsAsync();
 
-
-        // Filters
+        // =========================================================
+        // FILTERS
+        // =========================================================
         Task<BrandFiltersResponse> GetFiltersAsync();
     }
 }

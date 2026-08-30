@@ -4,6 +4,8 @@ using BrandModel = Marketplacesellerportal.Models.Brand;
 namespace Marketplacesellerportal.Database;
 using Marketplacesellerportal.Models;
 using CategoryModel = Marketplacesellerportal.Models.Category;
+using BrandEntity = Marketplacesellerportal.Models.Brand;
+using BrandModelEntity = Marketplacesellerportal.Models.BrandModel;
 
 public class ApplicationDbContext : DbContext
 {
@@ -47,15 +49,14 @@ public class ApplicationDbContext : DbContext
     public DbSet<Marketplace> Marketplaces { get; set; }
     public DbSet<MarketplaceReturn> MarketplaceReturns { get; set; }
     public DbSet<MarketplaceOrderItem> MarketplaceOrderItems { get; set; }
-    public DbSet<BrandModel> Brands { get; set; }
     public DbSet<Notification> Notifications { get; set; }
-
+    public DbSet<BrandEntity> Brands { get; set; }
     // Suppliers
     public DbSet<Supplier> Suppliers { get; set; }
     public DbSet<PurchaseReturn> PurchaseReturns { get; set; }
     public DbSet<SalesOrder> SalesOrders { get; set; }
 
-
+    public DbSet<BrandModelEntity> BrandModels { get; set; }
     // Inventory
 
     public DbSet<StockAdjustment> StockAdjustments { get; set; }

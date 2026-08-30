@@ -3,12 +3,8 @@
   "WorkspaceRootPath": "C:\\Users\\Administrator\\source\\repos\\Marketplacesellerportal\\",
   "Documents": [
     {
-      "AbsoluteMoniker": "D:0:0:{2C9EC692-1B37-47B3-8E95-0F4CC9B4AD68}|Marketplacesellerportal.csproj|c:\\users\\administrator\\source\\repos\\marketplacesellerportal\\stockadjustments\\controllers\\stockadjustmentcontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{2C9EC692-1B37-47B3-8E95-0F4CC9B4AD68}|Marketplacesellerportal.csproj|solutionrelative:stockadjustments\\controllers\\stockadjustmentcontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{2C9EC692-1B37-47B3-8E95-0F4CC9B4AD68}|Marketplacesellerportal.csproj|c:\\users\\administrator\\source\\repos\\marketplacesellerportal\\shipments\\controllers\\shipmentcontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{2C9EC692-1B37-47B3-8E95-0F4CC9B4AD68}|Marketplacesellerportal.csproj|solutionrelative:shipments\\controllers\\shipmentcontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+      "AbsoluteMoniker": "D:0:0:{2C9EC692-1B37-47B3-8E95-0F4CC9B4AD68}|Marketplacesellerportal.csproj|c:\\users\\administrator\\source\\repos\\marketplacesellerportal\\sellers\\controllers\\sellercontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{2C9EC692-1B37-47B3-8E95-0F4CC9B4AD68}|Marketplacesellerportal.csproj|solutionrelative:sellers\\controllers\\sellercontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     }
   ],
   "DocumentGroupContainers": [
@@ -27,27 +23,14 @@
             {
               "$type": "Document",
               "DocumentIndex": 0,
-              "Title": "StockAdjustmentController.cs",
-              "DocumentMoniker": "C:\\Users\\Administrator\\source\\repos\\Marketplacesellerportal\\StockAdjustments\\Controllers\\StockAdjustmentController.cs",
-              "RelativeDocumentMoniker": "StockAdjustments\\Controllers\\StockAdjustmentController.cs",
-              "ToolTip": "C:\\Users\\Administrator\\source\\repos\\Marketplacesellerportal\\StockAdjustments\\Controllers\\StockAdjustmentController.cs",
-              "RelativeToolTip": "StockAdjustments\\Controllers\\StockAdjustmentController.cs",
-              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
+              "Title": "SellerController.cs",
+              "DocumentMoniker": "C:\\Users\\Administrator\\source\\repos\\Marketplacesellerportal\\Sellers\\Controllers\\SellerController.cs",
+              "RelativeDocumentMoniker": "Sellers\\Controllers\\SellerController.cs",
+              "ToolTip": "C:\\Users\\Administrator\\source\\repos\\Marketplacesellerportal\\Sellers\\Controllers\\SellerController.cs",
+              "RelativeToolTip": "Sellers\\Controllers\\SellerController.cs",
+              "ViewState": "AgIAAD4BAAAAAAAAAAAcwFIBAAABAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2026-08-27T04:29:34.607Z",
-              "EditorCaption": ""
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 1,
-              "Title": "ShipmentController.cs",
-              "DocumentMoniker": "C:\\Users\\Administrator\\source\\repos\\Marketplacesellerportal\\Shipments\\Controllers\\ShipmentController.cs",
-              "RelativeDocumentMoniker": "Shipments\\Controllers\\ShipmentController.cs",
-              "ToolTip": "C:\\Users\\Administrator\\source\\repos\\Marketplacesellerportal\\Shipments\\Controllers\\ShipmentController.cs",
-              "RelativeToolTip": "Shipments\\Controllers\\ShipmentController.cs",
-              "ViewState": "AgIAAFQAAAAAAAAAAAAIwGAAAAAhAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2026-08-27T04:28:49.808Z",
+              "WhenOpened": "2026-08-30T08:29:15.965Z",
               "EditorCaption": ""
             }
           ]

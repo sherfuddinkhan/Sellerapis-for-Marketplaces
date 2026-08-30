@@ -15,6 +15,7 @@ namespace Marketplacesellerportal.Catalog.Interfaces
         Task<IEnumerable<CatalogProductResponse>> GetLatestProductsAsync( int sellerId,int customerId);
         Task<IEnumerable<CatalogProductResponse>> GetFeaturedProductsAsync(int sellerId,int customerId);
         Task<IEnumerable<CatalogProductResponse>> GetTopRatedProductsAsync(int sellerId, int customerId);
+        Task<IEnumerable<CatalogProductResponse>> GetAllCatalogProductsAsync();
         Task<IEnumerable<CatalogProductResponse>> GetBestSellingProductsAsync(int sellerId,int customerId);
         Task<IEnumerable<BrandResponse>> GetBrandsAsync(int sellerId,int customerId);
         Task<IEnumerable<CatalogCategoryResponse>> GetCategoriesAsync(int sellerId,int customerId);
@@ -22,6 +23,12 @@ namespace Marketplacesellerportal.Catalog.Interfaces
         Task<IEnumerable<ProductAttributeResponse>> GetProductAttributesAsync(int productId,int sellerId,int customerId);
         Task<IEnumerable<ProductReviewResponse>> GetProductReviewsAsync(int productId,int sellerId,int customerId);
         Task<IEnumerable<CatalogProductResponse>> GetRelatedProductsAsync(int productId,int sellerId,int customerId);
+        Task<List<CatalogProductResponse>> GetAllAsync();
+
+        Task<CatalogProductResponse?> GetByIdAsync(
+            int productId,
+            int sellerId,
+            int customerId);
         Task<bool> UpdateProductAsync(int productId,int sellerId,int customerId,UpdateProductRequest request);
         Task<bool> DeleteProductAsync(int productId,int sellerId,int customerId);
     }

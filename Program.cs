@@ -2,169 +2,133 @@ using Marketplacesellerportal.AuthManagement.Helpers;
 using Marketplacesellerportal.AuthManagement.Interfaces;
 using Marketplacesellerportal.AuthManagement.Repositories;
 using Marketplacesellerportal.AuthManagement.Services;
-
 using Marketplacesellerportal.Brand.Interfaces;
 using Marketplacesellerportal.Brand.Repositories;
 using Marketplacesellerportal.Brand.Services;
-
+using Marketplacesellerportal.BrandModel.Interfaces;
+using Marketplacesellerportal.BrandModel.Repositories;
+using Marketplacesellerportal.BrandModel.Services;
 using Marketplacesellerportal.Catalog.Interfaces;
 using Marketplacesellerportal.Catalog.Repositories;
 using Marketplacesellerportal.Catalog.Services;
-
-using Marketplacesellerportal.Configuration;
-
-using Marketplacesellerportal.Marketplaces.Interfaces;
-using Marketplacesellerportal.Marketplaces.Repositories;
-using Marketplacesellerportal.Marketplaces.Services;
-
-using Marketplacesellerportal.CustomerReturns.Interfaces;
-using Marketplacesellerportal.CustomerReturns.Repositories;
-using Marketplacesellerportal.CustomerReturns.Services;
-
 using Marketplacesellerportal.Categories.Interfaces;
 using Marketplacesellerportal.Categories.Repositories;
 using Marketplacesellerportal.Categories.Services;
+using Marketplacesellerportal.Configuration;
+using Marketplacesellerportal.CustomerReturns.Interfaces;
+using Marketplacesellerportal.CustomerReturns.Repositories;
+using Marketplacesellerportal.CustomerReturns.Services;
 using Marketplacesellerportal.Database;
-
-using Marketplacesellerportal.MarketplaceOrderItems.Interfaces;
-using Marketplacesellerportal.MarketplaceOrderItems.Repositories;
-using Marketplacesellerportal.MarketplaceOrderItems.Services;
-
-using Marketplacesellerportal.Products.Interfaces;
-using Marketplacesellerportal.Products.Repositories;
-using Marketplacesellerportal.Products.Services;
-
-using Marketplacesellerportal.ProductInventories.Interfaces;
-using Marketplacesellerportal.ProductInventories.Services;
-using Marketplacesellerportal.ProductInventories.Repositories;
-
 using Marketplacesellerportal.DeliveryChallans.Interfaces;
 using Marketplacesellerportal.DeliveryChallans.Repositories;
 using Marketplacesellerportal.DeliveryChallans.Services;
-
 using Marketplacesellerportal.GoodsReceiptItems.Interfaces;
 using Marketplacesellerportal.GoodsReceiptItems.Repositories;
 using Marketplacesellerportal.GoodsReceiptItems.Services;
-
 using Marketplacesellerportal.GoodsReceiptNotes.Interfaces;
 using Marketplacesellerportal.GoodsReceiptNotes.Repositories;
 using Marketplacesellerportal.GoodsReceiptNotes.Services;
-
+using Marketplacesellerportal.MarketplaceOrderItems.Interfaces;
+using Marketplacesellerportal.MarketplaceOrderItems.Repositories;
+using Marketplacesellerportal.MarketplaceOrderItems.Services;
 using Marketplacesellerportal.MarketplaceReturns.Interfaces;
 using Marketplacesellerportal.MarketplaceReturns.Repositories;
 using Marketplacesellerportal.MarketplaceReturns.Services;
-
+using Marketplacesellerportal.Marketplaces.Interfaces;
+using Marketplacesellerportal.Marketplaces.Repositories;
+using Marketplacesellerportal.Marketplaces.Services;
 using Marketplacesellerportal.Notifications.Interfaces;
 using Marketplacesellerportal.Notifications.Repositories;
 using Marketplacesellerportal.Notifications.Services;
-
 using Marketplacesellerportal.OrderStatusHistories.Interfaces;
 using Marketplacesellerportal.OrderStatusHistories.Repositories;
 using Marketplacesellerportal.OrderStatusHistories.Services;
-
 using Marketplacesellerportal.Payments.Interfaces;
 using Marketplacesellerportal.Payments.Repositories;
 using Marketplacesellerportal.Payments.Services;
-
 using Marketplacesellerportal.ProductAttributes.Interfaces;
 using Marketplacesellerportal.ProductAttributes.Repositories;
 using Marketplacesellerportal.ProductAttributes.Services;
-
 using Marketplacesellerportal.ProductImages.Interfaces;
 using Marketplacesellerportal.ProductImages.Repositories;
 using Marketplacesellerportal.ProductImages.Services;
-
+using Marketplacesellerportal.ProductInventories.Interfaces;
+using Marketplacesellerportal.ProductInventories.Repositories;
+using Marketplacesellerportal.ProductInventories.Services;
 using Marketplacesellerportal.ProductPrices.Interfaces;
 using Marketplacesellerportal.ProductPrices.Repositories;
 using Marketplacesellerportal.ProductPrices.Services;
-
+using Marketplacesellerportal.Products.Interfaces;
 using Marketplacesellerportal.Products.Interfaces;
 using Marketplacesellerportal.Products.Repositories;
-
+using Marketplacesellerportal.Products.Repositories;
+using Marketplacesellerportal.Products.Services;
 using Marketplacesellerportal.ProductTypes.Interfaces;
 using Marketplacesellerportal.ProductTypes.Repositories;
 using Marketplacesellerportal.ProductTypes.Services;
-
 using Marketplacesellerportal.PurchaseOrderItems.Interfaces;
 using Marketplacesellerportal.PurchaseOrderItems.Repositories;
 using Marketplacesellerportal.PurchaseOrderItems.Services;
-
 using Marketplacesellerportal.PurchaseOrders.Interfaces;
 using Marketplacesellerportal.PurchaseOrders.Repositories;
 using Marketplacesellerportal.PurchaseOrders.Services;
-
 using Marketplacesellerportal.PurchaseReturns.Interfaces;
 using Marketplacesellerportal.PurchaseReturns.Repositories;
 using Marketplacesellerportal.PurchaseReturns.Services;
-
 using Marketplacesellerportal.Reviews.Interfaces;
 using Marketplacesellerportal.Reviews.Repositories;
 using Marketplacesellerportal.Reviews.Services;
-
 using Marketplacesellerportal.SalesInvoices.Interfaces;
 using Marketplacesellerportal.SalesInvoices.Repositories;
 using Marketplacesellerportal.SalesInvoices.Services;
-
 using Marketplacesellerportal.SalesOrderItems.Interfaces;
 using Marketplacesellerportal.SalesOrderItems.Repositories;
 using Marketplacesellerportal.SalesOrderItems.Services;
-
 using Marketplacesellerportal.SalesOrders.Interfaces;
 using Marketplacesellerportal.SalesOrders.Repositories;
 using Marketplacesellerportal.SalesOrders.Services;
-
 using Marketplacesellerportal.SellerCustomers.Interfaces;
 using Marketplacesellerportal.SellerCustomers.Repositories;
 using Marketplacesellerportal.SellerCustomers.Services;
-
 using Marketplacesellerportal.Sellers.Interfaces;
 using Marketplacesellerportal.Sellers.Repositories;
 using Marketplacesellerportal.Sellers.Services;
-
 using Marketplacesellerportal.Shipments.Interfaces;
 using Marketplacesellerportal.Shipments.Repositories;
 using Marketplacesellerportal.Shipments.Services;
-
 using Marketplacesellerportal.StockAdjustments.Interfaces;
 using Marketplacesellerportal.StockAdjustments.Repositories;
 using Marketplacesellerportal.StockAdjustments.Services;
-
 using Marketplacesellerportal.StockLedgers.Interfaces;
 using Marketplacesellerportal.StockLedgers.Repositories;
 using Marketplacesellerportal.StockLedgers.Services;
-
 using Marketplacesellerportal.StockMovements.Interfaces;
 using Marketplacesellerportal.StockMovements.Repositories;
 using Marketplacesellerportal.StockMovements.Services;
-
 using Marketplacesellerportal.StockTransfers.Interfaces;
 using Marketplacesellerportal.StockTransfers.Repositories;
 using Marketplacesellerportal.StockTransfers.Services;
-
 using Marketplacesellerportal.Suppliers.Interfaces;
 using Marketplacesellerportal.Suppliers.Repositories;
 using Marketplacesellerportal.Suppliers.Services;
-
 using Marketplacesellerportal.WarehouseLocations.Interfaces;
 using Marketplacesellerportal.WarehouseLocations.Repositories;
 using Marketplacesellerportal.WarehouseLocations.Services;
-
 using Marketplacesellerportal.Warehouses.Interfaces;
 using Marketplacesellerportal.Warehouses.Repositories;
 using Marketplacesellerportal.Warehouses.Services;
-
 using Marketplacesellerportal.WishlistItems.Interfaces;
 using Marketplacesellerportal.WishlistItems.Repositories;
 using Marketplacesellerportal.WishlistItems.Services;
-
 using Marketplacesellerportal.Wishlists.Interfaces;
 using Marketplacesellerportal.Wishlists.Repositories;
 using Marketplacesellerportal.Wishlists.Services;
-
+using Marketplacesellerportal.BrandModel.Interfaces;
+using Marketplacesellerportal.BrandModel.Repositories;
+using Marketplacesellerportal.BrandModel.Services;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
-
 using System.Text;
 
 
@@ -382,7 +346,16 @@ builder.Services.AddScoped<
 builder.Services.AddScoped<
     ICatalogService,
     CatalogService>();
+// =========================================================
+// BrandModel
+// =========================================================
+builder.Services.AddScoped<
+    IBrandModelRepository,
+    BrandModelRepository>();
 
+builder.Services.AddScoped<
+    IBrandModelService,
+    BrandModelService>();
 
 // =========================================================
 // PRODUCT

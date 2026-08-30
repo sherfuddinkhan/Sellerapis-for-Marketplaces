@@ -138,7 +138,27 @@
         public List<SellerCustomerSupplierResponse> Suppliers { get; set; }
             = new();
 
+
+        // =========================================================
+        // BRAND MODELS
+        // =========================================================
+        // =========================================================
+        // BRANDS
+        // =========================================================
+
+        public List<SellerCustomerBrandResponse> Brands { get; set; }
+            = new();
+        public List<SellerCustomerBrandModelResponse> BrandModels { get; set; }
+            = new();
+
+
+        // =========================================================
+        // TRANSACTIONS
+        // =========================================================
+
         public SellerCustomerTransactionResponse Transactions { get; set; }
             = new();
+
+
     }
 }
