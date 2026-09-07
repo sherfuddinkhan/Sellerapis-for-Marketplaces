@@ -15,6 +15,25 @@ namespace Marketplacesellerportal.PurchaseReturns.Controllers
         {
             _service = service;
         }
+       [HttpGet("all-details")]
+public async Task<IActionResult> GetAllDetails()
+{
+    try
+    {
+        var result =
+            await _service.GetAllAsync();
+
+        return Ok(result);
+    }
+    catch (Exception ex)
+    {
+        return StatusCode(500, new
+        {
+            message = "Unable to fetch purchase return details.",
+            error = ex.Message
+        });
+    }
+}
 
         // =========================================================
         // GET ALL / SEARCH / STATUS / PAGINATION / SORTING

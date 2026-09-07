@@ -15,6 +15,22 @@ namespace Marketplacesellerportal.SalesOrders.Controllers
             _service = service;
         }
 
+      
+// =========================================================
+// GET ALL SALES ORDERS
+// GET: /api/SalesOrder/all
+// =========================================================
+[HttpGet("all")]
+public async Task<IActionResult> GetAllSalesOrders()
+        {
+            var result = await _service.GetAllAsync();
+
+            return Ok(result);
+        }
+
+
+
+
         // =====================================================
         // GET ALL / SEARCH / STATUS / SORT / PAGINATION
         // =====================================================
@@ -36,6 +52,7 @@ namespace Marketplacesellerportal.SalesOrders.Controllers
         //
         // COMBINED:
         // /api/SalesOrder?search=SO-5520&page=1&limit=15
+
 
         [HttpGet]
         public async Task<IActionResult> GetAll(

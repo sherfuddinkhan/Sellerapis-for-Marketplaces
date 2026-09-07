@@ -51,6 +51,7 @@ public class ApplicationDbContext : DbContext
     public DbSet<MarketplaceOrderItem> MarketplaceOrderItems { get; set; }
     public DbSet<Notification> Notifications { get; set; }
     public DbSet<BrandEntity> Brands { get; set; }
+    public DbSet<PaymentSettings> PaymentSettings { get; set; }
     // Suppliers
     public DbSet<Supplier> Suppliers { get; set; }
     public DbSet<PurchaseReturn> PurchaseReturns { get; set; }

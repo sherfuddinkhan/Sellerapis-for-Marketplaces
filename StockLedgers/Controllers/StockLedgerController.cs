@@ -15,6 +15,23 @@ namespace Marketplacesellerportal.StockLedgers.Controllers
         {
             _service = service;
         }
+// =========================================================
+// GET ALL AT ONCE
+//
+// GET /api/stock-ledgers/all
+//
+// Returns ALL stock ledger records
+// without pagination, search, filter or sorting.
+// =========================================================
+
+[HttpGet("all")]
+public async Task<IActionResult> GetAllAtOnce()
+        {
+            var result = await _service.GetAllAsync();
+
+            return Ok(result);
+        }
+
 
         // =========================================================
         // GET ALL / SEARCH / FILTER / SORT / PAGINATION

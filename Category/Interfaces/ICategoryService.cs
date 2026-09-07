@@ -1,4 +1,5 @@
 ﻿using Marketplacesellerportal.Category.DTOs;
+using Marketplacesellerportal.Models;
 using CategoryModel = Marketplacesellerportal.Models.Category;
 
 namespace Marketplacesellerportal.Categories.Interfaces
@@ -25,6 +26,9 @@ namespace Marketplacesellerportal.Categories.Interfaces
         Task<bool> UpdateAsync(
             int categoryId,
             CategoryModel category);
+        // =====================================================
+        // GET PRODUCTS BY CATEGORY
+        // =====================================================
 
         Task<bool> DeleteAsync(
             int categoryId);
@@ -38,7 +42,9 @@ namespace Marketplacesellerportal.Categories.Interfaces
         Task<CategoryListResponse> GetCategoriesAsync(
             CategoryListRequest request);
 
-
+        Task<IEnumerable<Product>>
+    GetProductsByCategoryAsync(
+        int categoryId);
         // =====================================================
         // STATISTICS
         // GET /api/categories/stats

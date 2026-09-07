@@ -5,7 +5,7 @@ using Marketplacesellerportal.SalesOrderItems.Interfaces;
 namespace Marketplacesellerportal.SalesOrderItems.Controllers
 {
     [ApiController]
-    [Route("api/[controller]")]
+    [Route("api/sales-order-items")]
     public class SalesOrderItemController : ControllerBase
     {
         private readonly ISalesOrderItemService _service;
@@ -15,7 +15,13 @@ namespace Marketplacesellerportal.SalesOrderItems.Controllers
         {
             _service = service;
         }
+        [HttpGet("all")]
+        public async Task<IActionResult> GetAllSalesOrderItems()
+        {
+            var result = await _service.GetAllAsync();
 
+            return Ok(result);
+        }
 
         // =====================================================
         // GET ALL / SEARCH / PAGINATION / SORT

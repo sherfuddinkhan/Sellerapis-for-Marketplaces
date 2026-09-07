@@ -10,6 +10,11 @@ namespace Marketplacesellerportal.PurchaseOrders.Controllers
     {
         private readonly IPurchaseOrderService _service;
 
+
+        // =========================================================
+        // CONSTRUCTOR
+        // =========================================================
+
         public PurchaseOrderController(
             IPurchaseOrderService service)
         {
@@ -18,120 +23,97 @@ namespace Marketplacesellerportal.PurchaseOrders.Controllers
 
 
         // =========================================================
-        // GET ALL
-        // GET: /api/purchase-orders
+        // GET ALL PURCHASE ORDERS
+        //
+        // GET:
+        // /api/purchase-orders
+        //
+        // Fetches ALL purchase orders at once.
+        //
+        // No:
+        // - seller filter
+        // - customer filter
+        // - supplier filter
+        // - search
+        // - pagination
+        // - sorting
+        // - status filter
         // =========================================================
 
         [HttpGet]
-        public async Task<IActionResult> GetAll(
-            [FromQuery] string? search,
-            [FromQuery] string? status,
-            [FromQuery] string? sort,
-            [FromQuery] int? page,
-            [FromQuery] int? limit)
+        public async Task<IActionResult> GetAll()
         {
-            // -----------------------------------------------------
-            // SEARCH
-            // /api/purchase-orders?search=PO-5520
-            // -----------------------------------------------------
-
-            if (!string.IsNullOrWhiteSpace(search))
+            try
             {
                 var result =
-                    await _service.SearchAsync(search);
+                    await _service.GetAllAsync();
 
                 return Ok(result);
             }
-
-
-            // -----------------------------------------------------
-            // STATUS
-            // /api/purchase-orders?status=pending_approval
-            // -----------------------------------------------------
-
-            if (!string.IsNullOrWhiteSpace(status))
+            catch (Exception ex)
             {
-                var result =
-                    await _service.GetByStatusAsync(status);
-
-                return Ok(result);
+                return StatusCode(
+                    StatusCodes.Status500InternalServerError,
+                    new
+                    {
+                        message =
+                            "Failed to fetch purchase orders.",
+                        error =
+                            ex.Message
+                    });
             }
-
-
-            // -----------------------------------------------------
-            // PAGINATION
-            // /api/purchase-orders?page=1&limit=10
-            // -----------------------------------------------------
-
-            if (page.HasValue || limit.HasValue)
-            {
-                var currentPage =
-                    page ?? 1;
-
-                var currentLimit =
-                    limit ?? 10;
-
-                var result =
-                    await _service.GetPagedAsync(
-                        currentPage,
-                        currentLimit);
-
-                return Ok(new
-                {
-                    page = currentPage,
-                    limit = currentLimit,
-                    totalCount = result.TotalCount,
-                    items = result.Items
-                });
-            }
-
-
-            // -----------------------------------------------------
-            // SORT
-            // -----------------------------------------------------
-
-            if (!string.IsNullOrWhiteSpace(sort))
-            {
-                // If GetSortedAsync exists in your service,
-                // use it here.
-                var result =
-                    await _service.GetSortedAsync(sort);
-
-                return Ok(result);
-            }
-
-
-            // -----------------------------------------------------
-            // DEFAULT GET ALL
-            // -----------------------------------------------------
-
-            return Ok(
-                await _service.GetAllAsync());
         }
 
 
         // =========================================================
         // GET BY ID
-        // GET: /api/purchase-orders/{purchaseOrderId}
+        //
+        // GET:
+        // /api/purchase-orders/{purchaseOrderId}
+        //
+        // Example:
+        // /api/purchase-orders/10
         // =========================================================
 
         [HttpGet("{purchaseOrderId:int}")]
         public async Task<IActionResult> Get(
             int purchaseOrderId)
         {
-            var po =
-                await _service.GetByIdAsync(
-                    purchaseOrderId);
+            try
+            {
+                var po =
+                    await _service.GetByIdAsync(
+                        purchaseOrderId);
 
-            if (po == null)
-                return NotFound();
+                if (po == null)
+                {
+                    return NotFound(new
+                    {
+                        message =
+                            "Purchase order not found."
+                    });
+                }
 
-            return Ok(po);
+                return Ok(po);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(
+                    StatusCodes.Status500InternalServerError,
+                    new
+                    {
+                        message =
+                            "Failed to fetch purchase order.",
+                        error =
+                            ex.Message
+                    });
+            }
         }
 
 
         // =========================================================
         // GET BY SELLER + CUSTOMER
+        //
         // GET:
         // /api/purchase-orders/seller/6?customerId=3
         // =========================================================
@@ -141,17 +123,33 @@ namespace Marketplacesellerportal.PurchaseOrders.Controllers
             int sellerId,
             [FromQuery] int customerId)
         {
-            var result =
-                await _service.GetBySellerCustomerAsync(
-                    sellerId,
-                    customerId);
+            try
+            {
+                var result =
+                    await _service.GetBySellerCustomerAsync(
+                        sellerId,
+                        customerId);
 
-            return Ok(result);
+                return Ok(result);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(
+                    StatusCodes.Status500InternalServerError,
+                    new
+                    {
+                        message =
+                            "Failed to fetch seller purchase orders.",
+                        error =
+                            ex.Message
+                    });
+            }
         }
 
 
         // =========================================================
         // GET BY SUPPLIER
+        //
         // GET:
         // /api/purchase-orders/supplier/5
         // =========================================================
@@ -160,41 +158,80 @@ namespace Marketplacesellerportal.PurchaseOrders.Controllers
         public async Task<IActionResult> GetBySupplier(
             int supplierId)
         {
-            var result =
-                await _service.GetBySupplierIdAsync(
-                    supplierId);
+            try
+            {
+                var result =
+                    await _service.GetBySupplierIdAsync(
+                        supplierId);
 
-            return Ok(result);
+                return Ok(result);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(
+                    StatusCodes.Status500InternalServerError,
+                    new
+                    {
+                        message =
+                            "Failed to fetch supplier purchase orders.",
+                        error =
+                            ex.Message
+                    });
+            }
         }
 
 
         // =========================================================
         // GET BY SELLER + PURCHASE ORDER
+        //
         // GET:
         // /api/purchase-orders/seller/6/order/10
         // =========================================================
 
-        [HttpGet("seller/{sellerId:int}/order/{purchaseOrderId:int}")]
+        [HttpGet(
+            "seller/{sellerId:int}/order/{purchaseOrderId:int}")]
         public async Task<IActionResult>
             GetBySellerAndPurchaseOrder(
                 int sellerId,
                 int purchaseOrderId)
         {
-            var po =
-                await _service
-                    .GetBySellerAndPurchaseOrderIdAsync(
-                        sellerId,
-                        purchaseOrderId);
+            try
+            {
+                var po =
+                    await _service
+                        .GetBySellerAndPurchaseOrderIdAsync(
+                            sellerId,
+                            purchaseOrderId);
 
-            if (po == null)
-                return NotFound();
+                if (po == null)
+                {
+                    return NotFound(new
+                    {
+                        message =
+                            "Purchase order not found."
+                    });
+                }
 
-            return Ok(po);
+                return Ok(po);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(
+                    StatusCodes.Status500InternalServerError,
+                    new
+                    {
+                        message =
+                            "Failed to fetch purchase order.",
+                        error =
+                            ex.Message
+                    });
+            }
         }
 
 
         // =========================================================
         // GET BY SELLER + SUPPLIER + PURCHASE ORDER
+        //
         // GET:
         // /api/purchase-orders/seller/6/supplier/5/order/10
         // =========================================================
@@ -207,113 +244,210 @@ namespace Marketplacesellerportal.PurchaseOrders.Controllers
                 int supplierId,
                 int purchaseOrderId)
         {
-            var po =
-                await _service
-                    .GetBySellerSupplierAndPurchaseOrderIdAsync(
-                        sellerId,
-                        supplierId,
-                        purchaseOrderId);
+            try
+            {
+                var po =
+                    await _service
+                        .GetBySellerSupplierAndPurchaseOrderIdAsync(
+                            sellerId,
+                            supplierId,
+                            purchaseOrderId);
 
-            if (po == null)
-                return NotFound();
+                if (po == null)
+                {
+                    return NotFound(new
+                    {
+                        message =
+                            "Purchase order not found."
+                    });
+                }
 
-            return Ok(po);
+                return Ok(po);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(
+                    StatusCodes.Status500InternalServerError,
+                    new
+                    {
+                        message =
+                            "Failed to fetch purchase order.",
+                        error =
+                            ex.Message
+                    });
+            }
         }
 
 
         // =========================================================
         // STATISTICS
+        //
         // GET:
         // /api/purchase-orders/stats
         // =========================================================
 
         [HttpGet("stats")]
-        public async Task<IActionResult>
-            GetStatistics()
+        public async Task<IActionResult> GetStatistics()
         {
-            var result =
-                await _service.GetStatisticsAsync();
+            try
+            {
+                var result =
+                    await _service.GetStatisticsAsync();
 
-            return Ok(result);
+                return Ok(result);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(
+                    StatusCodes.Status500InternalServerError,
+                    new
+                    {
+                        message =
+                            "Failed to fetch purchase order statistics.",
+                        error =
+                            ex.Message
+                    });
+            }
         }
 
 
         // =========================================================
-        // CREATE
+        // CREATE PURCHASE ORDER
+        //
         // POST:
         // /api/purchase-orders
         // =========================================================
 
         [HttpPost]
-        public async Task<IActionResult>
-            Create(
-                [FromBody] PurchaseOrder purchaseOrder)
+        public async Task<IActionResult> Create(
+            [FromBody] PurchaseOrder purchaseOrder)
         {
-            if (!ModelState.IsValid)
-                return BadRequest(ModelState);
+            try
+            {
+                if (!ModelState.IsValid)
+                {
+                    return BadRequest(ModelState);
+                }
 
-            var result =
-                await _service.CreateAsync(
-                    purchaseOrder);
+                var result =
+                    await _service.CreateAsync(
+                        purchaseOrder);
 
-            return Ok(result);
+                return Ok(result);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(
+                    StatusCodes.Status500InternalServerError,
+                    new
+                    {
+                        message =
+                            "Failed to create purchase order.",
+                        error =
+                            ex.Message
+                    });
+            }
         }
 
 
         // =========================================================
-        // UPDATE
+        // UPDATE PURCHASE ORDER
+        //
         // PUT:
         // /api/purchase-orders/{purchaseOrderId}
         // =========================================================
 
         [HttpPut("{purchaseOrderId:int}")]
-        public async Task<IActionResult>
-            Update(
-                int purchaseOrderId,
-                [FromBody] PurchaseOrder purchaseOrder)
+        public async Task<IActionResult> Update(
+            int purchaseOrderId,
+            [FromBody] PurchaseOrder purchaseOrder)
         {
-            if (!ModelState.IsValid)
-                return BadRequest(ModelState);
-
-            var updated =
-                await _service.UpdateAsync(
-                    purchaseOrderId,
-                    purchaseOrder);
-
-            if (!updated)
-                return NotFound();
-
-            return Ok(new
+            try
             {
-                message =
-                    "Purchase order updated successfully."
-            });
+                if (!ModelState.IsValid)
+                {
+                    return BadRequest(ModelState);
+                }
+
+                var updated =
+                    await _service.UpdateAsync(
+                        purchaseOrderId,
+                        purchaseOrder);
+
+                if (!updated)
+                {
+                    return NotFound(new
+                    {
+                        message =
+                            "Purchase order not found."
+                    });
+                }
+
+                return Ok(new
+                {
+                    message =
+                        "Purchase order updated successfully."
+                });
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(
+                    StatusCodes.Status500InternalServerError,
+                    new
+                    {
+                        message =
+                            "Failed to update purchase order.",
+                        error =
+                            ex.Message
+                    });
+            }
         }
 
 
         // =========================================================
-        // DELETE
+        // DELETE PURCHASE ORDER
+        //
         // DELETE:
         // /api/purchase-orders/{purchaseOrderId}
         // =========================================================
 
         [HttpDelete("{purchaseOrderId:int}")]
-        public async Task<IActionResult>
-            Delete(
-                int purchaseOrderId)
+        public async Task<IActionResult> Delete(
+            int purchaseOrderId)
         {
-            var deleted =
-                await _service.DeleteAsync(
-                    purchaseOrderId);
-
-            if (!deleted)
-                return NotFound();
-
-            return Ok(new
+            try
             {
-                message =
-                    "Purchase order deleted successfully."
-            });
+                var deleted =
+                    await _service.DeleteAsync(
+                        purchaseOrderId);
+
+                if (!deleted)
+                {
+                    return NotFound(new
+                    {
+                        message =
+                            "Purchase order not found."
+                    });
+                }
+
+                return Ok(new
+                {
+                    message =
+                        "Purchase order deleted successfully."
+                });
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(
+                    StatusCodes.Status500InternalServerError,
+                    new
+                    {
+                        message =
+                            "Failed to delete purchase order.",
+                        error =
+                            ex.Message
+                    });
+            }
         }
     }
 }

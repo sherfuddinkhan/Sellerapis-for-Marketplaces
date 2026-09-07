@@ -249,15 +249,33 @@ namespace Marketplacesellerportal.PurchaseReturns.Repositories
         // =========================================================
         // STATISTICS
         // =========================================================
-
         public async Task<PurchaseReturnStatistics>
-            GetStatisticsAsync()
+    GetStatisticsAsync()
         {
             var query = _context.PurchaseReturns
                 .AsNoTracking();
 
+            // =========================================================
+            // TOTAL RECORDS
+            // =========================================================
+
             var totalRecords =
                 await query.CountAsync();
+
+
+            // =========================================================
+            // TOTAL RETURN AMOUNT
+            // =========================================================
+
+            var totalReturnAmount =
+                await query
+                    .SumAsync(x => (decimal?)x.TotalAmount)
+                    ?? 0m;
+
+
+            // =========================================================
+            // STATUS COUNTS
+            // =========================================================
 
             var pendingPickupCount =
                 await query.CountAsync(x =>
@@ -287,11 +305,21 @@ namespace Marketplacesellerportal.PurchaseReturns.Repositories
                 await query.CountAsync(x =>
                     x.Status == "completed");
 
+
+            // =========================================================
+            // DISTINCT PURCHASE ORDERS
+            // =========================================================
+
             var distinctPurchaseOrders =
                 await query
                     .Select(x => x.PurchaseOrderId)
                     .Distinct()
                     .CountAsync();
+
+
+            // =========================================================
+            // DISTINCT SUPPLIERS
+            // =========================================================
 
             var distinctSuppliers =
                 await query
@@ -299,11 +327,21 @@ namespace Marketplacesellerportal.PurchaseReturns.Repositories
                     .Distinct()
                     .CountAsync();
 
+
+            // =========================================================
+            // DISTINCT SELLERS
+            // =========================================================
+
             var distinctSellers =
                 await query
                     .Select(x => x.SellerId)
                     .Distinct()
                     .CountAsync();
+
+
+            // =========================================================
+            // DISTINCT CUSTOMERS
+            // =========================================================
 
             var distinctCustomers =
                 await query
@@ -311,10 +349,18 @@ namespace Marketplacesellerportal.PurchaseReturns.Repositories
                     .Distinct()
                     .CountAsync();
 
+
+            // =========================================================
+            // RETURN STATISTICS
+            // =========================================================
+
             return new PurchaseReturnStatistics
             {
                 TotalRecords =
                     totalRecords,
+
+                TotalReturnAmount =
+                    totalReturnAmount,
 
                 PendingPickupCount =
                     pendingPickupCount,
@@ -350,6 +396,7 @@ namespace Marketplacesellerportal.PurchaseReturns.Repositories
                     distinctCustomers
             };
         }
+
 
         // =========================================================
         // PAGINATION

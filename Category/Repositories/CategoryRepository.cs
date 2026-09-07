@@ -2,6 +2,7 @@
 using Marketplacesellerportal.Categories.Interfaces;
 using Marketplacesellerportal.Category.DTOs;
 using Marketplacesellerportal.Database;
+using Marketplacesellerportal.Models;
 using Microsoft.EntityFrameworkCore;
 
 using CategoryModel = Marketplacesellerportal.Models.Category;
@@ -44,6 +45,36 @@ namespace Marketplacesellerportal.Categories.Repositories
                 .AsNoTracking()
                 .ToListAsync();
         }
+        // =====================================================
+        // GET CATEGORY WITH PRODUCTS
+        // =====================================================
+        // GET: /api/categories/{categoryId}/products
+        // =====================================================
+
+      
+        // =========================================================
+        // GET PRODUCTS BY CATEGORY
+        // =========================================================
+        // GET: /api/categories/{categoryId}/products
+        // =========================================================
+
+        public async Task<IEnumerable<Product>>
+            GetProductsByCategoryAsync(
+                int categoryId)
+        {
+            return await _context.Products
+                .Where(p =>
+                    p.CategoryId == categoryId)
+                .OrderBy(p =>
+                    p.ProductName)
+                .ToListAsync();
+        }
+
+        // =====================================================
+        // OTHER EXISTING REPOSITORY METHODS
+        // =====================================================
+        // Keep your existing methods below.
+        // =====================================================
 
 
         // =========================================================

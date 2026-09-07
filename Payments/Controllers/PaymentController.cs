@@ -1,6 +1,7 @@
-﻿using Microsoft.AspNetCore.Mvc;
-using Marketplacesellerportal.Payments.DTOs;
+﻿using Marketplacesellerportal.Payments.DTOs;
 using Marketplacesellerportal.Payments.Interfaces;
+using Microsoft.AspNetCore.Mvc;
+using static System.Net.Mime.MediaTypeNames;
 
 namespace Marketplacesellerportal.Payments.Controllers
 {
@@ -23,11 +24,13 @@ namespace Marketplacesellerportal.Payments.Controllers
         [HttpGet]
         public async Task<IActionResult> GetPaymentSettings()
         {
-            var result =
-                await _service.GetPaymentSettingsAsync();
+            var result = await _service.GetPaymentSettingsAsync();
 
             if (result == null)
-                return NotFound();
+                return NotFound(new
+                {
+                    message = "Payment settings not found."
+                });
 
             return Ok(result);
         }
@@ -40,13 +43,43 @@ namespace Marketplacesellerportal.Payments.Controllers
         [HttpGet("bank")]
         public async Task<IActionResult> GetBankDetails()
         {
-            var result =
-                await _service.GetBankDetailsAsync();
+            var result = await _service.GetBankDetailsAsync();
 
             if (result == null)
-                return NotFound();
+                return NotFound(new
+                {
+                    message = "Bank details not found."
+                });
 
             return Ok(result);
+        }
+
+        // =========================================================
+        // BANK DETAILS
+        // POST: /api/settings/payment/bank
+        // =========================================================
+
+        [HttpPost("bank")]
+        public async Task<IActionResult> CreateBankDetails(
+            [FromBody] BankDetailsDto bankDetails)
+        {
+            if (!ModelState.IsValid)
+                return BadRequest(ModelState);
+
+            var result =
+                await _service.CreateBankDetailsAsync(bankDetails);
+
+            if (result == null)
+            {
+                return BadRequest(new
+                {
+                    message = "Unable to create bank details."
+                });
+            }
+
+            return StatusCode(
+                StatusCodes.Status201Created,
+                result);
         }
 
         // =========================================================
@@ -62,11 +95,15 @@ namespace Marketplacesellerportal.Payments.Controllers
                 return BadRequest(ModelState);
 
             var result =
-                await _service.UpdateBankDetailsAsync(
-                    bankDetails);
+                await _service.UpdateBankDetailsAsync(bankDetails);
 
             if (!result)
-                return NotFound();
+            {
+                return NotFound(new
+                {
+                    message = "Bank details not found."
+                });
+            }
 
             return Ok(new
             {
@@ -86,9 +123,40 @@ namespace Marketplacesellerportal.Payments.Controllers
                 await _service.GetPaymentGatewayAsync();
 
             if (result == null)
-                return NotFound();
+                return NotFound(new
+                {
+                    message = "Payment gateway settings not found."
+                });
 
             return Ok(result);
+        }
+
+        // =========================================================
+        // PAYMENT GATEWAY
+        // POST: /api/settings/payment/gateway
+        // =========================================================
+
+        [HttpPost("gateway")]
+        public async Task<IActionResult> CreatePaymentGateway(
+            [FromBody] PaymentGatewayDto gateway)
+        {
+            if (!ModelState.IsValid)
+                return BadRequest(ModelState);
+
+            var result =
+                await _service.CreatePaymentGatewayAsync(gateway);
+
+            if (result == null)
+            {
+                return BadRequest(new
+                {
+                    message = "Unable to create payment gateway."
+                });
+            }
+
+            return StatusCode(
+                StatusCodes.Status201Created,
+                result);
         }
 
         // =========================================================
@@ -104,11 +172,15 @@ namespace Marketplacesellerportal.Payments.Controllers
                 return BadRequest(ModelState);
 
             var result =
-                await _service.UpdatePaymentGatewayAsync(
-                    gateway);
+                await _service.UpdatePaymentGatewayAsync(gateway);
 
             if (!result)
-                return NotFound();
+            {
+                return NotFound(new
+                {
+                    message = "Payment gateway settings not found."
+                });
+            }
 
             return Ok(new
             {
@@ -128,9 +200,40 @@ namespace Marketplacesellerportal.Payments.Controllers
                 await _service.GetUpiSettingsAsync();
 
             if (result == null)
-                return NotFound();
+                return NotFound(new
+                {
+                    message = "UPI settings not found."
+                });
 
             return Ok(result);
+        }
+
+        // =========================================================
+        // UPI SETTINGS
+        // POST: /api/settings/payment/upi
+        // =========================================================
+
+        [HttpPost("upi")]
+        public async Task<IActionResult> CreateUpiSettings(
+            [FromBody] UpiSettingsDto upiSettings)
+        {
+            if (!ModelState.IsValid)
+                return BadRequest(ModelState);
+
+            var result =
+                await _service.CreateUpiSettingsAsync(upiSettings);
+
+            if (result == null)
+            {
+                return BadRequest(new
+                {
+                    message = "Unable to create UPI settings."
+                });
+            }
+
+            return StatusCode(
+                StatusCodes.Status201Created,
+                result);
         }
 
         // =========================================================
@@ -146,11 +249,15 @@ namespace Marketplacesellerportal.Payments.Controllers
                 return BadRequest(ModelState);
 
             var result =
-                await _service.UpdateUpiSettingsAsync(
-                    upiSettings);
+                await _service.UpdateUpiSettingsAsync(upiSettings);
 
             if (!result)
-                return NotFound();
+            {
+                return NotFound(new
+                {
+                    message = "UPI settings not found."
+                });
+            }
 
             return Ok(new
             {

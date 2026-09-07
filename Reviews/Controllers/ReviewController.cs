@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿
+using Microsoft.AspNetCore.Mvc;
 using Marketplacesellerportal.Models;
 using Marketplacesellerportal.Reviews.Interfaces;
 
@@ -15,22 +16,42 @@ namespace Marketplacesellerportal.Reviews.Controllers
             _service = service;
         }
 
+
         // =========================================================
-        // GET ALL
+        // GET ALL REVIEWS
         //
         // GET /api/reviews
         //
-        // GET /api/reviews?search=excellent
-        //
-        // GET /api/reviews?rating=5&status=approved
-        //
-        // GET /api/reviews?page=1&limit=10
-        //
-        // GET /api/reviews?sort=date_desc
+        // Fetches ALL reviews at once.
         // =========================================================
 
         [HttpGet]
-        public async Task<IActionResult> GetAll(
+        public async Task<IActionResult> GetAllReviews()
+        {
+            var reviews = await _service.GetAllAsync();
+
+            return Ok(reviews);
+        }
+
+
+        // =========================================================
+        // GET FILTERED / SEARCHED / SORTED / PAGINATED REVIEWS
+        //
+        // GET /api/reviews/filter
+        //
+        // Examples:
+        //
+        // GET /api/reviews/filter?search=excellent
+        //
+        // GET /api/reviews/filter?rating=5&status=approved
+        //
+        // GET /api/reviews/filter?page=1&limit=10
+        //
+        // GET /api/reviews/filter?sort=date_desc
+        // =========================================================
+
+        [HttpGet("filter")]
+        public async Task<IActionResult> GetFilteredReviews(
             [FromQuery] string? search,
             [FromQuery] int? rating,
             [FromQuery] string? status,
@@ -48,13 +69,19 @@ namespace Marketplacesellerportal.Reviews.Controllers
                 var currentLimit = limit ?? 10;
 
                 if (currentPage < 1)
+                {
                     currentPage = 1;
+                }
 
                 if (currentLimit < 1)
+                {
                     currentLimit = 10;
+                }
 
                 if (currentLimit > 100)
+                {
                     currentLimit = 100;
+                }
 
                 var result = await _service.GetPagedAsync(
                     currentPage,
@@ -77,6 +104,7 @@ namespace Marketplacesellerportal.Reviews.Controllers
                 });
             }
 
+
             // =====================================================
             // SEARCH + RATING + STATUS
             // =====================================================
@@ -93,6 +121,7 @@ namespace Marketplacesellerportal.Reviews.Controllers
                 return Ok(result);
             }
 
+
             // =====================================================
             // SORTING
             // =====================================================
@@ -105,8 +134,12 @@ namespace Marketplacesellerportal.Reviews.Controllers
                 return Ok(result);
             }
 
+
             // =====================================================
-            // GET ALL
+            // DEFAULT
+            //
+            // If /filter is called without parameters,
+            // return all reviews.
             // =====================================================
 
             var all = await _service.GetAllAsync();
@@ -162,12 +195,10 @@ namespace Marketplacesellerportal.Reviews.Controllers
         // =========================================================
 
         [HttpGet("seller/{sellerId:int}")]
-        public async Task<IActionResult> GetBySeller(
-            int sellerId)
+        public async Task<IActionResult> GetBySeller(int sellerId)
         {
             var result =
-                await _service.GetBySellerIdAsync(
-                    sellerId);
+                await _service.GetBySellerIdAsync(sellerId);
 
             return Ok(result);
         }
@@ -180,12 +211,10 @@ namespace Marketplacesellerportal.Reviews.Controllers
         // =========================================================
 
         [HttpGet("customer/{customerId:int}")]
-        public async Task<IActionResult> GetByCustomer(
-            int customerId)
+        public async Task<IActionResult> GetByCustomer(int customerId)
         {
             var result =
-                await _service.GetByCustomerIdAsync(
-                    customerId);
+                await _service.GetByCustomerIdAsync(customerId);
 
             return Ok(result);
         }
@@ -198,12 +227,10 @@ namespace Marketplacesellerportal.Reviews.Controllers
         // =========================================================
 
         [HttpGet("product/{productId:int}")]
-        public async Task<IActionResult> GetByProduct(
-            int productId)
+        public async Task<IActionResult> GetByProduct(int productId)
         {
             var result =
-                await _service.GetByProductIdAsync(
-                    productId);
+                await _service.GetByProductIdAsync(productId);
 
             return Ok(result);
         }
@@ -216,12 +243,10 @@ namespace Marketplacesellerportal.Reviews.Controllers
         // =========================================================
 
         [HttpGet("rating/{rating:int}")]
-        public async Task<IActionResult> GetByRating(
-            int rating)
+        public async Task<IActionResult> GetByRating(int rating)
         {
             var result =
-                await _service.GetByRatingAsync(
-                    rating);
+                await _service.GetByRatingAsync(rating);
 
             return Ok(result);
         }
@@ -234,12 +259,10 @@ namespace Marketplacesellerportal.Reviews.Controllers
         // =========================================================
 
         [HttpGet("status/{status}")]
-        public async Task<IActionResult> GetByStatus(
-            string status)
+        public async Task<IActionResult> GetByStatus(string status)
         {
             var result =
-                await _service.GetByStatusAsync(
-                    status);
+                await _service.GetByStatusAsync(status);
 
             return Ok(result);
         }
@@ -256,7 +279,9 @@ namespace Marketplacesellerportal.Reviews.Controllers
             [FromBody] Review review)
         {
             if (!ModelState.IsValid)
+            {
                 return BadRequest(ModelState);
+            }
 
             var result =
                 await _service.CreateAsync(review);
@@ -283,7 +308,9 @@ namespace Marketplacesellerportal.Reviews.Controllers
             [FromBody] Review review)
         {
             if (!ModelState.IsValid)
+            {
                 return BadRequest(ModelState);
+            }
 
             var result =
                 await _service.UpdateAsync(
@@ -312,8 +339,7 @@ namespace Marketplacesellerportal.Reviews.Controllers
         // =========================================================
 
         [HttpDelete("{id:int}")]
-        public async Task<IActionResult> Delete(
-            int id)
+        public async Task<IActionResult> Delete(int id)
         {
             var result =
                 await _service.DeleteAsync(id);

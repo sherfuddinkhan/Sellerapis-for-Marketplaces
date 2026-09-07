@@ -77,6 +77,13 @@ namespace Marketplacesellerportal.ProductImages.Controllers
                 await _service.GetAllAsync());
         }
 
+        // GET: api/ProductImage/all
+        [HttpGet("all")]
+        public async Task<IActionResult> GetAllImages()
+        {
+            var images = await _service.GetAllAsync();
+            return Ok(images);
+        }
 
         // =========================================================
         // GET BY ID

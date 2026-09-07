@@ -19,6 +19,67 @@ namespace Marketplacesellerportal.Categories.Controllers
         }
 
         // =========================================================
+        // GET ALL CATEGORIES - LIST
+        //
+        // Purpose:
+        // Used for dropdowns / filters / selection
+        //
+        // GET:
+        // /api/categories/list
+        //
+        // Response:
+        // [
+        //     {
+        //         "categoryId": 1,
+        //         "categoryName": "Mobiles"
+        //     },
+        //     {
+        //         "categoryId": 2,
+        //         "categoryName": "Laptops"
+        //     }
+        // ]
+        // =========================================================
+
+        [HttpGet("list")]
+        public async Task<IActionResult> GetCategoryList()
+        {
+            var response = await _service.GetCategoriesAsync(
+                new CategoryListRequest
+                {
+                    Page = 1,
+                    Limit = int.MaxValue
+                }
+            );
+
+            var result = response.Items
+                .Select(c => new
+                {
+                    categoryId = c.CategoryId,
+                    categoryName = c.CategoryName
+                })
+                .ToList();
+
+            return Ok(result);
+        }
+        // =========================================================
+        // GET CATEGORY WITH PRODUCTS
+        // GET: /api/categories/5/products
+        // =========================================================
+
+        [HttpGet("{categoryId:int}/products")]
+        public async Task<IActionResult> GetCategoryWithProducts(
+            int categoryId)
+        {
+            var result =
+     await _service.GetProductsByCategoryAsync(
+         categoryId);
+
+            if (result == null)
+                return NotFound();
+
+            return Ok(result);
+        }
+        // =========================================================
         // GET ALL / SEARCH / FILTER / PAGINATION / SORT
         // =========================================================
         // GET:
