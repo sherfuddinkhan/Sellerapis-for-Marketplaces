@@ -132,7 +132,7 @@ namespace Marketplacesellerportal.SellerCustomers.Services
             var shipments = await _shipmentRepository.GetBySellerCustomerAsync(sellerId, customerId);
             var wishlists = await _wishlistRepository.GetBySellerCustomerAsync(sellerId, customerId);
             var wishlistItems = await _wishlistItemRepository.GetBySellerCustomerAsync(sellerId, customerId);
-
+           
             var response = new SellerCustomerWithProductsResponse
             {
                 CustomerId = customer.CustomerId,
@@ -190,6 +190,37 @@ namespace Marketplacesellerportal.SellerCustomers.Services
             response.Transactions.GoodsReceiptNotes = goodsReceiptNotes.Select(x => new SellerCustomerGoodsReceiptNoteResponse { GoodsReceiptNoteId = x.GoodsReceiptNoteId, PurchaseOrderId = x.PurchaseOrderId, GRNNumber = x.GRNNumber, ReceiptDate = x.ReceiptDate, Status = x.Status, Remarks = x.Remarks, CreatedDate = x.CreatedDate }).ToList();
             response.Transactions.GoodsReceiptItems = goodsReceiptItems.Select(x => new SellerCustomerGoodsReceiptItemResponse { GoodsReceiptItemId = x.GoodsReceiptItemId, GoodsReceiptNoteId = x.GoodsReceiptNoteId, ProductId = x.ProductId, ReceivedQuantity = x.ReceivedQuantity, AcceptedQuantity = x.AcceptedQuantity, RejectedQuantity = x.RejectedQuantity, Remarks = x.Remarks }).ToList();
             response.Transactions.SalesInvoices = salesInvoices.Select(x => new SellerCustomerSalesInvoiceResponse { SalesInvoiceId = x.SalesInvoiceId, SellerId = sellerId, CustomerId = customerId, SalesOrderId = x.SalesOrderId, InvoiceNumber = x.InvoiceNumber, InvoiceDate = x.InvoiceDate, SubTotal = x.SubTotal, DiscountAmount = x.DiscountAmount, TaxAmount = x.TaxAmount, TotalAmount = x.TotalAmount, PaidAmount = x.PaidAmount, BalanceAmount = x.BalanceAmount, PaymentStatus = x.PaymentStatus, Status = x.Status, Remarks = x.Remarks, CreatedDate = x.CreatedDate, UpdatedDate = x.UpdatedDate }).ToList();
+            response.Transactions.PurchaseReturns = purchaseReturns
+    .Select(x => new SellerCustomerPurchaseReturnResponse
+    {
+        PurchaseReturnId = x.PurchaseReturnId,
+
+        // Seller / Customer
+        SellerId = x.SellerId,
+        CustomerId = x.CustomerId,
+
+        // References
+        PurchaseOrderId = x.PurchaseOrderId,
+        GoodsReceiptNoteId = x.GoodsReceiptNoteId,
+        SupplierId = x.SupplierId,
+
+        // Return identification
+        PurchaseReturnNumber = x.PurchaseReturnNumber,
+
+        // Financial
+        TotalAmount = x.TotalAmount ?? 0,
+
+        // Return information
+        ReturnReason = x.Reason,
+        Status = x.Status,
+        ReturnDate = x.ReturnDate,
+
+        // Audit
+        CreatedDate = x.CreatedDate,
+        UpdatedDate = x.UpdatedDate
+
+    })
+    .ToList();
             response.Transactions.PurchaseOrders = purchaseOrders.Select(x => new SellerCustomerPurchaseOrderResponse { PurchaseOrderId = x.PurchaseOrderId, SellerId = x.SellerId, CustomerId = customerId, SupplierId = x.SupplierId, PurchaseOrderNumber = x.PurchaseOrderNumber, OrderDate = x.OrderDate, ExpectedDeliveryDate = x.ExpectedDeliveryDate, Status = x.Status, TotalAmount = x.TotalAmount, Remarks = x.Remarks, CreatedDate = x.CreatedDate, UpdatedDate = x.UpdatedDate }).ToList();
             response.Transactions.PurchaseOrderItems = purchaseOrderItems.Select(x => new SellerCustomerPurchaseOrderItemResponse { PurchaseOrderItemId = x.PurchaseOrderItemId, SellerId = x.SellerId, CustomerId = customerId, PurchaseOrderId = x.PurchaseOrderId, ProductId = x.ProductId, Quantity = x.Quantity, UnitPrice = x.UnitPrice, Discount = x.Discount, TaxAmount = x.TaxAmount, TotalAmount = x.TotalAmount }).ToList();
             response.Transactions.Notifications = notifications.Select(x => new SellerCustomerNotificationResponse { NotificationId = x.NotificationId, SellerId = x.SellerId, CustomerId = customerId, Title = x.Title, Message = x.Message, IsRead = x.IsRead, CreatedDate = x.CreatedDate }).ToList();

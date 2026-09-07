@@ -15,7 +15,19 @@ namespace Marketplacesellerportal.DeliveryChallans.Controllers
         {
             _service = service;
         }
+        // =====================================================
+        // GET ALL DELIVERY CHALLANS
+        // GET:
+        // /api/DeliveryChallan/all
+        // =====================================================
 
+        [HttpGet("all")]
+        public async Task<IActionResult> GetAllDeliveryChallans()
+        {
+            var result = await _service.GetAllAsync();
+
+            return Ok(result);
+        }
         // =====================================================
         // GET ALL / SEARCH / SORT / PAGINATION
         // =====================================================
