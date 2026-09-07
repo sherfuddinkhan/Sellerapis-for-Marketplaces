@@ -15,6 +15,18 @@ namespace Marketplacesellerportal.GoodsReceiptItems.Controllers
         {
             _service = service;
         }
+        // =========================================================
+        // GET ALL ITEMS AT ONCE
+        // GET: /api/goods-receipt-note-items/all
+        // =========================================================
+
+        [HttpGet("all")]
+        public async Task<IActionResult> GetAllItems()
+        {
+            var result = await _service.GetAllAsync();
+
+            return Ok(result);
+        }
 
         // =========================================================
         // GET ALL

@@ -17,20 +17,8 @@ namespace Marketplacesellerportal.ProductAttributes.Controllers
         }
 
         // =========================================================
-        // GET ALL / SEARCH / SORT / PAGINATION
-        // =========================================================
-        //
+        // GET ALL
         // GET /api/product-attributes
-        //
-        // SEARCH:
-        // GET /api/product-attributes?search=color
-        //
-        // SORT:
-        // GET /api/product-attributes?sort=name_asc
-        //
-        // PAGINATION:
-        // GET /api/product-attributes?page=1&limit=15
-        //
         // =========================================================
 
         [HttpGet]
@@ -40,10 +28,7 @@ namespace Marketplacesellerportal.ProductAttributes.Controllers
             [FromQuery] int? page,
             [FromQuery] int? limit)
         {
-            // -----------------------------------------------------
             // SEARCH
-            // -----------------------------------------------------
-
             if (!string.IsNullOrWhiteSpace(search))
             {
                 var searchResult =
@@ -52,10 +37,7 @@ namespace Marketplacesellerportal.ProductAttributes.Controllers
                 return Ok(searchResult);
             }
 
-            // -----------------------------------------------------
             // PAGINATION
-            // -----------------------------------------------------
-
             if (page.HasValue || limit.HasValue)
             {
                 int currentPage = page ?? 1;
@@ -84,10 +66,7 @@ namespace Marketplacesellerportal.ProductAttributes.Controllers
                 });
             }
 
-            // -----------------------------------------------------
             // SORTING
-            // -----------------------------------------------------
-
             if (!string.IsNullOrWhiteSpace(sort))
             {
                 var sortedResult =
@@ -96,12 +75,26 @@ namespace Marketplacesellerportal.ProductAttributes.Controllers
                 return Ok(sortedResult);
             }
 
-            // -----------------------------------------------------
-            // GET ALL
-            // -----------------------------------------------------
+            // ALL RECORDS
+            var result =
+                await _service.GetAllAsync();
 
-            return Ok(
-                await _service.GetAllAsync());
+            return Ok(result);
+        }
+
+
+        // =========================================================
+        // GET ALL - EXPLICIT
+        // GET /api/product-attributes/all
+        // =========================================================
+
+        [HttpGet("all")]
+        public async Task<IActionResult> GetAllAttributes()
+        {
+            var result =
+                await _service.GetAllAsync();
+
+            return Ok(result);
         }
 
 
@@ -111,14 +104,28 @@ namespace Marketplacesellerportal.ProductAttributes.Controllers
         // =========================================================
 
         [HttpGet("{id:int}")]
-        public async Task<IActionResult> GetById(
-            int id)
+        public async Task<IActionResult> GetById(int id)
         {
+            if (id <= 0)
+            {
+                return BadRequest(new
+                {
+                    message =
+                        "Product attribute ID must be greater than 0."
+                });
+            }
+
             var result =
                 await _service.GetByIdAsync(id);
 
             if (result == null)
-                return NotFound();
+            {
+                return NotFound(new
+                {
+                    message =
+                        "Product attribute not found."
+                });
+            }
 
             return Ok(result);
         }
@@ -133,9 +140,17 @@ namespace Marketplacesellerportal.ProductAttributes.Controllers
         public async Task<IActionResult> GetByProduct(
             int productId)
         {
+            if (productId <= 0)
+            {
+                return BadRequest(new
+                {
+                    message =
+                        "Product ID must be greater than 0."
+                });
+            }
+
             var result =
-                await _service.GetByProductIdAsync(
-                    productId);
+                await _service.GetByProductIdAsync(productId);
 
             return Ok(result);
         }
@@ -151,8 +166,13 @@ namespace Marketplacesellerportal.ProductAttributes.Controllers
             string attributeName)
         {
             if (string.IsNullOrWhiteSpace(attributeName))
-                return BadRequest(
-                    "Attribute name is required.");
+            {
+                return BadRequest(new
+                {
+                    message =
+                        "Attribute name is required."
+                });
+            }
 
             var result =
                 await _service.GetByAttributeNameAsync(
@@ -189,9 +209,26 @@ namespace Marketplacesellerportal.ProductAttributes.Controllers
             if (!ModelState.IsValid)
                 return BadRequest(ModelState);
 
+            if (productAttribute == null)
+            {
+                return BadRequest(new
+                {
+                    message =
+                        "Product attribute data is required."
+                });
+            }
+
             var result =
-                await _service.CreateAsync(
-                    productAttribute);
+                await _service.CreateAsync(productAttribute);
+
+            if (result == null)
+            {
+                return BadRequest(new
+                {
+                    message =
+                        "Unable to create product attribute."
+                });
+            }
 
             return CreatedAtAction(
                 nameof(GetById),
@@ -213,8 +250,26 @@ namespace Marketplacesellerportal.ProductAttributes.Controllers
             int id,
             [FromBody] ProductAttribute productAttribute)
         {
+            if (id <= 0)
+            {
+                return BadRequest(new
+                {
+                    message =
+                        "Product attribute ID must be greater than 0."
+                });
+            }
+
             if (!ModelState.IsValid)
                 return BadRequest(ModelState);
+
+            if (productAttribute == null)
+            {
+                return BadRequest(new
+                {
+                    message =
+                        "Product attribute data is required."
+                });
+            }
 
             var updated =
                 await _service.UpdateAsync(
@@ -222,7 +277,13 @@ namespace Marketplacesellerportal.ProductAttributes.Controllers
                     productAttribute);
 
             if (!updated)
-                return NotFound();
+            {
+                return NotFound(new
+                {
+                    message =
+                        "Product attribute not found."
+                });
+            }
 
             return Ok(new
             {
@@ -238,14 +299,28 @@ namespace Marketplacesellerportal.ProductAttributes.Controllers
         // =========================================================
 
         [HttpDelete("{id:int}")]
-        public async Task<IActionResult> Delete(
-            int id)
+        public async Task<IActionResult> Delete(int id)
         {
+            if (id <= 0)
+            {
+                return BadRequest(new
+                {
+                    message =
+                        "Product attribute ID must be greater than 0."
+                });
+            }
+
             var deleted =
                 await _service.DeleteAsync(id);
 
             if (!deleted)
-                return NotFound();
+            {
+                return NotFound(new
+                {
+                    message =
+                        "Product attribute not found."
+                });
+            }
 
             return Ok(new
             {
@@ -255,4 +330,3 @@ namespace Marketplacesellerportal.ProductAttributes.Controllers
         }
     }
 }
-

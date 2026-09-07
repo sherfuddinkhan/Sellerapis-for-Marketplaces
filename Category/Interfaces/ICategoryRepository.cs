@@ -1,4 +1,5 @@
 ﻿using Marketplacesellerportal.Category.DTOs;
+using Marketplacesellerportal.Models;
 using CategoryModel = Marketplacesellerportal.Models.Category;
 
 namespace Marketplacesellerportal.Categories.Interfaces
@@ -16,7 +17,7 @@ namespace Marketplacesellerportal.Categories.Interfaces
             IEnumerable<int> categoryIds);
 
         Task<IEnumerable<CategoryModel>> GetActiveAsync();
-
+       
         Task AddAsync(CategoryModel category);
 
         Task UpdateAsync(CategoryModel category);
@@ -24,7 +25,9 @@ namespace Marketplacesellerportal.Categories.Interfaces
         Task DeleteAsync(CategoryModel category);
 
         Task SaveChangesAsync();
-
+        Task<IEnumerable<Product>>
+           GetProductsByCategoryAsync(
+               int categoryId);
 
         // =====================================================
         // SEARCH + FILTER + PAGINATION + SORTING

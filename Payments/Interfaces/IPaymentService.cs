@@ -1,6 +1,7 @@
 ﻿using Marketplacesellerportal.Models;
 using Marketplacesellerportal.Payments.DTOs;
-using System;
+using System.Collections.Generic;
+using System.Threading.Tasks;
 
 namespace Marketplacesellerportal.Payments.Interfaces
 {
@@ -20,12 +21,11 @@ namespace Marketplacesellerportal.Payments.Interfaces
         Task<IEnumerable<Payment>>
             GetByOrderIdAsync(
                 int orderId);
-        
-Task<IEnumerable<Payment>>
-    GetBySellerCustomerAsync(
-        int sellerId,
-        int customerId);
 
+        Task<IEnumerable<Payment>>
+            GetBySellerCustomerAsync(
+                int sellerId,
+                int customerId);
 
         Task<IEnumerable<Payment>>
             GetBySellerIdAsync(
@@ -34,7 +34,10 @@ Task<IEnumerable<Payment>>
         Task<IEnumerable<Payment>>
             GetByCustomerIdAsync(
                 int customerId);
-        Task<Payment?> GetPaymentSettingsAsync();
+
+        Task<Payment?>
+            GetPaymentSettingsAsync();
+
         Task<IEnumerable<Payment>>
             GetByStatusAsync(
                 string status);
@@ -47,6 +50,7 @@ Task<IEnumerable<Payment>>
             GetByTransactionIdAsync(
                 string transactionId);
 
+
         // =========================================================
         // SEARCH
         // =========================================================
@@ -55,12 +59,14 @@ Task<IEnumerable<Payment>>
             SearchAsync(
                 string? search);
 
+
         // =========================================================
         // STATISTICS
         // =========================================================
 
         Task<PaymentStatistics>
             GetStatisticsAsync();
+
 
         // =========================================================
         // PAGINATION
@@ -73,6 +79,7 @@ Task<IEnumerable<Payment>>
                 int page,
                 int limit);
 
+
         // =========================================================
         // SORTING
         // =========================================================
@@ -81,6 +88,7 @@ Task<IEnumerable<Payment>>
             GetSortedAsync(
                 string? sort);
 
+
         // =========================================================
         // BANK DETAILS
         // =========================================================
@@ -88,9 +96,16 @@ Task<IEnumerable<Payment>>
         Task<BankDetailsDto?>
             GetBankDetailsAsync();
 
+        // POST
+        Task<BankDetailsDto?>
+            CreateBankDetailsAsync(
+                BankDetailsDto bankDetails);
+
+        // PUT
         Task<bool>
             UpdateBankDetailsAsync(
                 BankDetailsDto bankDetails);
+
 
         // =========================================================
         // PAYMENT GATEWAY
@@ -99,9 +114,16 @@ Task<IEnumerable<Payment>>
         Task<PaymentGatewayDto?>
             GetPaymentGatewayAsync();
 
+        // POST
+        Task<PaymentGatewayDto?>
+            CreatePaymentGatewayAsync(
+                PaymentGatewayDto gateway);
+
+        // PUT
         Task<bool>
             UpdatePaymentGatewayAsync(
                 PaymentGatewayDto gateway);
+
 
         // =========================================================
         // UPI SETTINGS
@@ -110,20 +132,28 @@ Task<IEnumerable<Payment>>
         Task<UpiSettingsDto?>
             GetUpiSettingsAsync();
 
+        // POST
+        Task<UpiSettingsDto?>
+            CreateUpiSettingsAsync(
+                UpiSettingsDto upiSettings);
+
+        // PUT
         Task<bool>
             UpdateUpiSettingsAsync(
                 UpiSettingsDto upiSettings);
 
+
         // =========================================================
-        // CREATE
+        // PAYMENT CREATE
         // =========================================================
 
         Task<Payment>
             CreateAsync(
                 Payment payment);
 
+
         // =========================================================
-        // UPDATE
+        // PAYMENT UPDATE
         // =========================================================
 
         Task<bool>
@@ -131,8 +161,9 @@ Task<IEnumerable<Payment>>
                 int paymentId,
                 Payment payment);
 
+
         // =========================================================
-        // DELETE
+        // PAYMENT DELETE
         // =========================================================
 
         Task<bool>
@@ -140,4 +171,3 @@ Task<IEnumerable<Payment>>
                 int paymentId);
     }
 }
-

@@ -1,6 +1,6 @@
 ﻿using Marketplacesellerportal.Categories.Interfaces;
 using Marketplacesellerportal.Category.DTOs;
-
+using Marketplacesellerportal.Models;
 using CategoryModel = Marketplacesellerportal.Models.Category;
 
 namespace Marketplacesellerportal.Categories.Services
@@ -34,7 +34,18 @@ namespace Marketplacesellerportal.Categories.Services
         {
             return await _repository.GetByIdAsync(categoryId);
         }
+        // =========================================================
+        // GET PRODUCTS BY CATEGORY
+        // =========================================================
 
+        public async Task<IEnumerable<Product>>
+            GetProductsByCategoryAsync(
+                int categoryId)
+        {
+            return await _repository
+                .GetProductsByCategoryAsync(
+                    categoryId);
+        }
 
         // =========================================================
         // GET BY NAME

@@ -9,15 +9,28 @@ namespace Marketplacesellerportal.ProductInventories.Controllers
     public class ProductInventoryController : ControllerBase
     {
         private readonly IProductInventoryService _service;
-
-        public ProductInventoryController(
-            IProductInventoryService service)
+    public ProductInventoryController(
+        IProductInventoryService service)
         {
             _service = service;
         }
 
         // =========================================================
+        // GET ALL AT ONCE
+        // GET /api/product-inventories/all
+        // =========================================================
+
+        [HttpGet("all")]
+        public async Task<IActionResult> GetAllAtOnce()
+        {
+            var result = await _service.GetAllAsync();
+
+            return Ok(result);
+        }
+
+        // =========================================================
         // GET ALL / SEARCH / FILTER / SORT / PAGINATION
+        // GET /api/product-inventories
         // =========================================================
 
         [HttpGet]
@@ -108,6 +121,98 @@ namespace Marketplacesellerportal.ProductInventories.Controllers
         }
 
         // =========================================================
+        // GET BY PRODUCT
+        // GET /api/product-inventories/product/1
+        // =========================================================
+
+        [HttpGet("product/{productId:int}")]
+        public async Task<IActionResult> GetByProductId(
+            int productId)
+        {
+            var result =
+                await _service.GetByProductIdAsync(productId);
+
+            return Ok(result);
+        }
+
+        // =========================================================
+        // GET BY SELLER
+        // GET /api/product-inventories/seller/1
+        // =========================================================
+
+        [HttpGet("seller/{sellerId:int}")]
+        public async Task<IActionResult> GetBySellerId(
+            int sellerId)
+        {
+            var result =
+                await _service.GetBySellerIdAsync(sellerId);
+
+            return Ok(result);
+        }
+
+        // =========================================================
+        // GET BY SELLER + CUSTOMER
+        // GET /api/product-inventories/seller/1/customer/1
+        // =========================================================
+
+        [HttpGet("seller/{sellerId:int}/customer/{customerId:int}")]
+        public async Task<IActionResult> GetBySellerCustomer(
+            int sellerId,
+            int customerId)
+        {
+            var result =
+                await _service.GetBySellerCustomerAsync(
+                    sellerId,
+                    customerId);
+
+            return Ok(result);
+        }
+
+        // =========================================================
+        // GET BY WAREHOUSE
+        // GET /api/product-inventories/warehouse/1
+        // =========================================================
+
+        [HttpGet("warehouse/{warehouseId:int}")]
+        public async Task<IActionResult> GetByWarehouseId(
+            int warehouseId)
+        {
+            var result =
+                await _service.GetByWarehouseIdAsync(
+                    warehouseId);
+
+            return Ok(result);
+        }
+
+        // =========================================================
+        // GET SPECIFIC INVENTORY
+        // GET /api/product-inventories/inventory
+        // =========================================================
+
+        [HttpGet("inventory")]
+        public async Task<IActionResult> GetInventory(
+            [FromQuery] int productId,
+            [FromQuery] int warehouseId,
+            [FromQuery] int locationId)
+        {
+            var result =
+                await _service.GetInventoryAsync(
+                    productId,
+                    warehouseId,
+                    locationId);
+
+            if (result == null)
+            {
+                return NotFound(new
+                {
+                    message = "Product inventory not found."
+                });
+            }
+
+            return Ok(result);
+        }
+
+        // =========================================================
         // GET BY ID
         // GET /api/product-inventories/1
         // =========================================================
@@ -132,22 +237,6 @@ namespace Marketplacesellerportal.ProductInventories.Controllers
         }
 
         // =========================================================
-        // GET BY PRODUCT
-        // GET /api/product-inventories/product/1
-        // =========================================================
-
-        [HttpGet("product/{productId:int}")]
-        public async Task<IActionResult> GetByProductId(
-            int productId)
-        {
-            var result =
-                await _service.GetByProductIdAsync(
-                    productId);
-
-            return Ok(result);
-        }
-
-        // =========================================================
         // GET BY PRODUCT IDS
         // POST /api/product-inventories/products
         // =========================================================
@@ -159,82 +248,6 @@ namespace Marketplacesellerportal.ProductInventories.Controllers
             var result =
                 await _service.GetByProductIdsAsync(
                     productIds);
-
-            return Ok(result);
-        }
-
-        // =========================================================
-        // GET BY SELLER
-        // GET /api/product-inventories/seller/1
-        // =========================================================
-
-        [HttpGet("seller/{sellerId:int}")]
-        public async Task<IActionResult> GetBySellerId(
-            int sellerId)
-        {
-            var result =
-                await _service.GetBySellerIdAsync(
-                    sellerId);
-
-            return Ok(result);
-        }
-
-        // =========================================================
-        // GET BY WAREHOUSE
-        // =========================================================
-
-        [HttpGet("warehouse/{warehouseId:int}")]
-        public async Task<IActionResult> GetByWarehouseId(
-            int warehouseId)
-        {
-            var result =
-                await _service.GetByWarehouseIdAsync(
-                    warehouseId);
-
-            return Ok(result);
-        }
-
-        // =========================================================
-        // GET BY SELLER + CUSTOMER
-        // =========================================================
-
-        [HttpGet(
-            "seller/{sellerId:int}/customer/{customerId:int}")]
-        public async Task<IActionResult> GetBySellerCustomer(
-            int sellerId,
-            int customerId)
-        {
-            var result =
-                await _service.GetBySellerCustomerAsync(
-                    sellerId,
-                    customerId);
-
-            return Ok(result);
-        }
-
-        // =========================================================
-        // GET SPECIFIC INVENTORY
-        // =========================================================
-
-        [HttpGet("inventory")]
-        public async Task<IActionResult> GetInventory(
-            [FromQuery] int productId,
-            [FromQuery] int warehouseId,
-            [FromQuery] int locationId)
-        {
-            var result =
-                await _service.GetInventoryAsync(
-                    productId,
-                    warehouseId,
-                    locationId);
-
-            if (result == null)
-            {
-                return NotFound(new
-                {
-                    message = "Product inventory not found."
-                });
-            }
 
             return Ok(result);
         }
@@ -299,6 +312,7 @@ namespace Marketplacesellerportal.ProductInventories.Controllers
 
         // =========================================================
         // DELETE
+        // DELETE /api/product-inventories/1
         // =========================================================
 
         [HttpDelete("{productInventoryId:int}")]

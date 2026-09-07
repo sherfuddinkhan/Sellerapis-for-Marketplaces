@@ -1,6 +1,8 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Marketplacesellerportal.Models;
+using Marketplacesellerportal.WishlistItems.DTOs;
 using Marketplacesellerportal.WishlistItems.Interfaces;
+
 
 namespace Marketplacesellerportal.WishlistItems.Controllers
 {
@@ -20,7 +22,42 @@ namespace Marketplacesellerportal.WishlistItems.Controllers
         {
             return Ok(await _service.GetAllAsync());
         }
+        [HttpPost]
+        public async Task<IActionResult> Create(
+    [FromBody] WishlistItemCreateDto dto)
+        {
+            if (dto == null)
+                return BadRequest("Request body is required.");
 
+            if (dto.WishlistId <= 0)
+                return BadRequest("WishlistId must be greater than 0.");
+
+            if (dto.SellerId <= 0)
+                return BadRequest("SellerId must be greater than 0.");
+
+            if (dto.CustomerId <= 0)
+                return BadRequest("CustomerId must be greater than 0.");
+
+            if (dto.ProductId <= 0)
+                return BadRequest("ProductId must be greater than 0.");
+
+            var wishlistItem = new WishlistItem
+            {
+                WishlistId = dto.WishlistId,
+                SellerId = dto.SellerId,
+                CustomerId = dto.CustomerId,
+                ProductId = dto.ProductId,
+                CreatedDate = DateTime.UtcNow
+            };
+
+            var result = await _service.CreateAsync(wishlistItem);
+
+            return CreatedAtAction(
+                nameof(GetById),
+                new { id = result.WishlistItemId },
+                result
+            );
+        }
         [HttpGet("{id}")]
         public async Task<IActionResult> GetById(int id)
         {
@@ -44,12 +81,7 @@ namespace Marketplacesellerportal.WishlistItems.Controllers
             return Ok(await _service.GetByProductAsync(productId));
         }
 
-        [HttpPost]
-        public async Task<IActionResult> Create(WishlistItem wishlistItem)
-        {
-            return Ok(await _service.CreateAsync(wishlistItem));
-        }
-
+            
         [HttpPut("{id}")]
         public async Task<IActionResult> Update(int id, WishlistItem wishlistItem)
         {

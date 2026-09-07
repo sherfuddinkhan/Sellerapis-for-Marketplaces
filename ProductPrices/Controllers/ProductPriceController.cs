@@ -16,6 +16,25 @@ namespace Marketplacesellerportal.ProductPrices.Controllers
             _service = service;
         }
 
+      
+// =========================================================
+// GET ALL AT ONCE
+//
+// GET /api/product-prices/all
+//
+// Fetches ALL product prices without pagination,
+// search, filter, or sorting.
+// =========================================================
+
+[HttpGet("all")]
+public async Task<IActionResult> GetAllAtOnce()
+        {
+            var result = await _service.GetAllAsync();
+
+            return Ok(result);
+        }
+
+
         // =========================================================
         // GET ALL / SEARCH / FILTER / SORT
         //

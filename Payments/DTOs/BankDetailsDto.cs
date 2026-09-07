@@ -4,6 +4,9 @@ namespace Marketplacesellerportal.Payments.DTOs
 {
     public class BankDetailsDto
     {
+        public int SellerId { get; set; }
+
+        public int CustomerId { get; set; }
         public string? BankName { get; set; }
 
         public string? AccountHolderName { get; set; }

@@ -2,6 +2,8 @@
 {
     public class PaymentGatewayDto
     {
+        public int SellerId { get; set; }
+        public int CustomerId { get; set; }
         public string? GatewayName { get; set; }
 
         public string? GatewayMerchantId { get; set; }

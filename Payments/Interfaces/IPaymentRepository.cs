@@ -1,6 +1,5 @@
 ﻿using Marketplacesellerportal.Models;
 using Marketplacesellerportal.Payments.DTOs;
-using System;
 
 namespace Marketplacesellerportal.Payments.Interfaces
 {
@@ -23,16 +22,16 @@ namespace Marketplacesellerportal.Payments.Interfaces
 
         Task<IEnumerable<Payment>> GetByCustomerIdAsync(
             int customerId);
-        
-Task<IEnumerable<Payment>>
-    GetBySellerCustomerAsync(
-        int sellerId,
-        int customerId);
 
+        Task<IEnumerable<Payment>> GetBySellerCustomerAsync(
+            int sellerId,
+            int customerId);
 
         Task<IEnumerable<Payment>> GetByStatusAsync(
             string status);
+
         Task<Payment?> GetPaymentSettingsAsync();
+
         Task<IEnumerable<Payment>> GetByPaymentMethodAsync(
             string paymentMethod);
 
@@ -59,6 +58,8 @@ Task<IEnumerable<Payment>>
 
         Task<BankDetailsDto?> GetBankDetailsAsync();
 
+      
+
         Task<bool> UpdateBankDetailsAsync(
             BankDetailsDto bankDetails);
 
@@ -69,6 +70,8 @@ Task<IEnumerable<Payment>>
 
         Task<PaymentGatewayDto?> GetPaymentGatewayAsync();
 
+      
+
         Task<bool> UpdatePaymentGatewayAsync(
             PaymentGatewayDto gateway);
 
@@ -78,13 +81,22 @@ Task<IEnumerable<Payment>>
         // =========================================================
 
         Task<UpiSettingsDto?> GetUpiSettingsAsync();
+        Task<BankDetailsDto?> CreateBankDetailsAsync(
+    BankDetailsDto bankDetails);
+
+        Task<PaymentGatewayDto?> CreatePaymentGatewayAsync(
+            PaymentGatewayDto gateway);
+
+        Task<UpiSettingsDto?> CreateUpiSettingsAsync(
+            UpiSettingsDto upiSettings);
+
 
         Task<bool> UpdateUpiSettingsAsync(
             UpiSettingsDto upiSettings);
 
 
         // =========================================================
-        // CREATE
+        // PAYMENT CREATE
         // =========================================================
 
         Task AddAsync(
@@ -92,7 +104,7 @@ Task<IEnumerable<Payment>>
 
 
         // =========================================================
-        // UPDATE
+        // PAYMENT UPDATE
         // =========================================================
 
         Task UpdateAsync(
@@ -100,7 +112,7 @@ Task<IEnumerable<Payment>>
 
 
         // =========================================================
-        // DELETE
+        // PAYMENT DELETE
         // =========================================================
 
         Task DeleteAsync(
@@ -114,3 +126,4 @@ Task<IEnumerable<Payment>>
         Task SaveChangesAsync();
     }
 }
+

@@ -30,14 +30,17 @@ namespace Marketplacesellerportal.Payments.Repositories
         // GET BY ID
         // =========================================================
 
-        public async Task<Payment?> GetByIdAsync(
-            int paymentId)
+        public async Task<Payment?> GetByIdAsync(int paymentId)
         {
             return await _context.Payments
                 .AsNoTracking()
                 .FirstOrDefaultAsync(x =>
                     x.PaymentId == paymentId);
         }
+
+        // =========================================================
+        // GET PAYMENT SETTINGS
+        // =========================================================
 
         public async Task<Payment?> GetPaymentSettingsAsync()
         {
@@ -46,6 +49,7 @@ namespace Marketplacesellerportal.Payments.Repositories
                 .OrderByDescending(x => x.PaymentId)
                 .FirstOrDefaultAsync();
         }
+
         // =========================================================
         // GET BY ORDER ID
         // =========================================================
@@ -59,11 +63,14 @@ namespace Marketplacesellerportal.Payments.Repositories
                     x.OrderId == orderId)
                 .ToListAsync();
         }
-        
-public async Task<IEnumerable<Payment>>
-    GetBySellerCustomerAsync(
-        int sellerId,
-        int customerId)
+
+        // =========================================================
+        // GET BY SELLER + CUSTOMER
+        // =========================================================
+
+        public async Task<IEnumerable<Payment>> GetBySellerCustomerAsync(
+            int sellerId,
+            int customerId)
         {
             return await _context.Payments
                 .AsNoTracking()
@@ -72,7 +79,6 @@ public async Task<IEnumerable<Payment>>
                     x.CustomerId == customerId)
                 .ToListAsync();
         }
-
 
         // =========================================================
         // GET BY SELLER ID
@@ -121,9 +127,8 @@ public async Task<IEnumerable<Payment>>
         // GET BY PAYMENT METHOD
         // =========================================================
 
-        public async Task<IEnumerable<Payment>>
-            GetByPaymentMethodAsync(
-                string paymentMethod)
+        public async Task<IEnumerable<Payment>> GetByPaymentMethodAsync(
+            string paymentMethod)
         {
             return await _context.Payments
                 .AsNoTracking()
@@ -183,8 +188,7 @@ public async Task<IEnumerable<Payment>>
         // STATISTICS
         // =========================================================
 
-        public async Task<PaymentStatistics>
-            GetStatisticsAsync()
+        public async Task<PaymentStatistics> GetStatisticsAsync()
         {
             var query = _context.Payments
                 .AsNoTracking();
@@ -300,9 +304,8 @@ public async Task<IEnumerable<Payment>>
         // SORTING
         // =========================================================
 
-        public async Task<IEnumerable<Payment>>
-            GetSortedAsync(
-                string? sort)
+        public async Task<IEnumerable<Payment>> GetSortedAsync(
+            string? sort)
         {
             var query = _context.Payments
                 .AsNoTracking()
@@ -379,92 +382,390 @@ public async Task<IEnumerable<Payment>>
         }
 
         // =========================================================
-        // BANK DETAILS
+        // BANK DETAILS - GET
+        // GET: /api/settings/payment/bank
         // =========================================================
 
         public async Task<BankDetailsDto?> GetBankDetailsAsync()
         {
-            // TODO:
-            // Implement after BankDetails storage/table is created.
+            var payment = await _context.Payments
+                .AsNoTracking()
+                .OrderByDescending(x => x.PaymentId)
+                .FirstOrDefaultAsync();
 
-            return await Task.FromResult<BankDetailsDto?>(
-                null);
+            if (payment == null)
+                return null;
+
+            return new BankDetailsDto
+            {
+                BankName = payment.BankName,
+                AccountHolderName = payment.AccountHolderName,
+                AccountNumber = payment.AccountNumber,
+                IFSCCode = payment.IFSCCode,
+                BranchName = payment.BranchName
+            };
         }
+
+        // =========================================================
+        // BANK DETAILS - CREATE
+        // POST: /api/settings/payment/bank
+        // =========================================================
+
+        public async Task<BankDetailsDto?> CreateBankDetailsAsync(
+    BankDetailsDto bankDetails)
+        {
+            if (bankDetails == null)
+                return null;
+
+            try
+            {
+                var settings = await _context.PaymentSettings
+                    .FirstOrDefaultAsync(x =>
+                        x.SellerId == bankDetails.SellerId &&
+                        x.CustomerId == bankDetails.CustomerId);
+
+                if (settings == null)
+                {
+                    settings = new PaymentSettings
+                    {
+                        SellerId = bankDetails.SellerId,
+                        CustomerId = bankDetails.CustomerId,
+
+                        BankName = bankDetails.BankName,
+                        AccountHolderName = bankDetails.AccountHolderName,
+                        AccountNumber = bankDetails.AccountNumber,
+                        IFSCCode = bankDetails.IFSCCode,
+                        BranchName = bankDetails.BranchName,
+
+                        UpdatedDate = DateTime.UtcNow
+                    };
+
+                    await _context.PaymentSettings.AddAsync(settings);
+                }
+                else
+                {
+                    settings.BankName = bankDetails.BankName;
+                    settings.AccountHolderName = bankDetails.AccountHolderName;
+                    settings.AccountNumber = bankDetails.AccountNumber;
+                    settings.IFSCCode = bankDetails.IFSCCode;
+                    settings.BranchName = bankDetails.BranchName;
+
+                    settings.UpdatedDate = DateTime.UtcNow;
+                }
+
+                await _context.SaveChangesAsync();
+
+                return new BankDetailsDto
+                {
+                    SellerId = settings.SellerId,
+                    CustomerId = settings.CustomerId,
+
+                    BankName = settings.BankName,
+                    AccountHolderName = settings.AccountHolderName,
+                    AccountNumber = settings.AccountNumber,
+                    IFSCCode = settings.IFSCCode,
+                    BranchName = settings.BranchName
+                };
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(
+                    "==================================================");
+
+                Console.WriteLine(
+                    "CREATE BANK DETAILS ERROR");
+
+                Console.WriteLine(
+                    ex.ToString());
+
+                Console.WriteLine(
+                    "==================================================");
+
+                throw;
+            }
+        }
+
+        // =========================================================
+        // BANK DETAILS - UPDATE
+        // PUT: /api/settings/payment/bank
+        // =========================================================
 
         public async Task<bool> UpdateBankDetailsAsync(
             BankDetailsDto bankDetails)
         {
-            // TODO:
-            // Implement after BankDetails storage/table is created.
+            var payment = await _context.Payments
+                .OrderByDescending(x => x.PaymentId)
+                .FirstOrDefaultAsync();
 
-            return await Task.FromResult(false);
+            if (payment == null)
+                return false;
+
+            payment.BankName =
+                bankDetails.BankName;
+
+            payment.AccountHolderName =
+                bankDetails.AccountHolderName;
+
+            payment.AccountNumber =
+                bankDetails.AccountNumber;
+
+            payment.IFSCCode =
+                bankDetails.IFSCCode;
+
+            payment.BranchName =
+                bankDetails.BranchName;
+
+            payment.UpdatedDate =
+                DateTime.UtcNow;
+
+            await _context.SaveChangesAsync();
+
+            return true;
         }
 
         // =========================================================
-        // PAYMENT GATEWAY
+        // PAYMENT GATEWAY - GET
+        // GET: /api/settings/payment/gateway
         // =========================================================
 
-        public async Task<PaymentGatewayDto?>
-            GetPaymentGatewayAsync()
+        public async Task<PaymentGatewayDto?> GetPaymentGatewayAsync()
         {
-            // TODO:
-            // Implement after PaymentGateway storage/table
-            // is created.
+            var payment = await _context.Payments
+                .AsNoTracking()
+                .OrderByDescending(x => x.PaymentId)
+                .FirstOrDefaultAsync();
 
-            return await Task.FromResult<PaymentGatewayDto?>(
-                null);
+            if (payment == null)
+                return null;
+
+            return new PaymentGatewayDto
+            {
+                GatewayName =
+                    payment.GatewayName,
+
+                GatewayMerchantId =
+                    payment.GatewayMerchantId,
+
+                GatewayKey =
+                    payment.GatewayKey,
+
+                GatewaySecret =
+                    payment.GatewaySecret,
+
+                GatewayEnabled =
+                    payment.GatewayEnabled
+            };
         }
+
+        // =========================================================
+        // PAYMENT GATEWAY - CREATE
+        // POST: /api/settings/payment/gateway
+        // =========================================================
+
+        public async Task<PaymentGatewayDto?> CreatePaymentGatewayAsync(
+            PaymentGatewayDto gateway)
+        {
+            var payment = await _context.Payments
+                .OrderByDescending(x => x.PaymentId)
+                .FirstOrDefaultAsync();
+
+            if (payment == null)
+                return null;
+
+            payment.GatewayName =
+                gateway.GatewayName;
+
+            payment.GatewayMerchantId =
+                gateway.GatewayMerchantId;
+
+            payment.GatewayKey =
+                gateway.GatewayKey;
+
+            payment.GatewaySecret =
+                gateway.GatewaySecret;
+
+            payment.GatewayEnabled =
+                gateway.GatewayEnabled;
+
+            payment.UpdatedDate =
+                DateTime.UtcNow;
+
+            await _context.SaveChangesAsync();
+
+            return new PaymentGatewayDto
+            {
+                GatewayName =
+                    payment.GatewayName,
+
+                GatewayMerchantId =
+                    payment.GatewayMerchantId,
+
+                GatewayKey =
+                    payment.GatewayKey,
+
+                GatewaySecret =
+                    payment.GatewaySecret,
+
+                GatewayEnabled =
+                    payment.GatewayEnabled
+            };
+        }
+
+        // =========================================================
+        // PAYMENT GATEWAY - UPDATE
+        // PUT: /api/settings/payment/gateway
+        // =========================================================
 
         public async Task<bool> UpdatePaymentGatewayAsync(
             PaymentGatewayDto gateway)
         {
-            // TODO:
-            // Implement after PaymentGateway storage/table
-            // is created.
+            var payment = await _context.Payments
+                .OrderByDescending(x => x.PaymentId)
+                .FirstOrDefaultAsync();
 
-            return await Task.FromResult(false);
+            if (payment == null)
+                return false;
+
+            payment.GatewayName =
+                gateway.GatewayName;
+
+            payment.GatewayMerchantId =
+                gateway.GatewayMerchantId;
+
+            payment.GatewayKey =
+                gateway.GatewayKey;
+
+            payment.GatewaySecret =
+                gateway.GatewaySecret;
+
+            payment.GatewayEnabled =
+                gateway.GatewayEnabled;
+
+            payment.UpdatedDate =
+                DateTime.UtcNow;
+
+            await _context.SaveChangesAsync();
+
+            return true;
         }
 
         // =========================================================
-        // UPI SETTINGS
+        // UPI SETTINGS - GET
+        // GET: /api/settings/payment/upi
         // =========================================================
 
-        public async Task<UpiSettingsDto?>
-            GetUpiSettingsAsync()
+        public async Task<UpiSettingsDto?> GetUpiSettingsAsync()
         {
-            // TODO:
-            // Implement after UPI storage/table is created.
+            var payment = await _context.Payments
+                .AsNoTracking()
+                .OrderByDescending(x => x.PaymentId)
+                .FirstOrDefaultAsync();
 
-            return await Task.FromResult<UpiSettingsDto?>(
-                null);
+            if (payment == null)
+                return null;
+
+            return new UpiSettingsDto
+            {
+                UPIId =
+                    payment.UPIId,
+
+                UPIName =
+                    payment.UPIName,
+
+                UPIEnabled =
+                    payment.UPIEnabled
+            };
         }
+
+        // =========================================================
+        // UPI SETTINGS - CREATE
+        // POST: /api/settings/payment/upi
+        // =========================================================
+
+        public async Task<UpiSettingsDto?> CreateUpiSettingsAsync(
+            UpiSettingsDto upiSettings)
+        {
+            var payment = await _context.Payments
+                .OrderByDescending(x => x.PaymentId)
+                .FirstOrDefaultAsync();
+
+            if (payment == null)
+                return null;
+
+            payment.UPIId =
+                upiSettings.UPIId;
+
+            payment.UPIName =
+                upiSettings.UPIName;
+
+            payment.UPIEnabled =
+                upiSettings.UPIEnabled;
+
+            payment.UpdatedDate =
+                DateTime.UtcNow;
+
+            await _context.SaveChangesAsync();
+
+            return new UpiSettingsDto
+            {
+                UPIId =
+                    payment.UPIId,
+
+                UPIName =
+                    payment.UPIName,
+
+                UPIEnabled =
+                    payment.UPIEnabled
+            };
+        }
+
+        // =========================================================
+        // UPI SETTINGS - UPDATE
+        // PUT: /api/settings/payment/upi
+        // =========================================================
 
         public async Task<bool> UpdateUpiSettingsAsync(
             UpiSettingsDto upiSettings)
         {
-            // TODO:
-            // Implement after UPI storage/table is created.
+            var payment = await _context.Payments
+                .OrderByDescending(x => x.PaymentId)
+                .FirstOrDefaultAsync();
 
-            return await Task.FromResult(false);
+            if (payment == null)
+                return false;
+
+            payment.UPIId =
+                upiSettings.UPIId;
+
+            payment.UPIName =
+                upiSettings.UPIName;
+
+            payment.UPIEnabled =
+                upiSettings.UPIEnabled;
+
+            payment.UpdatedDate =
+                DateTime.UtcNow;
+
+            await _context.SaveChangesAsync();
+
+            return true;
         }
 
         // =========================================================
-        // CREATE
+        // PAYMENT CREATE
         // =========================================================
 
-        public async Task AddAsync(
-            Payment payment)
+        public async Task AddAsync(Payment payment)
         {
             await _context.Payments
                 .AddAsync(payment);
         }
 
         // =========================================================
-        // UPDATE
+        // PAYMENT UPDATE
         // =========================================================
 
-        public Task UpdateAsync(
-            Payment payment)
+        public Task UpdateAsync(Payment payment)
         {
             _context.Payments
                 .Update(payment);
@@ -473,11 +774,10 @@ public async Task<IEnumerable<Payment>>
         }
 
         // =========================================================
-        // DELETE
+        // PAYMENT DELETE
         // =========================================================
 
-        public async Task DeleteAsync(
-            int paymentId)
+        public async Task DeleteAsync(int paymentId)
         {
             var payment =
                 await _context.Payments
@@ -501,4 +801,3 @@ public async Task<IEnumerable<Payment>>
         }
     }
 }
-

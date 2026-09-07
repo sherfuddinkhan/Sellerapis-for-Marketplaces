@@ -15,7 +15,13 @@ namespace Marketplacesellerportal.OrderStatusHistories.Controllers
         {
             _service = service;
         }
+        [HttpGet("all")]
+        public async Task<IActionResult> GetAllHistory()
+        {
+            var result = await _service.GetAllAsync();
 
+            return Ok(result);
+        }
         // =========================================================
         // GET ALL
         // GET /api/order-status-histories

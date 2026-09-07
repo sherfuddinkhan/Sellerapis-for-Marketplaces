@@ -210,10 +210,15 @@ public async Task<IEnumerable<ProductAttribute>>
             return await query.ToListAsync();
         }
 
-        public async Task<IEnumerable<ProductAttribute>> GetAllAsync()
+    
+public async Task<IEnumerable<ProductAttribute>> GetAllAsync()
         {
-            return await _context.ProductAttributes.ToListAsync();
+            return await _context.ProductAttributes
+                .AsNoTracking()
+                .OrderBy(x => x.ProductAttributeId)
+                .ToListAsync();
         }
+
 
         public async Task<ProductAttribute?> GetByIdAsync(int productAttributeId)
         {
