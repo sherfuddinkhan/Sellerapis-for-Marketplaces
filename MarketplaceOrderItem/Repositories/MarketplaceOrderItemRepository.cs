@@ -1,6 +1,7 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Marketplacesellerportal.Database;
-using Marketplacesellerportal.Models;
+using MarketplaceOrderItemEntity =
+    MarketplaceSellerPortal.Models.MarketplaceOrderItem;
 using Marketplacesellerportal.MarketplaceOrderItems.DTOs;
 using Marketplacesellerportal.MarketplaceOrderItems.Interfaces;
 
@@ -21,7 +22,7 @@ namespace Marketplacesellerportal.MarketplaceOrderItems.Repositories
         // GET ALL
         // =========================================================
 
-        public async Task<IEnumerable<MarketplaceOrderItem>>
+        public async Task<IEnumerable<MarketplaceOrderItemEntity>>
             GetAllAsync()
         {
             return await _context
@@ -34,7 +35,7 @@ namespace Marketplacesellerportal.MarketplaceOrderItems.Repositories
         // GET BY ID
         // =========================================================
 
-        public async Task<MarketplaceOrderItem?>
+        public async Task<MarketplaceOrderItemEntity?>
             GetByIdAsync(
                 int marketplaceOrderItemId)
         {
@@ -50,7 +51,7 @@ namespace Marketplacesellerportal.MarketplaceOrderItems.Repositories
         // GET BY MARKETPLACE ORDER
         // =========================================================
 
-        public async Task<IEnumerable<MarketplaceOrderItem>>
+        public async Task<IEnumerable<MarketplaceOrderItemEntity>>
             GetByMarketplaceOrderIdAsync(
                 int marketplaceOrderId)
         {
@@ -67,7 +68,7 @@ namespace Marketplacesellerportal.MarketplaceOrderItems.Repositories
         // GET BY PRODUCT
         // =========================================================
 
-        public async Task<IEnumerable<MarketplaceOrderItem>>
+        public async Task<IEnumerable<MarketplaceOrderItemEntity>>
             GetByProductIdAsync(
                 int productId)
         {
@@ -83,7 +84,7 @@ namespace Marketplacesellerportal.MarketplaceOrderItems.Repositories
         // GET BY SELLER
         // =========================================================
 
-        public async Task<IEnumerable<MarketplaceOrderItem>>
+        public async Task<IEnumerable<MarketplaceOrderItemEntity>>
             GetBySellerIdAsync(
                 int sellerId)
         {
@@ -99,7 +100,7 @@ namespace Marketplacesellerportal.MarketplaceOrderItems.Repositories
         // GET BY CUSTOMER
         // =========================================================
 
-        public async Task<IEnumerable<MarketplaceOrderItem>>
+        public async Task<IEnumerable<MarketplaceOrderItemEntity>>
             GetByCustomerIdAsync(
                 int customerId)
         {
@@ -115,7 +116,7 @@ namespace Marketplacesellerportal.MarketplaceOrderItems.Repositories
         // GET BY SELLER + CUSTOMER
         // =========================================================
 
-        public async Task<IEnumerable<MarketplaceOrderItem>>
+        public async Task<IEnumerable<MarketplaceOrderItemEntity>>
             GetBySellerCustomerAsync(
                 int sellerId,
                 int customerId)
@@ -133,7 +134,7 @@ namespace Marketplacesellerportal.MarketplaceOrderItems.Repositories
         // GET BY STATUS
         // =========================================================
 
-        public async Task<IEnumerable<MarketplaceOrderItem>>
+        public async Task<IEnumerable<MarketplaceOrderItemEntity>>
             GetByStatusAsync(
                 string status)
         {
@@ -150,7 +151,7 @@ namespace Marketplacesellerportal.MarketplaceOrderItems.Repositories
         // SEARCH
         // =========================================================
 
-        public async Task<IEnumerable<MarketplaceOrderItem>>
+        public async Task<IEnumerable<MarketplaceOrderItemEntity>>
             SearchAsync(
                 string? search,
                 string? status)
@@ -159,10 +160,6 @@ namespace Marketplacesellerportal.MarketplaceOrderItems.Repositories
                 .MarketplaceOrderItems
                 .AsNoTracking()
                 .AsQueryable();
-
-            // -----------------------------------------------------
-            // SEARCH
-            // -----------------------------------------------------
 
             if (!string.IsNullOrWhiteSpace(search))
             {
@@ -187,10 +184,6 @@ namespace Marketplacesellerportal.MarketplaceOrderItems.Repositories
                     (x.SKU != null &&
                      x.SKU.Contains(search)));
             }
-
-            // -----------------------------------------------------
-            // STATUS
-            // -----------------------------------------------------
 
             if (!string.IsNullOrWhiteSpace(status))
             {
@@ -316,7 +309,7 @@ namespace Marketplacesellerportal.MarketplaceOrderItems.Repositories
         // =========================================================
 
         public async Task<(
-            IEnumerable<MarketplaceOrderItem> Items,
+            IEnumerable<MarketplaceOrderItemEntity> Items,
             int TotalCount)>
             GetPagedAsync(
                 int page,
@@ -356,7 +349,7 @@ namespace Marketplacesellerportal.MarketplaceOrderItems.Repositories
         // SORTING
         // =========================================================
 
-        public async Task<IEnumerable<MarketplaceOrderItem>>
+        public async Task<IEnumerable<MarketplaceOrderItemEntity>>
             GetSortedAsync(
                 string? sort)
         {
@@ -464,7 +457,7 @@ namespace Marketplacesellerportal.MarketplaceOrderItems.Repositories
         // =========================================================
 
         public async Task AddAsync(
-            MarketplaceOrderItem item)
+            MarketplaceOrderItemEntity item)
         {
             await _context
                 .MarketplaceOrderItems
@@ -476,7 +469,7 @@ namespace Marketplacesellerportal.MarketplaceOrderItems.Repositories
         // =========================================================
 
         public Task UpdateAsync(
-            MarketplaceOrderItem item)
+            MarketplaceOrderItemEntity item)
         {
             _context
                 .MarketplaceOrderItems

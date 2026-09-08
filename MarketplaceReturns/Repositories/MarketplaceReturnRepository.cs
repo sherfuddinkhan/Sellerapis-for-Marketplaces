@@ -2,7 +2,8 @@
 using Marketplacesellerportal.Database;
 using Marketplacesellerportal.MarketplaceReturns.Interfaces;
 using Marketplacesellerportal.MarketplaceReturns.DTOs;
-
+using MarketplaceOrderItemEntity =
+    MarketplaceSellerPortal.Models.MarketplaceOrderItem;
 using MarketplaceReturnModel =
     Marketplacesellerportal.Models.MarketplaceReturn;
 
@@ -434,16 +435,74 @@ namespace Marketplacesellerportal.MarketplaceReturns.Repositories
             return await query.ToListAsync();
         }
 
-        // =========================================================
-        // CREATE
-        // =========================================================
+      
+// =========================================================
+// CREATE
+// =========================================================
 
-        public async Task AddAsync(
-            MarketplaceReturnModel marketplaceReturn)
+public async Task AddAsync(
+    MarketplaceReturnModel marketplaceReturn)
         {
+            // ---------------------------------------------------------
+            // Validate MarketplaceOrderItemId
+            // ---------------------------------------------------------
+
+            if (marketplaceReturn.MarketplaceOrderItemId <= 0)
+            {
+                throw new ArgumentException(
+                    "MarketplaceOrderItemId must be greater than 0."
+                );
+            }
+
+            // ---------------------------------------------------------
+            // Find the EXISTING MarketplaceOrderItem
+            // ---------------------------------------------------------
+
+            var existingOrderItem =
+                await _context.MarketplaceOrderItems
+                    .FirstOrDefaultAsync(x =>
+                        x.MarketplaceOrderItemId ==
+                        marketplaceReturn.MarketplaceOrderItemId);
+
+            // ---------------------------------------------------------
+            // Order Item must already exist
+            // ---------------------------------------------------------
+
+            if (existingOrderItem == null)
+            {
+                throw new KeyNotFoundException(
+                    $"Marketplace Order Item with ID " +
+                    $"{marketplaceReturn.MarketplaceOrderItemId} " +
+                    $"does not exist."
+                );
+            }
+
+            // ---------------------------------------------------------
+            // Attach the EXISTING order item
+            // ---------------------------------------------------------
+
+            marketplaceReturn.MarketplaceOrderItem =
+                existingOrderItem;
+
+            // ---------------------------------------------------------
+            // IMPORTANT:
+            // Tell EF Core this record already exists.
+            //
+            // EF must NOT INSERT MarketplaceOrderItems.
+            // ---------------------------------------------------------
+
+            _context.Entry(existingOrderItem).State =
+                EntityState.Unchanged;
+
+            // ---------------------------------------------------------
+            // Add ONLY MarketplaceReturn
+            // ---------------------------------------------------------
+
             await _context.MarketplaceReturns
                 .AddAsync(marketplaceReturn);
         }
+
+
 
         // =========================================================
         // UPDATE
