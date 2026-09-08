@@ -84,7 +84,23 @@ namespace Marketplacesellerportal.Repositories
                     o => o.MarketplaceOrderId)
                 .ToListAsync();
         }
+        // =========================================================
+        // GET ORDERS BY SELLER AND CUSTOMER
+        // =========================================================
 
+        public async Task<List<MarketplaceOrderEntity>> GetBySellerCustomerAsync(
+            int sellerId,
+            int customerId)
+        {
+            return await _context.MarketplaceOrders
+                .Where(o =>
+                    o.SellerId == sellerId &&
+                    o.CustomerId == customerId)
+                .AsNoTracking()
+                .OrderByDescending(
+                    o => o.MarketplaceOrderId)
+                .ToListAsync();
+        }
 
         // =========================================================
         // GET ORDER BY MARKETPLACE ORDER NUMBER

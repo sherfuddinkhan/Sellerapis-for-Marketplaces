@@ -35,7 +35,13 @@ namespace Marketplacesellerportal.Interface
         Task<List<MarketplaceOrderEntity>> GetByCustomerIdAsync(
             int customerId);
 
+        // =========================================================
+        // GET ORDERS BY SELLER AND CUSTOMER
+        // =========================================================
 
+        Task<List<MarketplaceOrderEntity>> GetBySellerCustomerAsync(
+            int sellerId,
+            int customerId);
         // =========================================================
         // GET ORDER BY MARKETPLACE ORDER NUMBER
         // =========================================================
