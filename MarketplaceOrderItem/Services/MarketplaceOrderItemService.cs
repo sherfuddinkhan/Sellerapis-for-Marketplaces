@@ -1,6 +1,12 @@
-﻿using Marketplacesellerportal.Models;
+﻿using System;
+using System.Collections.Generic;
+using System.Threading.Tasks;
+
 using Marketplacesellerportal.MarketplaceOrderItems.DTOs;
 using Marketplacesellerportal.MarketplaceOrderItems.Interfaces;
+
+using MarketplaceOrderItemEntity =
+    MarketplaceSellerPortal.Models.MarketplaceOrderItem;
 
 namespace Marketplacesellerportal.MarketplaceOrderItems.Services
 {
@@ -10,40 +16,47 @@ namespace Marketplacesellerportal.MarketplaceOrderItems.Services
         private readonly IMarketplaceOrderItemRepository
             _repository;
 
+
+        // =========================================================
+        // CONSTRUCTOR
+        // =========================================================
+
         public MarketplaceOrderItemService(
             IMarketplaceOrderItemRepository repository)
         {
             _repository = repository;
         }
 
+
         // =========================================================
         // GET ALL
         // =========================================================
 
-        public async Task<IEnumerable<MarketplaceOrderItem>>
+        public async Task<IEnumerable<MarketplaceOrderItemEntity>>
             GetAllAsync()
         {
             return await _repository.GetAllAsync();
         }
 
+
         // =========================================================
         // GET BY ID
         // =========================================================
 
-        public async Task<MarketplaceOrderItem?>
+        public async Task<MarketplaceOrderItemEntity?>
             GetByIdAsync(
                 int marketplaceOrderItemId)
         {
-            return await _repository
-                .GetByIdAsync(
-                    marketplaceOrderItemId);
+            return await _repository.GetByIdAsync(
+                marketplaceOrderItemId);
         }
+
 
         // =========================================================
         // GET BY MARKETPLACE ORDER
         // =========================================================
 
-        public async Task<IEnumerable<MarketplaceOrderItem>>
+        public async Task<IEnumerable<MarketplaceOrderItemEntity>>
             GetByMarketplaceOrderIdAsync(
                 int marketplaceOrderId)
         {
@@ -52,50 +65,51 @@ namespace Marketplacesellerportal.MarketplaceOrderItems.Services
                     marketplaceOrderId);
         }
 
+
         // =========================================================
         // GET BY PRODUCT
         // =========================================================
 
-        public async Task<IEnumerable<MarketplaceOrderItem>>
+        public async Task<IEnumerable<MarketplaceOrderItemEntity>>
             GetByProductIdAsync(
                 int productId)
         {
             return await _repository
-                .GetByProductIdAsync(
-                    productId);
+                .GetByProductIdAsync(productId);
         }
+
 
         // =========================================================
         // GET BY SELLER
         // =========================================================
 
-        public async Task<IEnumerable<MarketplaceOrderItem>>
+        public async Task<IEnumerable<MarketplaceOrderItemEntity>>
             GetBySellerIdAsync(
                 int sellerId)
         {
             return await _repository
-                .GetBySellerIdAsync(
-                    sellerId);
+                .GetBySellerIdAsync(sellerId);
         }
+
 
         // =========================================================
         // GET BY CUSTOMER
         // =========================================================
 
-        public async Task<IEnumerable<MarketplaceOrderItem>>
+        public async Task<IEnumerable<MarketplaceOrderItemEntity>>
             GetByCustomerIdAsync(
                 int customerId)
         {
             return await _repository
-                .GetByCustomerIdAsync(
-                    customerId);
+                .GetByCustomerIdAsync(customerId);
         }
+
 
         // =========================================================
         // GET BY SELLER + CUSTOMER
         // =========================================================
 
-        public async Task<IEnumerable<MarketplaceOrderItem>>
+        public async Task<IEnumerable<MarketplaceOrderItemEntity>>
             GetBySellerCustomerAsync(
                 int sellerId,
                 int customerId)
@@ -106,11 +120,12 @@ namespace Marketplacesellerportal.MarketplaceOrderItems.Services
                     customerId);
         }
 
+
         // =========================================================
         // GET BY STATUS
         // =========================================================
 
-        public async Task<IEnumerable<MarketplaceOrderItem>>
+        public async Task<IEnumerable<MarketplaceOrderItemEntity>>
             GetByStatusAsync(
                 string status)
         {
@@ -118,11 +133,12 @@ namespace Marketplacesellerportal.MarketplaceOrderItems.Services
                 .GetByStatusAsync(status);
         }
 
+
         // =========================================================
         // SEARCH
         // =========================================================
 
-        public async Task<IEnumerable<MarketplaceOrderItem>>
+        public async Task<IEnumerable<MarketplaceOrderItemEntity>>
             SearchAsync(
                 string? search,
                 string? status)
@@ -132,6 +148,7 @@ namespace Marketplacesellerportal.MarketplaceOrderItems.Services
                     search,
                     status);
         }
+
 
         // =========================================================
         // STATISTICS
@@ -144,25 +161,32 @@ namespace Marketplacesellerportal.MarketplaceOrderItems.Services
                 .GetStatisticsAsync();
         }
 
+
         // =========================================================
         // PAGINATION
         // =========================================================
 
         public async Task<(
-            IEnumerable<MarketplaceOrderItem> Items,
+            IEnumerable<MarketplaceOrderItemEntity> Items,
             int TotalCount)>
             GetPagedAsync(
                 int page,
                 int limit)
         {
             if (page < 1)
+            {
                 page = 1;
+            }
 
             if (limit < 1)
+            {
                 limit = 20;
+            }
 
             if (limit > 100)
+            {
                 limit = 100;
+            }
 
             return await _repository
                 .GetPagedAsync(
@@ -170,11 +194,12 @@ namespace Marketplacesellerportal.MarketplaceOrderItems.Services
                     limit);
         }
 
+
         // =========================================================
         // SORTING
         // =========================================================
 
-        public async Task<IEnumerable<MarketplaceOrderItem>>
+        public async Task<IEnumerable<MarketplaceOrderItemEntity>>
             GetSortedAsync(
                 string? sort)
         {
@@ -182,16 +207,19 @@ namespace Marketplacesellerportal.MarketplaceOrderItems.Services
                 .GetSortedAsync(sort);
         }
 
+
         // =========================================================
         // CREATE
         // =========================================================
 
-        public async Task<MarketplaceOrderItem>
+        public async Task<MarketplaceOrderItemEntity>
             CreateAsync(
-                MarketplaceOrderItem item)
+                MarketplaceOrderItemEntity item)
         {
-            item.CreatedDate =
-                DateTime.Now;
+            if (item.CreatedDate == null)
+            {
+                item.CreatedDate = DateTime.Now;
+            }
 
             if (string.IsNullOrWhiteSpace(item.Status))
             {
@@ -205,6 +233,7 @@ namespace Marketplacesellerportal.MarketplaceOrderItems.Services
             return item;
         }
 
+
         // =========================================================
         // UPDATE
         // =========================================================
@@ -212,14 +241,21 @@ namespace Marketplacesellerportal.MarketplaceOrderItems.Services
         public async Task<bool>
             UpdateAsync(
                 int marketplaceOrderItemId,
-                MarketplaceOrderItem item)
+                MarketplaceOrderItemEntity item)
         {
             var existing =
                 await _repository.GetByIdAsync(
                     marketplaceOrderItemId);
 
             if (existing == null)
+            {
                 return false;
+            }
+
+
+            // -----------------------------------------------------
+            // BASIC INFORMATION
+            // -----------------------------------------------------
 
             existing.MarketplaceOrderId =
                 item.MarketplaceOrderId;
@@ -236,6 +272,11 @@ namespace Marketplacesellerportal.MarketplaceOrderItems.Services
             existing.CustomerId =
                 item.CustomerId;
 
+
+            // -----------------------------------------------------
+            // ORDER ITEM INFORMATION
+            // -----------------------------------------------------
+
             existing.MarketplaceOrderItemNumber =
                 item.MarketplaceOrderItemNumber;
 
@@ -247,6 +288,11 @@ namespace Marketplacesellerportal.MarketplaceOrderItems.Services
 
             existing.SKU =
                 item.SKU;
+
+
+            // -----------------------------------------------------
+            // QUANTITY / PRICE
+            // -----------------------------------------------------
 
             existing.Quantity =
                 item.Quantity;
@@ -266,16 +312,26 @@ namespace Marketplacesellerportal.MarketplaceOrderItems.Services
             existing.TotalAmount =
                 item.TotalAmount;
 
+
+            // -----------------------------------------------------
+            // STATUS
+            // -----------------------------------------------------
+
             existing.Status =
                 item.Status;
 
-            await _repository.UpdateAsync(
-                existing);
+
+            // -----------------------------------------------------
+            // UPDATE
+            // -----------------------------------------------------
+
+            await _repository.UpdateAsync(existing);
 
             await _repository.SaveChangesAsync();
 
             return true;
         }
+
 
         // =========================================================
         // DELETE
@@ -290,7 +346,9 @@ namespace Marketplacesellerportal.MarketplaceOrderItems.Services
                     marketplaceOrderItemId);
 
             if (existing == null)
+            {
                 return false;
+            }
 
             await _repository.DeleteAsync(
                 marketplaceOrderItemId);

@@ -1,4 +1,6 @@
-﻿using Marketplacesellerportal.Models;
+﻿using MarketplaceOrderItemEntity =
+    MarketplaceSellerPortal.Models.MarketplaceOrderItem;
+
 using Marketplacesellerportal.MarketplaceOrderItems.DTOs;
 
 namespace Marketplacesellerportal.MarketplaceOrderItems.Interfaces
@@ -9,10 +11,10 @@ namespace Marketplacesellerportal.MarketplaceOrderItems.Interfaces
         // BASIC
         // =========================================================
 
-        Task<IEnumerable<MarketplaceOrderItem>>
+        Task<IEnumerable<MarketplaceOrderItemEntity>>
             GetAllAsync();
 
-        Task<MarketplaceOrderItem?>
+        Task<MarketplaceOrderItemEntity?>
             GetByIdAsync(
                 int marketplaceOrderItemId);
 
@@ -21,7 +23,7 @@ namespace Marketplacesellerportal.MarketplaceOrderItems.Interfaces
         // MARKETPLACE ORDER
         // =========================================================
 
-        Task<IEnumerable<MarketplaceOrderItem>>
+        Task<IEnumerable<MarketplaceOrderItemEntity>>
             GetByMarketplaceOrderIdAsync(
                 int marketplaceOrderId);
 
@@ -30,7 +32,7 @@ namespace Marketplacesellerportal.MarketplaceOrderItems.Interfaces
         // PRODUCT
         // =========================================================
 
-        Task<IEnumerable<MarketplaceOrderItem>>
+        Task<IEnumerable<MarketplaceOrderItemEntity>>
             GetByProductIdAsync(
                 int productId);
 
@@ -39,7 +41,7 @@ namespace Marketplacesellerportal.MarketplaceOrderItems.Interfaces
         // SELLER
         // =========================================================
 
-        Task<IEnumerable<MarketplaceOrderItem>>
+        Task<IEnumerable<MarketplaceOrderItemEntity>>
             GetBySellerIdAsync(
                 int sellerId);
 
@@ -48,7 +50,7 @@ namespace Marketplacesellerportal.MarketplaceOrderItems.Interfaces
         // CUSTOMER
         // =========================================================
 
-        Task<IEnumerable<MarketplaceOrderItem>>
+        Task<IEnumerable<MarketplaceOrderItemEntity>>
             GetByCustomerIdAsync(
                 int customerId);
 
@@ -57,7 +59,7 @@ namespace Marketplacesellerportal.MarketplaceOrderItems.Interfaces
         // SELLER + CUSTOMER
         // =========================================================
 
-        Task<IEnumerable<MarketplaceOrderItem>>
+        Task<IEnumerable<MarketplaceOrderItemEntity>>
             GetBySellerCustomerAsync(
                 int sellerId,
                 int customerId);
@@ -67,7 +69,7 @@ namespace Marketplacesellerportal.MarketplaceOrderItems.Interfaces
         // STATUS
         // =========================================================
 
-        Task<IEnumerable<MarketplaceOrderItem>>
+        Task<IEnumerable<MarketplaceOrderItemEntity>>
             GetByStatusAsync(
                 string status);
 
@@ -76,7 +78,7 @@ namespace Marketplacesellerportal.MarketplaceOrderItems.Interfaces
         // SEARCH
         // =========================================================
 
-        Task<IEnumerable<MarketplaceOrderItem>>
+        Task<IEnumerable<MarketplaceOrderItemEntity>>
             SearchAsync(
                 string? search,
                 string? status);
@@ -95,7 +97,7 @@ namespace Marketplacesellerportal.MarketplaceOrderItems.Interfaces
         // =========================================================
 
         Task<(
-            IEnumerable<MarketplaceOrderItem> Items,
+            IEnumerable<MarketplaceOrderItemEntity> Items,
             int TotalCount)>
             GetPagedAsync(
                 int page,
@@ -106,7 +108,7 @@ namespace Marketplacesellerportal.MarketplaceOrderItems.Interfaces
         // SORTING
         // =========================================================
 
-        Task<IEnumerable<MarketplaceOrderItem>>
+        Task<IEnumerable<MarketplaceOrderItemEntity>>
             GetSortedAsync(
                 string? sort);
 
@@ -116,10 +118,10 @@ namespace Marketplacesellerportal.MarketplaceOrderItems.Interfaces
         // =========================================================
 
         Task AddAsync(
-            MarketplaceOrderItem item);
+            MarketplaceOrderItemEntity item);
 
         Task UpdateAsync(
-            MarketplaceOrderItem item);
+            MarketplaceOrderItemEntity item);
 
         Task DeleteAsync(
             int marketplaceOrderItemId);

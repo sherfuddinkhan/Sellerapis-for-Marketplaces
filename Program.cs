@@ -126,6 +126,9 @@ using Marketplacesellerportal.Wishlists.Services;
 using Marketplacesellerportal.BrandModel.Interfaces;
 using Marketplacesellerportal.BrandModel.Repositories;
 using Marketplacesellerportal.BrandModel.Services;
+using Marketplacesellerportal.Interface;
+using Marketplacesellerportal.Repositories;
+using Marketplacesellerportal.Services;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
@@ -333,7 +336,17 @@ builder.Services.AddScoped<
 builder.Services.AddScoped<
     IBrandService,
     BrandService>();
+// =========================================================
+// MARKETPLACE ORDER
+// =========================================================
 
+builder.Services.AddScoped<
+    IMarketplaceOrderRepository,
+    MarketplaceOrderRepository>();
+
+builder.Services.AddScoped<
+    IMarketplaceOrderService,
+    MarketplaceOrderService>();
 
 // =========================================================
 // CATALOG

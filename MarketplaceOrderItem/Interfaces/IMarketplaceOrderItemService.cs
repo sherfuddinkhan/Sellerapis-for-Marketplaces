@@ -1,69 +1,130 @@
-﻿using Marketplacesellerportal.Models;
+﻿using MarketplaceOrderItemEntity =
+    MarketplaceSellerPortal.Models.MarketplaceOrderItem;
+
 using Marketplacesellerportal.MarketplaceOrderItems.DTOs;
 
 namespace Marketplacesellerportal.MarketplaceOrderItems.Interfaces
 {
     public interface IMarketplaceOrderItemService
     {
-        Task<IEnumerable<MarketplaceOrderItem>>
+        // =========================================================
+        // BASIC
+        // =========================================================
+
+        Task<IEnumerable<MarketplaceOrderItemEntity>>
             GetAllAsync();
 
-        Task<MarketplaceOrderItem?>
+        Task<MarketplaceOrderItemEntity?>
             GetByIdAsync(
                 int marketplaceOrderItemId);
 
-        Task<IEnumerable<MarketplaceOrderItem>>
+
+        // =========================================================
+        // MARKETPLACE ORDER
+        // =========================================================
+
+        Task<IEnumerable<MarketplaceOrderItemEntity>>
             GetByMarketplaceOrderIdAsync(
                 int marketplaceOrderId);
 
-        Task<IEnumerable<MarketplaceOrderItem>>
+
+        // =========================================================
+        // PRODUCT
+        // =========================================================
+
+        Task<IEnumerable<MarketplaceOrderItemEntity>>
             GetByProductIdAsync(
                 int productId);
 
-        Task<IEnumerable<MarketplaceOrderItem>>
+
+        // =========================================================
+        // SELLER
+        // =========================================================
+
+        Task<IEnumerable<MarketplaceOrderItemEntity>>
             GetBySellerIdAsync(
                 int sellerId);
 
-        Task<IEnumerable<MarketplaceOrderItem>>
+
+        // =========================================================
+        // CUSTOMER
+        // =========================================================
+
+        Task<IEnumerable<MarketplaceOrderItemEntity>>
             GetByCustomerIdAsync(
                 int customerId);
 
-        Task<IEnumerable<MarketplaceOrderItem>>
+
+        // =========================================================
+        // SELLER + CUSTOMER
+        // =========================================================
+
+        Task<IEnumerable<MarketplaceOrderItemEntity>>
             GetBySellerCustomerAsync(
                 int sellerId,
                 int customerId);
 
-        Task<IEnumerable<MarketplaceOrderItem>>
+
+        // =========================================================
+        // STATUS
+        // =========================================================
+
+        Task<IEnumerable<MarketplaceOrderItemEntity>>
             GetByStatusAsync(
                 string status);
 
-        Task<IEnumerable<MarketplaceOrderItem>>
+
+        // =========================================================
+        // SEARCH
+        // =========================================================
+
+        Task<IEnumerable<MarketplaceOrderItemEntity>>
             SearchAsync(
                 string? search,
                 string? status);
 
+
+        // =========================================================
+        // STATISTICS
+        // =========================================================
+
         Task<MarketplaceOrderItemStatistics>
             GetStatisticsAsync();
 
+
+        // =========================================================
+        // PAGINATION
+        // =========================================================
+
         Task<(
-            IEnumerable<MarketplaceOrderItem> Items,
+            IEnumerable<MarketplaceOrderItemEntity> Items,
             int TotalCount)>
             GetPagedAsync(
                 int page,
                 int limit);
 
-        Task<IEnumerable<MarketplaceOrderItem>>
+
+        // =========================================================
+        // SORTING
+        // =========================================================
+
+        Task<IEnumerable<MarketplaceOrderItemEntity>>
             GetSortedAsync(
                 string? sort);
 
-        Task<MarketplaceOrderItem>
+
+        // =========================================================
+        // CRUD
+        // =========================================================
+
+        Task<MarketplaceOrderItemEntity>
             CreateAsync(
-                MarketplaceOrderItem item);
+                MarketplaceOrderItemEntity item);
 
         Task<bool>
             UpdateAsync(
                 int marketplaceOrderItemId,
-                MarketplaceOrderItem item);
+                MarketplaceOrderItemEntity item);
 
         Task<bool>
             DeleteAsync(
