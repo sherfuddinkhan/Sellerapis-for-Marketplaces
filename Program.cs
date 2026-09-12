@@ -126,6 +126,9 @@ using Marketplacesellerportal.Wishlists.Services;
 using Marketplacesellerportal.BrandModel.Interfaces;
 using Marketplacesellerportal.BrandModel.Repositories;
 using Marketplacesellerportal.BrandModel.Services;
+using Marketplacesellerportal.DeliveryChallanItems.Interfaces;
+using Marketplacesellerportal.DeliveryChallanItems.Repositories;
+using Marketplacesellerportal.DeliveryChallanItems.Services;
 using Marketplacesellerportal.Interface;
 using Marketplacesellerportal.Repositories;
 using Marketplacesellerportal.Services;
@@ -605,6 +608,8 @@ builder.Services.AddScoped<
     IDeliveryChallanService,
     DeliveryChallanService>();
 
+builder.Services.AddScoped<IDeliveryChallanItemRepository, DeliveryChallanItemRepository>();
+builder.Services.AddScoped<IDeliveryChallanItemService, DeliveryChallanItemService>();
 
 // =========================================================
 // STOCK LEDGER

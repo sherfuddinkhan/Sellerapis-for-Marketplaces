@@ -124,7 +124,53 @@ namespace Marketplacesellerportal.Categories.Controllers
 
             return Ok(result);
         }
+        // =========================================================
+        // SEARCH CATEGORIES
+        // =========================================================
+        // GET:
+        // /api/categories/search?search=Mobile
+        //
+        // Examples:
+        // /api/categories/search?search=Mobile
+        // /api/categories/search?search=Laptop
+        // /api/categories/search?search=Phone
+        //
+        // Purpose:
+        // Dedicated category search endpoint.
+        // Useful for React autocomplete / search boxes.
+        // =========================================================
 
+        [HttpGet("search")]
+        public async Task<IActionResult> SearchCategories(
+            [FromQuery] string search)
+        {
+            if (string.IsNullOrWhiteSpace(search))
+            {
+                return BadRequest(new
+                {
+                    message = "Search term is required."
+                });
+            }
+
+            var response = await _service.GetCategoriesAsync(
+                new CategoryListRequest
+                {
+                    Search = search,
+                    Page = 1,
+                    Limit = 50
+                }
+            );
+
+            var result = response.Items
+                .Select(c => new
+                {
+                    categoryId = c.CategoryId,
+                    categoryName = c.CategoryName
+                })
+                .ToList();
+
+            return Ok(result);
+        }
         // =========================================================
         // GET CATEGORY BY NAME
         // =========================================================

@@ -20,7 +20,14 @@ namespace Marketplacesellerportal.SellerCustomers.Interfaces
         Task<SellerCustomer?> GetByCustomerCodeAsync(
             int sellerId,
             string customerCode);
+        // ====================================================
+        // FILTER
+        // ====================================================
 
+        Task<IEnumerable<SellerCustomer>> FilterAsync(
+            int sellerId,
+            string? search,
+            bool? isActive);
         Task<SellerCustomer> CreateAsync(
             CreateSellerCustomerRequest request);
 

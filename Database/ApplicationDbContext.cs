@@ -95,6 +95,7 @@ public class ApplicationDbContext : DbContext
     // =========================================================
 
     public DbSet<DeliveryChallan> DeliveryChallans { get; set; }
+    public DbSet<DeliveryChallanItem> DeliveryChallanItems { get;set;}
 
 
     // =========================================================
@@ -275,7 +276,31 @@ public class ApplicationDbContext : DbContext
         // MarketplaceOrderItem
         //
         // =====================================================
+        // =====================================================
+        // STOCK TABLE MAPPINGS
+        // =====================================================
 
+        modelBuilder.Entity<StockMovement>()
+            .ToTable("StockMovement", "dbo");
+
+        modelBuilder.Entity<StockLedger>()
+            .ToTable("StockLedger", "dbo");
+
+        modelBuilder.Entity<StockAdjustment>()
+            .ToTable("StockAdjustments", "dbo");
+
+        modelBuilder.Entity<StockTransfer>()
+            .ToTable("StockTransfers", "dbo");
+
+        // =====================================================
+        // WAREHOUSE TABLE MAPPING
+        // =====================================================
+
+        modelBuilder.Entity<Warehouse>()
+            .ToTable("Warehouses", "dbo");
+
+        modelBuilder.Entity<WarehouseLocation>()
+            .ToTable("WarehouseLocations", "dbo");
         modelBuilder.Entity<MarketplaceOrderEntity>()
             .HasMany(order => order.Items)
             .WithOne(item => item.Order)
