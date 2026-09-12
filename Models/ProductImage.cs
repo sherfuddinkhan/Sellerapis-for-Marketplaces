@@ -9,7 +9,9 @@
         public int CustomerId { get; set; }
 
         public int ProductId { get; set; }
+        public string? ImageName { get; set; }
 
+        public string? ImageType { get; set; }
         public long ImageSize { get; set; }
 
         public string ImageUrl { get; set; } = string.Empty;

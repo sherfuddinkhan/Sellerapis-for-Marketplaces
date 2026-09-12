@@ -2,7 +2,7 @@
 {
     public int LocationId { get; set; }
 
-    public int CustomerId { get; set; }
+    public int? CustomerId { get; set; }
 
     public int WarehouseId { get; set; }
 

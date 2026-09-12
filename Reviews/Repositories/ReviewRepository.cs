@@ -232,9 +232,25 @@ namespace Marketplacesellerportal.Reviews.Repositories
             {
                 search = search.Trim();
 
-                query = query.Where(x =>
-      x.ReviewText != null &&
-      x.ReviewText.Contains(search));
+                query = query.Where(r =>
+                    (r.CustomerName != null &&
+                     r.CustomerName.Contains(search)) ||
+
+                    (r.ProductName != null &&
+                     r.ProductName.Contains(search)) ||
+
+                    (r.ProductSku != null &&
+                     r.ProductSku.Contains(search)) ||
+
+                    (r.ReviewTitle != null &&
+                     r.ReviewTitle.Contains(search)) ||
+
+                    (r.ReviewText != null &&
+                     r.ReviewText.Contains(search)) ||
+
+                    (r.Marketplace != null &&
+                     r.Marketplace.Contains(search))
+                );
             }
 
             if (rating.HasValue)

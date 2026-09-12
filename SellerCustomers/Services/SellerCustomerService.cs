@@ -276,7 +276,98 @@ namespace Marketplacesellerportal.SellerCustomers.Services
                 sellerId,
                 customerId);
         }
+        // ============================================================
+        // FILTER SELLER CUSTOMERS
+        // ============================================================
 
+        public async Task<IEnumerable<SellerCustomer>> FilterAsync(
+            int sellerId,
+            string? search,
+            bool? isActive)
+        {
+            // Get customers belonging to this seller
+            var customers =
+                await GetBySellerIdAsync(sellerId);
+
+            IEnumerable<SellerCustomer> result = customers;
+
+            // ========================================================
+            // SEARCH
+            // ========================================================
+
+            if (!string.IsNullOrWhiteSpace(search))
+            {
+                search = search.Trim();
+
+                result = result.Where(customer =>
+                    (!string.IsNullOrWhiteSpace(customer.CustomerCode) &&
+                     customer.CustomerCode.Contains(
+                         search,
+                         StringComparison.OrdinalIgnoreCase))
+
+                    ||
+
+                    (!string.IsNullOrWhiteSpace(customer.CustomerName) &&
+                     customer.CustomerName.Contains(
+                         search,
+                         StringComparison.OrdinalIgnoreCase))
+
+                    ||
+
+                    (!string.IsNullOrWhiteSpace(customer.ContactPerson) &&
+                     customer.ContactPerson.Contains(
+                         search,
+                         StringComparison.OrdinalIgnoreCase))
+
+                    ||
+
+                    (!string.IsNullOrWhiteSpace(customer.Email) &&
+                     customer.Email.Contains(
+                         search,
+                         StringComparison.OrdinalIgnoreCase))
+
+                    ||
+
+                    (!string.IsNullOrWhiteSpace(customer.Phone) &&
+                     customer.Phone.Contains(
+                         search,
+                         StringComparison.OrdinalIgnoreCase))
+
+                    ||
+
+                    (!string.IsNullOrWhiteSpace(customer.GSTIN) &&
+                     customer.GSTIN.Contains(
+                         search,
+                         StringComparison.OrdinalIgnoreCase))
+
+                    ||
+
+                    (!string.IsNullOrWhiteSpace(customer.City) &&
+                     customer.City.Contains(
+                         search,
+                         StringComparison.OrdinalIgnoreCase))
+
+                    ||
+
+                    (!string.IsNullOrWhiteSpace(customer.State) &&
+                     customer.State.Contains(
+                         search,
+                         StringComparison.OrdinalIgnoreCase))
+                );
+            }
+
+            // ========================================================
+            // ACTIVE / INACTIVE FILTER
+            // ========================================================
+
+            if (isActive.HasValue)
+            {
+                result = result.Where(customer =>
+                    customer.IsActive == isActive.Value);
+            }
+
+            return result.ToList();
+        }
 
         public async Task<SellerCustomer?> GetByCustomerCodeAsync(
             int sellerId,

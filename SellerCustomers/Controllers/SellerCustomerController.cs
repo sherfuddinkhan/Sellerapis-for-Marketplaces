@@ -123,7 +123,19 @@ public async Task<IActionResult> GetCustomer(
 
             return NoContent();
         }
+        [HttpGet("filter")]
+        public async Task<IActionResult> Filter(
+    [FromQuery] int sellerId,
+    [FromQuery] string? search,
+    [FromQuery] bool? isActive)
+        {
+            var customers = await _service.FilterAsync(
+                sellerId,
+                search,
+                isActive);
 
+            return Ok(customers);
+        }
         // DELETE: api/SellerCustomer/1/customers/2
         [HttpDelete("{sellerId:int}/customers/{customerId:int}")]
         public async Task<IActionResult> Delete(
