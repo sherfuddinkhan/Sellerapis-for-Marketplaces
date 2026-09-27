@@ -1,5 +1,4 @@
-﻿
-using Marketplacesellerportal.Models;
+﻿using Marketplacesellerportal.Models;
 using Marketplacesellerportal.Products.DTOs;
 using Marketplacesellerportal.Products.Interfaces;
 
@@ -9,8 +8,7 @@ namespace Marketplacesellerportal.Products.Services
     {
         private readonly IProductRepository _repository;
 
-        public ProductService(
-            IProductRepository repository)
+        public ProductService(IProductRepository repository)
         {
             _repository = repository;
         }
@@ -18,356 +16,202 @@ namespace Marketplacesellerportal.Products.Services
         // =========================================================
         // GET ALL
         // =========================================================
-
-        public async Task<IEnumerable<ProductDto>>
-            GetAllAsync()
+        public async Task<IEnumerable<ProductDto>> GetAllAsync()
         {
-            var products =
-                await _repository.GetAllAsync();
-
+            var products = await _repository.GetAllAsync();
             return products.Select(MapToDto);
         }
 
         // =========================================================
         // GET BY ID
         // =========================================================
-
-        public async Task<ProductDto?>
-            GetByIdAsync(
-                int productId)
+        public async Task<ProductDto?> GetByIdAsync(int productId)
         {
-            var product =
-                await _repository.GetByIdAsync(
-                    productId);
-
-            if (product == null)
-                return null;
-
+            var product = await _repository.GetByIdAsync(productId);
+            if (product == null) return null;
             return MapToDto(product);
         }
 
         // =========================================================
         // GET BY SKU
         // =========================================================
-
-        public async Task<ProductDto?>
-            GetBySKUAsync(
-                string sku)
+        public async Task<ProductDto?> GetBySKUAsync(string sku)
         {
-            var product =
-                await _repository.GetBySKUAsync(
-                    sku);
-
-            if (product == null)
-                return null;
-
+            var product = await _repository.GetBySKUAsync(sku);
+            if (product == null) return null;
             return MapToDto(product);
         }
 
         // =========================================================
         // GET BY SELLER
         // =========================================================
-
-        public async Task<IEnumerable<ProductDto>>
-            GetBySellerIdAsync(
-                int sellerId)
+        public async Task<IEnumerable<ProductDto>> GetBySellerIdAsync(int sellerId)
         {
-            var products =
-                await _repository.GetBySellerIdAsync(
-                    sellerId);
-
+            var products = await _repository.GetBySellerIdAsync(sellerId);
             return products.Select(MapToDto);
         }
 
         // =========================================================
         // GET BY CUSTOMER
         // =========================================================
-
-        public async Task<IEnumerable<ProductDto>>
-            GetByCustomerIdAsync(
-                int customerId)
+        public async Task<IEnumerable<ProductDto>> GetByCustomerIdAsync(int customerId)
         {
-            var products =
-                await _repository.GetByCustomerIdAsync(
-                    customerId);
-
+            var products = await _repository.GetByCustomerIdAsync(customerId);
             return products.Select(MapToDto);
         }
 
         // =========================================================
         // GET BY SELLER + CUSTOMER
         // =========================================================
-
-        public async Task<IEnumerable<ProductDto>>
-            GetBySellerCustomerAsync(
-                int sellerId,
-                int customerId)
+        public async Task<IEnumerable<ProductDto>> GetBySellerCustomerAsync(int sellerId, int customerId)
         {
-            var products =
-                await _repository
-                    .GetProductsBySellerCustomerAsync(
-                        sellerId,
-                        customerId);
-
+            var products = await _repository.GetProductsBySellerCustomerAsync(sellerId, customerId);
             return products.Select(MapToDto);
         }
 
         // =========================================================
         // GET BY PRODUCT IDS
         // =========================================================
-
-        public async Task<IEnumerable<ProductDto>>
-            GetByProductIdsAsync(
-                IEnumerable<int> productIds)
+        public async Task<IEnumerable<ProductDto>> GetByProductIdsAsync(IEnumerable<int> productIds)
         {
-            var products =
-                await _repository.GetByProductIdsAsync(
-                    productIds);
-
+            var products = await _repository.GetByProductIdsAsync(productIds);
             return products.Select(MapToDto);
         }
 
         // =========================================================
         // GET BY BRAND
         // =========================================================
-
-        public async Task<IEnumerable<ProductDto>>
-            GetByBrandIdAsync(
-                int brandId)
+        public async Task<IEnumerable<ProductDto>> GetByBrandIdAsync(int brandId)
         {
-            var products =
-                await _repository.GetByBrandIdAsync(
-                    brandId);
-
+            var products = await _repository.GetByBrandIdAsync(brandId);
             return products.Select(MapToDto);
         }
 
         // =========================================================
         // GET BY CATEGORY
         // =========================================================
-
-        public async Task<IEnumerable<ProductDto>>
-            GetByCategoryIdAsync(
-                int categoryId)
+        public async Task<IEnumerable<ProductDto>> GetByCategoryIdAsync(int categoryId)
         {
-            var products =
-                await _repository.GetByCategoryIdAsync(
-                    categoryId);
-
+            var products = await _repository.GetByCategoryIdAsync(categoryId);
             return products.Select(MapToDto);
         }
 
         // =========================================================
         // GET BY PRODUCT TYPE
         // =========================================================
-
-        public async Task<IEnumerable<ProductDto>>
-            GetByProductTypeIdAsync(
-                int productTypeId)
+        public async Task<IEnumerable<ProductDto>> GetByProductTypeIdAsync(int productTypeId)
         {
-            var products =
-                await _repository
-                    .GetByProductTypeIdAsync(
-                        productTypeId);
-
+            var products = await _repository.GetByProductTypeIdAsync(productTypeId);
             return products.Select(MapToDto);
         }
 
         // =========================================================
-        // CREATE
+        // CREATE - FINAL WITH ALL 11 FIELDS
         // =========================================================
-
-        public async Task<ProductDto>
-            CreateAsync(
-                CreateProductDto dto)
+        public async Task<ProductDto> CreateAsync(CreateProductDto dto)
         {
-            // -----------------------------------------------------
-            // CHECK SKU
-            // -----------------------------------------------------
-
             if (!string.IsNullOrWhiteSpace(dto.SKU))
             {
-                var existingProduct =
-                    await _repository.GetBySKUAsync(
-                        dto.SKU);
-
+                var existingProduct = await _repository.GetBySKUAsync(dto.SKU);
                 if (existingProduct != null)
                 {
-                    throw new InvalidOperationException(
-                        $"A product with SKU '{dto.SKU}' already exists.");
+                    throw new InvalidOperationException($"A product with SKU '{dto.SKU}' already exists.");
                 }
             }
 
-            // -----------------------------------------------------
-            // CREATE ENTITY
-            // -----------------------------------------------------
-
             var product = new Product
             {
-                SellerId =
-                    dto.SellerId,
+                SellerId = dto.SellerId,
+                CustomerId = dto.CustomerId,
+                ProductName = dto.ProductName,
+                SKU = dto.SKU,
+                Barcode = dto.Barcode,
+                BrandId = dto.BrandId,
+                CategoryId = dto.CategoryId,
+                ProductTypeId = dto.ProductTypeId,
+                Description = dto.Description,
+                Weight = dto.Weight,
+                Length = dto.Length,
+                Width = dto.Width,
+                Height = dto.Height,
+                HSNCode = dto.HSNCode,
+                UnitOfMeasure = dto.UnitOfMeasure,
+                Status = string.IsNullOrWhiteSpace(dto.Status) ? "Active" : dto.Status,
+                IsActive = dto.IsActive ?? true,
+                CreatedDate = DateTime.Now,
+                UpdatedDate = null,
 
-                CustomerId =
-                    dto.CustomerId,
-
-                ProductName =
-                    dto.ProductName,
-
-                SKU =
-                    dto.SKU,
-
-                Barcode =
-                    dto.Barcode,
-
-                BrandId =
-                    dto.BrandId,
-
-                CategoryId =
-                    dto.CategoryId,
-
-                ProductTypeId =
-                    dto.ProductTypeId,
-
-                Description =
-                    dto.Description,
-
-                Weight =
-                    dto.Weight,
-
-                Length =
-                    dto.Length,
-
-                Width =
-                    dto.Width,
-
-                Height =
-                    dto.Height,
-
-                HSNCode =
-                    dto.HSNCode,
-
-                UnitOfMeasure =
-                    dto.UnitOfMeasure,
-
-                Status =
-                    string.IsNullOrWhiteSpace(dto.Status)
-                        ? "Active"
-                        : dto.Status,
-
-                IsActive =
-                    dto.IsActive ?? true,
-
-                CreatedDate =
-                    DateTime.Now,
-
-                UpdatedDate =
-                    null
+                // GENERALIZED FIELDS - ALL 11
+                TaxCategory = string.IsNullOrWhiteSpace(dto.TaxCategory) ? "GST_18" : dto.TaxCategory,
+                VisibilityStatus = string.IsNullOrWhiteSpace(dto.VisibilityStatus) ? "VISIBLE" : dto.VisibilityStatus,
+                FulfillmentType = string.IsNullOrWhiteSpace(dto.FulfillmentType) ? "SELF" : dto.FulfillmentType,
+                CarrierType = string.IsNullOrWhiteSpace(dto.CarrierType) ? "PARTNER" : dto.CarrierType,
+                ReadyToDispatchDays = dto.ReadyToDispatchDays ?? 2,
+                ShippingChargeLocal = dto.ShippingChargeLocal,
+                ShippingChargeRegional = dto.ShippingChargeRegional,
+                ShippingChargeNational = dto.ShippingChargeNational,
+                IsComboPack = dto.IsComboPack,
+                ExternalProductId = dto.ExternalProductId ?? string.Empty,       // <-- ADDED NOW - MISSING BEFORE
+                ExternalSystemCode = dto.ExternalSystemCode ?? string.Empty     // <-- ADDED NOW - MISSING BEFORE
             };
 
-            await _repository.AddAsync(
-                product);
-
+            await _repository.AddAsync(product);
             await _repository.SaveChangesAsync();
 
             return MapToDto(product);
         }
 
         // =========================================================
-        // UPDATE
+        // UPDATE - FINAL WITH ALL 11 FIELDS
         // =========================================================
-
-        public async Task<ProductDto?>
-            UpdateAsync(
-                int productId,
-                UpdateProductDto dto)
+        public async Task<ProductDto?> UpdateAsync(int productId, UpdateProductDto dto)
         {
-            var product =
-                await _repository.GetByIdAsync(
-                    productId);
-
-            if (product == null)
-                return null;
-
-            // -----------------------------------------------------
-            // SKU DUPLICATE CHECK
-            // -----------------------------------------------------
+            var product = await _repository.GetByIdAsync(productId);
+            if (product == null) return null;
 
             if (!string.IsNullOrWhiteSpace(dto.SKU) &&
-                !string.Equals(
-                    product.SKU,
-                    dto.SKU,
-                    StringComparison.OrdinalIgnoreCase))
+                !string.Equals(product.SKU, dto.SKU, StringComparison.OrdinalIgnoreCase))
             {
-                var existingProduct =
-                    await _repository.GetBySKUAsync(
-                        dto.SKU);
-
-                if (existingProduct != null &&
-                    existingProduct.ProductId != productId)
+                var existingProduct = await _repository.GetBySKUAsync(dto.SKU);
+                if (existingProduct != null && existingProduct.ProductId != productId)
                 {
-                    throw new InvalidOperationException(
-                        $"A product with SKU '{dto.SKU}' already exists.");
+                    throw new InvalidOperationException($"A product with SKU '{dto.SKU}' already exists.");
                 }
             }
 
-            // -----------------------------------------------------
-            // UPDATE
-            // -----------------------------------------------------
+            product.ProductName = dto.ProductName;
+            product.SKU = dto.SKU;
+            product.Barcode = dto.Barcode;
+            product.BrandId = dto.BrandId;
+            product.CategoryId = dto.CategoryId;
+            product.ProductTypeId = dto.ProductTypeId;
+            product.Description = dto.Description;
+            product.Weight = dto.Weight;
+            product.Length = dto.Length;
+            product.Width = dto.Width;
+            product.Height = dto.Height;
+            product.HSNCode = dto.HSNCode;
+            product.UnitOfMeasure = dto.UnitOfMeasure;
+            product.Status = dto.Status;
 
-            product.ProductName =
-                dto.ProductName;
+            if (dto.IsActive.HasValue) product.IsActive = dto.IsActive.Value;
 
-            product.SKU =
-                dto.SKU;
+            // GENERALIZED FIELDS - ALL 11
+            product.TaxCategory = dto.TaxCategory;
+            product.VisibilityStatus = dto.VisibilityStatus;
+            product.FulfillmentType = dto.FulfillmentType;
+            product.CarrierType = dto.CarrierType;
+            product.ReadyToDispatchDays = dto.ReadyToDispatchDays;
+            product.ShippingChargeLocal = dto.ShippingChargeLocal;
+            product.ShippingChargeRegional = dto.ShippingChargeRegional;
+            product.ShippingChargeNational = dto.ShippingChargeNational;
+            product.IsComboPack = dto.IsComboPack;
+            product.ExternalProductId = dto.ExternalProductId ?? string.Empty;   // <-- ADDED NOW - MISSING BEFORE
+            product.ExternalSystemCode = dto.ExternalSystemCode ?? string.Empty; // <-- ADDED NOW - MISSING BEFORE
 
-            product.Barcode =
-                dto.Barcode;
+            product.UpdatedDate = DateTime.Now;
 
-            product.BrandId =
-                dto.BrandId;
-
-            product.CategoryId =
-                dto.CategoryId;
-
-            product.ProductTypeId =
-                dto.ProductTypeId;
-
-            product.Description =
-                dto.Description;
-
-            product.Weight =
-                dto.Weight;
-
-            product.Length =
-                dto.Length;
-
-            product.Width =
-                dto.Width;
-
-            product.Height =
-                dto.Height;
-
-            product.HSNCode =
-                dto.HSNCode;
-
-            product.UnitOfMeasure =
-                dto.UnitOfMeasure;
-
-            product.Status =
-                dto.Status;
-
-            if (dto.IsActive.HasValue)
-            {
-                product.IsActive =
-                    dto.IsActive.Value;
-            }
-
-            product.UpdatedDate =
-                DateTime.Now;
-
-            await _repository.UpdateAsync(
-                product);
-
+            await _repository.UpdateAsync(product);
             await _repository.SaveChangesAsync();
 
             return MapToDto(product);
@@ -376,173 +220,91 @@ namespace Marketplacesellerportal.Products.Services
         // =========================================================
         // DELETE
         // =========================================================
-
-        public async Task<bool>
-            DeleteAsync(
-                int productId)
+        public async Task<bool> DeleteAsync(int productId)
         {
-            var product =
-                await _repository.GetByIdAsync(
-                    productId);
-
-            if (product == null)
-                return false;
-
-            await _repository.DeleteAsync(
-                product);
-
+            var product = await _repository.GetByIdAsync(productId);
+            if (product == null) return false;
+            await _repository.DeleteAsync(product);
             await _repository.SaveChangesAsync();
-
             return true;
         }
 
         // =========================================================
         // SEARCH + FILTER
         // =========================================================
-
-        public async Task<IEnumerable<ProductDto>>
-            SearchAsync(
-                string? search,
-                string? status,
-                bool? isActive,
-                int? sellerId,
-                int? customerId,
-                int? brandId,
-                int? categoryId,
-                int? productTypeId)
+        public async Task<IEnumerable<ProductDto>> SearchAsync(string? search, string? status, bool? isActive, int? sellerId, int? customerId, int? brandId, int? categoryId, int? productTypeId)
         {
-            var products =
-                await _repository.SearchAsync(
-                    search,
-                    status,
-                    isActive,
-                    sellerId,
-                    customerId,
-                    brandId,
-                    categoryId,
-                    productTypeId);
-
+            var products = await _repository.SearchAsync(search, status, isActive, sellerId, customerId, brandId, categoryId, productTypeId);
             return products.Select(MapToDto);
         }
 
         // =========================================================
         // STATISTICS
         // =========================================================
-
-        public async Task<ProductStatistics>
-            GetStatisticsAsync()
+        public async Task<ProductStatistics> GetStatisticsAsync()
         {
-            return await _repository
-                .GetStatisticsAsync();
+            return await _repository.GetStatisticsAsync();
         }
 
         // =========================================================
         // PAGINATION
         // =========================================================
-
-        public async Task<(
-            IEnumerable<ProductDto> Items,
-            int TotalCount)>
-            GetPagedAsync(
-                int page,
-                int limit)
+        public async Task<(IEnumerable<ProductDto> Items, int TotalCount)> GetPagedAsync(int page, int limit)
         {
-            var result =
-                await _repository.GetPagedAsync(
-                    page,
-                    limit);
-
-            return (
-                result.Items.Select(MapToDto),
-                result.TotalCount
-            );
+            var result = await _repository.GetPagedAsync(page, limit);
+            return (result.Items.Select(MapToDto), result.TotalCount);
         }
 
         // =========================================================
         // SORTING
         // =========================================================
-
-        public async Task<IEnumerable<ProductDto>>
-            GetSortedAsync(
-                string? sort)
+        public async Task<IEnumerable<ProductDto>> GetSortedAsync(string? sort)
         {
-            var products =
-                await _repository.GetSortedAsync(
-                    sort);
-
+            var products = await _repository.GetSortedAsync(sort);
             return products.Select(MapToDto);
         }
 
         // =========================================================
-        // MAP ENTITY → DTO
+        // MAP ENTITY → DTO - FINAL WITH ALL 11 FIELDS
         // =========================================================
-
-        private static ProductDto
-            MapToDto(Product product)
+        private static ProductDto MapToDto(Product product)
         {
             return new ProductDto
             {
-                ProductId =
-                    product.ProductId,
+                ProductId = product.ProductId,
+                SellerId = product.SellerId,
+                CustomerId = product.CustomerId,
+                ProductName = product.ProductName,
+                SKU = product.SKU,
+                Barcode = product.Barcode,
+                BrandId = product.BrandId,
+                CategoryId = product.CategoryId,
+                ProductTypeId = product.ProductTypeId,
+                Description = product.Description,
+                Weight = product.Weight,
+                Length = product.Length,
+                Width = product.Width,
+                Height = product.Height,
+                HSNCode = product.HSNCode,
+                UnitOfMeasure = product.UnitOfMeasure,
+                Status = product.Status,
+                IsActive = product.IsActive,
+                CreatedDate = product.CreatedDate,
+                UpdatedDate = product.UpdatedDate,
 
-                SellerId =
-                    product.SellerId,
-
-                CustomerId =
-                    product.CustomerId,
-
-                ProductName =
-                    product.ProductName,
-
-                SKU =
-                    product.SKU,
-
-                Barcode =
-                    product.Barcode,
-
-                BrandId =
-                    product.BrandId,
-
-                CategoryId =
-                    product.CategoryId,
-
-                ProductTypeId =
-                    product.ProductTypeId,
-
-                Description =
-                    product.Description,
-
-                Weight =
-                    product.Weight,
-
-                Length =
-                    product.Length,
-
-                Width =
-                    product.Width,
-
-                Height =
-                    product.Height,
-
-                HSNCode =
-                    product.HSNCode,
-
-                UnitOfMeasure =
-                    product.UnitOfMeasure,
-
-                Status =
-                    product.Status,
-
-                IsActive =
-                    product.IsActive,
-
-                CreatedDate =
-                    product.CreatedDate,
-
-                UpdatedDate =
-                    product.UpdatedDate
+                // GENERALIZED FIELDS - ALL 11 - NOTHING MISSING
+                TaxCategory = product.TaxCategory,
+                VisibilityStatus = product.VisibilityStatus,
+                FulfillmentType = product.FulfillmentType,
+                CarrierType = product.CarrierType,
+                ReadyToDispatchDays = product.ReadyToDispatchDays,
+                ShippingChargeLocal = product.ShippingChargeLocal ?? 0,
+                ShippingChargeRegional = product.ShippingChargeRegional ?? 0,
+                ShippingChargeNational = product.ShippingChargeNational ?? 0,
+                IsComboPack = product.IsComboPack,
+                ExternalProductId = product.ExternalProductId,       // <-- ADDED NOW
+                ExternalSystemCode = product.ExternalSystemCode     // <-- ADDED NOW
             };
         }
     }
 }
-

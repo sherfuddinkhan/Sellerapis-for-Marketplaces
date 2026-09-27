@@ -1,0 +1,69 @@
+﻿using Marketplacesellerportal.DTOs;
+using Marketplacesellerportal.Interfaces;
+using Marketplacesellerportal.ReversePickups.DTOs;
+using Marketplacesellerportal.ReversePickups.Interfaces;
+using Microsoft.AspNetCore.Mvc;
+using System.Threading.Tasks;
+
+namespace Marketplacesellerportal.ReversePickups.Controllers
+{
+    [ApiController]
+    [Route("api/[controller]")]
+    public class ReversePickupController : ControllerBase
+    {
+        private readonly IReversePickupService _svc;
+        public ReversePickupController(IReversePickupService svc) => _svc = svc;
+
+        [HttpGet("seller/{sellerId}/customer/{customerId}")]
+        public async Task<IActionResult> GetList(int sellerId, int customerId, [FromQuery] int page = 1, [FromQuery] int size = 20)
+        {
+            var req = new ReversePickupListRequest { SellerId = sellerId, CustomerId = customerId, PageNumber = page, PageSize = size };
+            req.Normalize();
+            return Ok(await _svc.GetListAsync(req));
+        }
+
+        [HttpPost("list")]
+        public async Task<IActionResult> GetListPost([FromBody] ReversePickupListRequest req)
+        {
+            req.Normalize();
+            return Ok(await _svc.GetListAsync(req));
+        }
+
+        [HttpGet("{id}/seller/{sellerId}/customer/{customerId}")]
+        public async Task<IActionResult> GetById(int id, int sellerId, int customerId)
+        {
+            var r = await _svc.GetByIdAsync(id, sellerId, customerId);
+            if (!r.Success) return NotFound(r);
+            return Ok(r);
+        }
+
+        [HttpPost("seller/{sellerId}/customer/{customerId}")]
+        public async Task<IActionResult> Create(int sellerId, int customerId, [FromBody] ReversePickupModel m)
+        {
+            if (!ModelState.IsValid) return BadRequest(ModelState);
+            m.SellerId = sellerId;
+            m.CustomerId = customerId;
+            var r = await _svc.CreateAsync(m);
+            if (!r.Success) return BadRequest(r);
+            return CreatedAtAction(nameof(GetById), new { id = r.Data!.Id, sellerId, customerId }, r);
+        }
+
+        [HttpPut("{id}/seller/{sellerId}/customer/{customerId}")]
+        public async Task<IActionResult> Update(int id, int sellerId, int customerId, [FromBody] ReversePickupModel m)
+        {
+            m.SellerId = sellerId;
+            m.CustomerId = customerId;
+            var r = await _svc.UpdateAsync(id, m);
+            if (!r.Success) return NotFound(r);
+            return Ok(r);
+        }
+
+        [HttpDelete("{id}/seller/{sellerId}/customer/{customerId}")]
+        public async Task<IActionResult> Delete(int id, int sellerId, int customerId)
+        {
+            var r = await _svc.DeleteAsync(id, sellerId, customerId);
+            if (!r.Success) return NotFound(r);
+            return Ok(r);
+        }
+    }
+}

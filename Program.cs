@@ -2,12 +2,9 @@ using Marketplacesellerportal.AuthManagement.Helpers;
 using Marketplacesellerportal.AuthManagement.Interfaces;
 using Marketplacesellerportal.AuthManagement.Repositories;
 using Marketplacesellerportal.AuthManagement.Services;
-using Marketplacesellerportal.Brand.Interfaces;
-using Marketplacesellerportal.Brand.Repositories;
-using Marketplacesellerportal.Brand.Services;
-using Marketplacesellerportal.BrandModel.Interfaces;
-using Marketplacesellerportal.BrandModel.Repositories;
-using Marketplacesellerportal.BrandModel.Services;
+using Marketplacesellerportal.Brands.Interfaces;
+using Marketplacesellerportal.Brands.Repositories;
+using Marketplacesellerportal.Brands.Services;
 using Marketplacesellerportal.Catalog.Interfaces;
 using Marketplacesellerportal.Catalog.Repositories;
 using Marketplacesellerportal.Catalog.Services;
@@ -15,19 +12,40 @@ using Marketplacesellerportal.Categories.Interfaces;
 using Marketplacesellerportal.Categories.Repositories;
 using Marketplacesellerportal.Categories.Services;
 using Marketplacesellerportal.Configuration;
+using Marketplacesellerportal.CustomerAddresses.Interface;
+using Marketplacesellerportal.CustomerAddresses.Repositories;
+using Marketplacesellerportal.CustomerAddresses.Services;
 using Marketplacesellerportal.CustomerReturns.Interfaces;
 using Marketplacesellerportal.CustomerReturns.Repositories;
 using Marketplacesellerportal.CustomerReturns.Services;
 using Marketplacesellerportal.Database;
+using Marketplacesellerportal.DeliveryChallanItems.Interfaces;
+using Marketplacesellerportal.DeliveryChallanItems.Repositories;
+using Marketplacesellerportal.DeliveryChallanItems.Services;
 using Marketplacesellerportal.DeliveryChallans.Interfaces;
 using Marketplacesellerportal.DeliveryChallans.Repositories;
 using Marketplacesellerportal.DeliveryChallans.Services;
+using Marketplacesellerportal.EInvoice.Interfaces;
+using Marketplacesellerportal.EInvoice.Repositories;
+using Marketplacesellerportal.EInvoice.Services;
+using Marketplacesellerportal.EWayBill.Interfaces;
+using Marketplacesellerportal.EWayBill.Repositories;
+using Marketplacesellerportal.EWayBill.Services;
+using Marketplacesellerportal.Gatepasses.Interfaces;
+using Marketplacesellerportal.Gatepasses.Repositories;
+using Marketplacesellerportal.Gatepasses.Services;
 using Marketplacesellerportal.GoodsReceiptItems.Interfaces;
 using Marketplacesellerportal.GoodsReceiptItems.Repositories;
 using Marketplacesellerportal.GoodsReceiptItems.Services;
 using Marketplacesellerportal.GoodsReceiptNotes.Interfaces;
 using Marketplacesellerportal.GoodsReceiptNotes.Repositories;
 using Marketplacesellerportal.GoodsReceiptNotes.Services;
+using Marketplacesellerportal.Interface;
+using Marketplacesellerportal.Interfaces;
+// Add only these 2 lines ONCE:
+using Marketplacesellerportal.MarketplaceCustomers.Interfaces;
+using Marketplacesellerportal.MarketplaceCustomers.Repositories;
+using Marketplacesellerportal.MarketplaceCustomers.Services;
 using Marketplacesellerportal.MarketplaceOrderItems.Interfaces;
 using Marketplacesellerportal.MarketplaceOrderItems.Repositories;
 using Marketplacesellerportal.MarketplaceOrderItems.Services;
@@ -75,6 +93,13 @@ using Marketplacesellerportal.PurchaseOrders.Services;
 using Marketplacesellerportal.PurchaseReturns.Interfaces;
 using Marketplacesellerportal.PurchaseReturns.Repositories;
 using Marketplacesellerportal.PurchaseReturns.Services;
+using Marketplacesellerportal.Putaways.Interfaces;
+using Marketplacesellerportal.Putaways.Repositories;
+using Marketplacesellerportal.Putaways.Services;
+using Marketplacesellerportal.Repositories;
+using Marketplacesellerportal.ReversePickups.Interfaces;
+using Marketplacesellerportal.ReversePickups.Repositories;
+using Marketplacesellerportal.ReversePickups.Services;
 using Marketplacesellerportal.Reviews.Interfaces;
 using Marketplacesellerportal.Reviews.Repositories;
 using Marketplacesellerportal.Reviews.Services;
@@ -93,6 +118,10 @@ using Marketplacesellerportal.SellerCustomers.Services;
 using Marketplacesellerportal.Sellers.Interfaces;
 using Marketplacesellerportal.Sellers.Repositories;
 using Marketplacesellerportal.Sellers.Services;
+using Marketplacesellerportal.Services;
+using Marketplacesellerportal.ShelfwiseInventory.Interfaces;
+using Marketplacesellerportal.ShelfwiseInventory.Repositories;
+using Marketplacesellerportal.ShelfwiseInventory.Services;
 using Marketplacesellerportal.Shipments.Interfaces;
 using Marketplacesellerportal.Shipments.Repositories;
 using Marketplacesellerportal.Shipments.Services;
@@ -111,6 +140,9 @@ using Marketplacesellerportal.StockTransfers.Services;
 using Marketplacesellerportal.Suppliers.Interfaces;
 using Marketplacesellerportal.Suppliers.Repositories;
 using Marketplacesellerportal.Suppliers.Services;
+using Marketplacesellerportal.VendorItemMasters.Interfaces;
+using Marketplacesellerportal.VendorItemMasters.Repositories;
+using Marketplacesellerportal.VendorItemMasters.Services;
 using Marketplacesellerportal.WarehouseLocations.Interfaces;
 using Marketplacesellerportal.WarehouseLocations.Repositories;
 using Marketplacesellerportal.WarehouseLocations.Services;
@@ -123,15 +155,6 @@ using Marketplacesellerportal.WishlistItems.Services;
 using Marketplacesellerportal.Wishlists.Interfaces;
 using Marketplacesellerportal.Wishlists.Repositories;
 using Marketplacesellerportal.Wishlists.Services;
-using Marketplacesellerportal.BrandModel.Interfaces;
-using Marketplacesellerportal.BrandModel.Repositories;
-using Marketplacesellerportal.BrandModel.Services;
-using Marketplacesellerportal.DeliveryChallanItems.Interfaces;
-using Marketplacesellerportal.DeliveryChallanItems.Repositories;
-using Marketplacesellerportal.DeliveryChallanItems.Services;
-using Marketplacesellerportal.Interface;
-using Marketplacesellerportal.Repositories;
-using Marketplacesellerportal.Services;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
@@ -268,6 +291,25 @@ builder.Services.AddScoped<
     SupplierService>();
 
 // =========================================================
+// E-INVOICE - Layered structure like GoodsReceiptItems
+// =========================================================
+builder.Services.AddScoped<IEInvoiceRepository, EInvoiceRepository>();
+builder.Services.AddScoped<IEInvoiceService, EInvoiceService>();
+
+// =========================================================
+// E-WAY BILL - Same structure
+// =========================================================
+builder.Services.AddScoped<IEWayBillRepository, EWayBillRepository>();
+builder.Services.AddScoped<IEWayBillService, EWayBillService>();
+
+//Market place customer//
+// BEFORE (fails)
+builder.Services.AddScoped<IMarketplaceCustomerService, MarketplaceCustomerService>();
+
+// AFTER - with correct namespace
+builder.Services.AddScoped<Marketplacesellerportal.MarketplaceCustomers.Interfaces.IMarketplaceCustomerService, Marketplacesellerportal.MarketplaceCustomers.Services.MarketplaceCustomerService>();
+
+// =========================================================
 // MARKETPLACE RETURN
 // =========================================================
 
@@ -327,7 +369,19 @@ builder.Services.AddScoped<
     IWarehouseLocationService,
     WarehouseLocationService>();
 
-
+// =========================================================
+// Gatepass 
+// =========================================================
+builder.Services.AddScoped<IReversePickupRepository, ReversePickupRepository>();
+builder.Services.AddScoped<IReversePickupService, ReversePickupService>();
+builder.Services.AddScoped<IVendorItemMasterRepository, VendorItemMasterRepository>();
+builder.Services.AddScoped<IVendorItemMasterService, VendorItemMasterService>();
+builder.Services.AddScoped<IPutawayRepository, PutawayRepository>();
+builder.Services.AddScoped<IPutawayService, PutawayService>();
+builder.Services.AddScoped<IGatepassRepository, GatepassRepository>();
+builder.Services.AddScoped<IGatepassService, GatepassService>();
+builder.Services.AddScoped<IShelfwiseInventoryRepository, ShelfwiseInventoryRepository>();
+builder.Services.AddScoped<IShelfwiseInventoryService, ShelfwiseInventoryService>();
 // =========================================================
 // BRAND
 // =========================================================
@@ -362,16 +416,7 @@ builder.Services.AddScoped<
 builder.Services.AddScoped<
     ICatalogService,
     CatalogService>();
-// =========================================================
-// BrandModel
-// =========================================================
-builder.Services.AddScoped<
-    IBrandModelRepository,
-    BrandModelRepository>();
 
-builder.Services.AddScoped<
-    IBrandModelService,
-    BrandModelService>();
 
 // =========================================================
 // PRODUCT
@@ -556,6 +601,14 @@ builder.Services.AddScoped<
     IOrderStatusHistoryService,
     OrderStatusHistoryService>();
 
+// =========================================================
+// CustomerAddress
+// =========================================================
+builder.Services.AddScoped<ICustomerAddressRepository,
+    CustomerAddressRepository>();
+
+builder.Services.AddScoped<ICustomerAddressService,
+    CustomerAddressService>();
 
 // =========================================================
 // SHIPMENT

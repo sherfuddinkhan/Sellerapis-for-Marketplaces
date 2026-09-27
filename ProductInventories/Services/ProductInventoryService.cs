@@ -164,21 +164,25 @@ namespace Marketplacesellerportal.ProductInventories.Services
 
                     LocationId =
                         model.LocationId,
+                    Quantity = model.Quantity.HasValue
+    ? (int?)model.Quantity.Value
+    : null,
 
-                    Quantity =
-                        model.Quantity,
+                    ReservedQuantity = model.ReservedQuantity.HasValue
+    ? (int?)model.ReservedQuantity.Value
+    : null,
 
-                    ReservedQuantity =
-                        model.ReservedQuantity,
+                    DamagedQuantity = model.DamagedQuantity.HasValue
+    ? (int?)model.DamagedQuantity.Value
+    : null,
 
-                    DamagedQuantity =
-                        model.DamagedQuantity,
+                    ReorderLevel = model.ReorderLevel.HasValue
+    ? (int?)model.ReorderLevel.Value
+    : null,
 
-                    ReorderLevel =
-                        model.ReorderLevel,
-
-                    ReorderQuantity =
-                        model.ReorderQuantity,
+                    ReorderQuantity = model.ReorderQuantity.HasValue
+    ? (int?)model.ReorderQuantity.Value
+    : null,
 
                     LastStockUpdate =
                         model.LastStockUpdate
@@ -231,20 +235,29 @@ namespace Marketplacesellerportal.ProductInventories.Services
                 model.LocationId;
 
             existing.Quantity =
-                model.Quantity;
+     model.Quantity.HasValue
+         ? (int?)model.Quantity.Value
+         : null;
 
             existing.ReservedQuantity =
-                model.ReservedQuantity;
+                model.ReservedQuantity.HasValue
+                    ? (int?)model.ReservedQuantity.Value
+                    : null;
 
             existing.DamagedQuantity =
-                model.DamagedQuantity;
+                model.DamagedQuantity.HasValue
+                    ? (int?)model.DamagedQuantity.Value
+                    : null;
 
             existing.ReorderLevel =
-                model.ReorderLevel;
+                model.ReorderLevel.HasValue
+                    ? (int?)model.ReorderLevel.Value
+                    : null;
 
             existing.ReorderQuantity =
-                model.ReorderQuantity;
-
+                model.ReorderQuantity.HasValue
+                    ? (int?)model.ReorderQuantity.Value
+                    : null;
             existing.LastStockUpdate =
                 model.LastStockUpdate;
 

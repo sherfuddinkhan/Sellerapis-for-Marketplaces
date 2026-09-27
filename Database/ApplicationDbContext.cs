@@ -1,16 +1,8 @@
 ﻿using Marketplacesellerportal.Models;
 using MarketplaceSellerPortal.Models;
 using Microsoft.EntityFrameworkCore;
-
-using MarketplacePaymentEntity =
-    MarketplaceSellerPortal.Models.MarketplacePayment;
-
-using MarketplaceOrderEntity =
-    MarketplaceSellerPortal.Models.MarketplaceOrder;
-
-using MarketplaceOrderItemEntity =
-    MarketplaceSellerPortal.Models.MarketplaceOrderItem;
-
+using EInvoiceEntity = Marketplacesellerportal.Models.EInvoice;
+using EWayBillEntity = Marketplacesellerportal.Models.EWayBill;
 using BrandEntity =
     Marketplacesellerportal.Models.Brand;
 
@@ -20,403 +12,319 @@ using BrandModelEntity =
 using CategoryEntity =
     Marketplacesellerportal.Models.Category;
 
+using MarketplaceOrderEntity =
+    MarketplaceSellerPortal.Models.MarketplaceOrder;
+
+using MarketplaceOrderItemEntity =
+    MarketplaceSellerPortal.Models.MarketplaceOrderItem;
+
+using MarketplacePaymentEntity =
+    MarketplaceSellerPortal.Models.MarketplacePayment;
+
 using MarketplaceReturnEntity =
     Marketplacesellerportal.Models.MarketplaceReturn;
 
 using ProductImageEntity =
     Marketplacesellerportal.Models.ProductImage;
 
-namespace Marketplacesellerportal.Database;
-
-public class ApplicationDbContext : DbContext
+namespace Marketplacesellerportal.Database
 {
-    public ApplicationDbContext(
-        DbContextOptions<ApplicationDbContext> options)
-        : base(options)
+    public class ApplicationDbContext : DbContext
     {
-    }
+        public ApplicationDbContext(
+            DbContextOptions<ApplicationDbContext> options)
+            : base(options)
+        {
+        }
 
+        // =========================================================
+        // CORE
+        // =========================================================
 
-    // =========================================================
-    // CORE
-    // =========================================================
+        public DbSet<User> Users { get; set; }
 
-    public DbSet<User> Users { get; set; }
+        public DbSet<Seller> Sellers { get; set; }
 
-    public DbSet<Seller> Sellers { get; set; }
+        public DbSet<SellerCustomer> SellerCustomers { get; set; }
 
-    public DbSet<SellerCustomer> SellerCustomers { get; set; }
 
+        /// <summary>
+        /// ////////Invoice//////////////////
+        /// </summary>
 
-    // =========================================================
-    // CATEGORIES
-    // =========================================================
+        public DbSet<EInvoiceEntity> EInvoices { get; set; }
+        public DbSet<EWayBillEntity> EWayBills { get; set; }
 
-    public DbSet<CategoryEntity> Categories { get; set; }
+        // =========================================================
+        // CATEGORIES
+        // =========================================================
 
+        public DbSet<CategoryEntity> Categories { get; set; }
 
-    // =========================================================
-    // PRODUCTS
-    // =========================================================
 
-    public DbSet<Product> Products { get; set; }
+        // FIX: Use full namespace for Models to avoid folder collision
+        public DbSet<Marketplacesellerportal.Models.ShelfwiseInventory> ShelfwiseInventories { get; set; }
+        public DbSet<Marketplacesellerportal.Models.VendorItemMaster> VendorItemMasters { get; set; }
+        public DbSet<Marketplacesellerportal.Models.ReversePickup> ReversePickups { get; set; }
+        public DbSet<Marketplacesellerportal.Models.Putaway> Putaways { get; set; }
+        public DbSet<Marketplacesellerportal.Models.Gatepass> Gatepasses { get; set; }
+        // =========================================================
+        // PRODUCTS
+        // =========================================================
 
-    public DbSet<ProductPrice> ProductPrices { get; set; }
+        public DbSet<Product> Products { get; set; }
 
-    public DbSet<ProductInventory> ProductInventory { get; set; }
+        public DbSet<MarketplaceCustomer> MarketplaceCustomers { get; set; }
 
-    public DbSet<ProductImageEntity> ProductImages { get; set; }
+        public DbSet<ProductPrice> ProductPrices { get; set; }
 
-    public DbSet<ProductAttribute> ProductAttributes { get; set; }
+        public DbSet<ProductInventory> ProductInventory { get; set; }
 
-    public DbSet<ProductType> ProductTypes { get; set; }
+        public DbSet<ProductImageEntity> ProductImages { get; set; }
 
+        public DbSet<ProductAttribute> ProductAttributes { get; set; }
 
-    // =========================================================
-    // STOCK
-    // =========================================================
+        public DbSet<ProductType> ProductTypes { get; set; }
 
-    public DbSet<StockMovement> StockMovements { get; set; }
+        public DbSet<ProductPackage> ProductPackages { get; set; }
 
-    public DbSet<StockLedger> StockLedgers { get; set; }
+        public DbSet<ProductAddressLabel> ProductAddressLabels { get; set; }
 
 
-    // =========================================================
-    // SALES ORDERS
-    // =========================================================
+        // =========================================================
+        // STOCK
+        // =========================================================
 
-    public DbSet<SalesOrderItem> SalesOrderItems { get; set; }
+        public DbSet<StockMovement> StockMovements { get; set; }
 
-    public DbSet<SalesOrder> SalesOrders { get; set; }
+        public DbSet<StockLedger> StockLedgers { get; set; }
 
 
-    // =========================================================
-    // DELIVERY CHALLANS
-    // =========================================================
+        // =========================================================
+        // SALES ORDERS
+        // =========================================================
 
-    public DbSet<DeliveryChallan> DeliveryChallans { get; set; }
-    public DbSet<DeliveryChallanItem> DeliveryChallanItems { get;set;}
+        public DbSet<SalesOrderItem> SalesOrderItems { get; set; }
 
+        public DbSet<SalesOrder> SalesOrders { get; set; }
 
-    // =========================================================
-    // SALES INVOICES
-    // =========================================================
 
-    public DbSet<SalesInvoice> SalesInvoices { get; set; }
+        // =========================================================
+        // DELIVERY CHALLANS
+        // =========================================================
 
+        public DbSet<DeliveryChallan> DeliveryChallans { get; set; }
 
-    // =========================================================
-    // SHIPMENTS
-    // =========================================================
+        public DbSet<DeliveryChallanItem> DeliveryChallanItems { get; set; }
 
-    public DbSet<Shipment> Shipments { get; set; }
 
+        // =========================================================
+        // SALES INVOICES
+        // =========================================================
 
-    // =========================================================
-    // PAYMENTS
-    // =========================================================
+        public DbSet<SalesInvoice> SalesInvoices { get; set; }
 
-    public DbSet<Payment> Payments { get; set; }
+        public DbSet<SalesInvoiceItem> SalesInvoiceItems { get; set; }
 
-    public DbSet<PaymentSettings> PaymentSettings { get; set; }
+        public DbSet<SalesInvoicePayment> SalesInvoicePayments { get; set; }
 
+        public DbSet<SalesInvoiceAdditionalCharge> SalesInvoiceAdditionalCharges { get; set; }
 
-    // =========================================================
-    // CUSTOMER RETURNS
-    // =========================================================
+        public DbSet<CustomerAddress> CustomerAddresses { get; set; }
 
-    public DbSet<CustomerReturn> CustomerReturns { get; set; }
 
+        // =========================================================
+        // SHIPMENTS
+        // =========================================================
 
-    // =========================================================
-    // WISHLISTS
-    // =========================================================
+        public DbSet<Shipment> Shipments { get; set; }
 
-    public DbSet<Wishlist> Wishlists { get; set; }
 
-    public DbSet<WishlistItem> WishlistItems { get; set; }
+        // =========================================================
+        // PAYMENTS
+        // =========================================================
 
+        public DbSet<Payment> Payments { get; set; }
 
-    // =========================================================
-    // REVIEWS
-    // =========================================================
+        public DbSet<PaymentSettings> PaymentSettings { get; set; }
 
-    public DbSet<Review> Reviews { get; set; }
 
+        // =========================================================
+        // CUSTOMER RETURNS
+        // =========================================================
 
-    // =========================================================
-    // ORDER STATUS HISTORY
-    // =========================================================
+        public DbSet<CustomerReturn> CustomerReturns { get; set; }
 
-    public DbSet<OrderStatusHistory> OrderStatusHistories { get; set; }
 
+        // =========================================================
+        // WISHLISTS
+        // =========================================================
 
-    // =========================================================
-    // MARKETPLACE
-    // =========================================================
+        public DbSet<Wishlist> Wishlists { get; set; }
 
-    public DbSet<Marketplace> Marketplaces { get; set; }
+        public DbSet<WishlistItem> WishlistItems { get; set; }
 
-    public DbSet<MarketplaceReturnEntity> MarketplaceReturns { get; set; }
 
-    public DbSet<MarketplaceOrderEntity> MarketplaceOrders { get; set; }
+        // =========================================================
+        // REVIEWS
+        // =========================================================
 
-    public DbSet<MarketplaceOrderItemEntity> MarketplaceOrderItems
-    {
-        get;
-        set;
-    }
+        public DbSet<Review> Reviews { get; set; }
 
-    public DbSet<MarketplacePaymentEntity> MarketplacePayments
-    {
-        get;
-        set;
-    }
 
-    public DbSet<MarketplaceOrderAddress> MarketplaceOrderAddresses
-    {
-        get;
-        set;
-    }
+        // =========================================================
+        // ORDER STATUS HISTORY
+        // =========================================================
 
-    public DbSet<MarketplaceShipment> MarketplaceShipments
-    {
-        get;
-        set;
-    }
+        public DbSet<OrderStatusHistory> OrderStatusHistories { get; set; }
 
 
-    // =========================================================
-    // NOTIFICATIONS
-    // =========================================================
+        // =========================================================
+        // MARKETPLACE
+        // =========================================================
 
-    public DbSet<Notification> Notifications { get; set; }
+        public DbSet<Marketplace> Marketplaces { get; set; }
 
+        public DbSet<MarketplaceReturnEntity> MarketplaceReturns { get; set; }
 
-    // =========================================================
-    // BRANDS
-    // =========================================================
+        public DbSet<MarketplaceOrderEntity> MarketplaceOrders { get; set; }
 
-    public DbSet<BrandEntity> Brands { get; set; }
+        public DbSet<MarketplaceOrderItemEntity>
+            MarketplaceOrderItems
+        { get; set; }
 
-    public DbSet<BrandModelEntity> BrandModels { get; set; }
+        public DbSet<MarketplacePaymentEntity>
+            MarketplacePayments
+        { get; set; }
 
+        public DbSet<MarketplaceOrderAddress>
+            MarketplaceOrderAddresses
+        { get; set; }
 
-    // =========================================================
-    // SUPPLIERS
-    // =========================================================
+        public DbSet<MarketplaceShipment>
+            MarketplaceShipments
+        { get; set; }
 
-    public DbSet<Supplier> Suppliers { get; set; }
 
-    public DbSet<PurchaseReturn> PurchaseReturns { get; set; }
+        // =========================================================
+        // NOTIFICATIONS
+        // =========================================================
 
+        public DbSet<Notification> Notifications { get; set; }
 
-    // =========================================================
-    // INVENTORY
-    // =========================================================
 
-    public DbSet<StockAdjustment> StockAdjustments { get; set; }
+        // =========================================================
+        // BRANDS
+        // =========================================================
 
-    public DbSet<StockTransfer> StockTransfers { get; set; }
+        public DbSet<BrandEntity> Brands { get; set; }
 
+        public DbSet<BrandModelEntity> BrandModels { get; set; }
 
-    // =========================================================
-    // WAREHOUSES
-    // =========================================================
 
-    public DbSet<Warehouse> Warehouses { get; set; }
+        // =========================================================
+        // SUPPLIERS
+        // =========================================================
 
-    public DbSet<WarehouseLocation> WarehouseLocations { get; set; }
+        public DbSet<Supplier> Suppliers { get; set; }
 
+        public DbSet<PurchaseReturn> PurchaseReturns { get; set; }
 
-    // =========================================================
-    // PURCHASE ORDERS
-    // =========================================================
 
-    public DbSet<PurchaseOrder> PurchaseOrders { get; set; }
+        // =========================================================
+        // INVENTORY
+        // =========================================================
 
-    public DbSet<PurchaseOrderItem> PurchaseOrderItems { get; set; }
+        public DbSet<StockAdjustment> StockAdjustments { get; set; }
 
+        public DbSet<StockTransfer> StockTransfers { get; set; }
 
-    // =========================================================
-    // GOODS RECEIPT
-    // =========================================================
 
-    public DbSet<GoodsReceiptNote> GoodsReceiptNotes { get; set; }
+        // =========================================================
+        // WAREHOUSES
+        // =========================================================
 
-    public DbSet<GoodsReceiptItem> GoodsReceiptItems { get; set; }
+        public DbSet<Warehouse> Warehouses { get; set; }
 
+        public DbSet<WarehouseLocation> WarehouseLocations { get; set; }
 
-    // =========================================================
-    // MODEL CONFIGURATION
-    // =========================================================
 
-    protected override void OnModelCreating(
-        ModelBuilder modelBuilder)
-    {
-        base.OnModelCreating(modelBuilder);
+        // =========================================================
+        // PURCHASE ORDERS
+        // =========================================================
 
+        public DbSet<PurchaseOrder> PurchaseOrders { get; set; }
 
-        // =====================================================
-        // APPLY EXISTING ENTITY CONFIGURATIONS
-        // =====================================================
+        public DbSet<PurchaseOrderItem> PurchaseOrderItems { get; set; }
 
-        modelBuilder.ApplyConfigurationsFromAssembly(
-            typeof(ApplicationDbContext).Assembly);
 
+        // =========================================================
+        // GOODS RECEIPT
+        // =========================================================
 
-        // =====================================================
-        // MARKETPLACE ORDER
-        //
-        // MarketplaceOrder
-        //       1
-        //       |
-        //       |
-        //       *
-        // MarketplaceOrderItem
-        //
-        // =====================================================
-        // =====================================================
-        // STOCK TABLE MAPPINGS
-        // =====================================================
+        public DbSet<GoodsReceiptNote> GoodsReceiptNotes { get; set; }
 
-        modelBuilder.Entity<StockMovement>()
-            .ToTable("StockMovement", "dbo");
+        public DbSet<GoodsReceiptItem> GoodsReceiptItems { get; set; }
 
-        modelBuilder.Entity<StockLedger>()
-            .ToTable("StockLedger", "dbo");
 
-        modelBuilder.Entity<StockAdjustment>()
-            .ToTable("StockAdjustments", "dbo");
+        // =========================================================
+        // MODEL CONFIGURATION
+        // =========================================================
 
-        modelBuilder.Entity<StockTransfer>()
-            .ToTable("StockTransfers", "dbo");
+        protected override void OnModelCreating(ModelBuilder modelBuilder)
+        {
+            base.OnModelCreating(modelBuilder);
+            modelBuilder.ApplyConfigurationsFromAssembly(typeof(ApplicationDbContext).Assembly);
 
-        // =====================================================
-        // WAREHOUSE TABLE MAPPING
-        // =====================================================
+            // =====================================================
+            // PRODUCT
+            // =====================================================
+            modelBuilder.Entity<Product>()
+               .ToTable("Products", "dbo");
 
-        modelBuilder.Entity<Warehouse>()
-            .ToTable("Warehouses", "dbo");
+            // =====================================================
+            // PRODUCT -> BRAND (keep ONLY one config, delete the other one)
+            // =====================================================
+            modelBuilder.Entity<Product>()
+               .HasOne(p => p.Brand)
+               .WithMany(b => b.Products)
+               .HasForeignKey(p => p.BrandId)
+               .OnDelete(DeleteBehavior.SetNull);
 
-        modelBuilder.Entity<WarehouseLocation>()
-            .ToTable("WarehouseLocations", "dbo");
-        modelBuilder.Entity<MarketplaceOrderEntity>()
-            .HasMany(order => order.Items)
-            .WithOne(item => item.Order)
-            .HasForeignKey(item => item.MarketplaceOrderId)
-            .OnDelete(DeleteBehavior.Cascade);
+            // =====================================================
+            // PRODUCT -> CATEGORY
+            // =====================================================
+            modelBuilder.Entity<Product>()
+               .HasOne(p => p.Category)
+               .WithMany(c => c.Products)
+               .HasForeignKey(p => p.CategoryId)
+               .OnDelete(DeleteBehavior.SetNull);
 
+            // =====================================================
+            // BRAND
+            // =====================================================
+            modelBuilder.Entity<BrandEntity>()
+               .ToTable("Brands", "dbo");
+            modelBuilder.Entity<BrandEntity>()
+               .HasKey(b => b.BrandId);
 
-        // =====================================================
-        // MARKETPLACE ORDER
-        // SELLER ID
-        // =====================================================
-        //
-        // SellerId is a scalar property only.
-        //
-        // MarketplaceOrder currently does NOT contain:
-        //
-        // public Seller? Seller { get; set; }
-        //
-        // Therefore no Seller relationship is configured here.
-        //
-        // =====================================================
+            // =====================================================
+            // BRAND -> BRAND MODELS
+            // =====================================================
+            modelBuilder.Entity<BrandModelEntity>()
+               .ToTable("BrandModels", "dbo");
+            modelBuilder.Entity<BrandModelEntity>()
+               .HasKey(bm => bm.BrandModelId);
 
-        modelBuilder.Entity<MarketplaceOrderEntity>()
-            .Property(order => order.SellerId)
-            .IsRequired();
+            modelBuilder.Entity<BrandModelEntity>()
+               .HasOne(bm => bm.Brand)
+               .WithMany(b => b.BrandModels)
+               .HasForeignKey(bm => bm.BrandId)
+               .OnDelete(DeleteBehavior.Cascade);
 
+     
+        }
 
-        // =====================================================
-        // MARKETPLACE ORDER
-        // CUSTOMER ID
-        // =====================================================
-        //
-        // CustomerId is a scalar property only.
-        //
-        // MarketplaceOrder currently does NOT contain:
-        //
-        // public SellerCustomer? Customer { get; set; }
-        //
-        // Therefore no Customer relationship is configured here.
-        //
-        // =====================================================
 
-        modelBuilder.Entity<MarketplaceOrderEntity>()
-            .Property(order => order.CustomerId)
-            .IsRequired();
-
-
-        // =====================================================
-        // MARKETPLACE ACCOUNT ID
-        // =====================================================
-        //
-        // MarketplaceAccountId is a scalar property only.
-        //
-        // No Marketplace navigation property currently exists
-        // inside MarketplaceOrder.
-        //
-        // Therefore no Marketplace relationship is configured.
-        //
-        // =====================================================
-
-        modelBuilder.Entity<MarketplaceOrderEntity>()
-            .Property(order => order.MarketplaceAccountId)
-            .IsRequired();
-
-
-        // =====================================================
-        // MARKETPLACE ORDER TOTAL AMOUNT
-        // =====================================================
-
-        modelBuilder.Entity<MarketplaceOrderEntity>()
-            .Property(order => order.TotalAmount)
-            .HasColumnType("decimal(18,2)");
-
-
-        // =====================================================
-        // MARKETPLACE ORDER ITEM - UNIT PRICE
-        // =====================================================
-
-        modelBuilder.Entity<MarketplaceOrderItemEntity>()
-            .Property(item => item.UnitPrice)
-            .HasColumnType("decimal(18,2)");
-
-
-        // =====================================================
-        // MARKETPLACE ORDER ITEM - TAX
-        // =====================================================
-
-        modelBuilder.Entity<MarketplaceOrderItemEntity>()
-            .Property(item => item.TaxAmount)
-            .HasColumnType("decimal(18,2)");
-
-
-        // =====================================================
-        // MARKETPLACE ORDER ITEM - SHIPPING
-        // =====================================================
-
-        modelBuilder.Entity<MarketplaceOrderItemEntity>()
-            .Property(item => item.ShippingAmount)
-            .HasColumnType("decimal(18,2)");
-
-
-        // =====================================================
-        // MARKETPLACE ORDER ITEM - DISCOUNT
-        // =====================================================
-
-        modelBuilder.Entity<MarketplaceOrderItemEntity>()
-            .Property(item => item.DiscountAmount)
-            .HasColumnType("decimal(18,2)");
-
-
-        // =====================================================
-        // MARKETPLACE ORDER ITEM - TOTAL
-        // =====================================================
-
-        modelBuilder.Entity<MarketplaceOrderItemEntity>()
-            .Property(item => item.TotalAmount)
-            .HasColumnType("decimal(18,2)");
     }
 }

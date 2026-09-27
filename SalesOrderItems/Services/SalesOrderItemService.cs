@@ -80,6 +80,7 @@ namespace Marketplacesellerportal.SalesOrderItems.Services
             if (existing == null)
                 return false;
 
+            // Existing 7
             existing.SalesOrderId = salesOrderItem.SalesOrderId;
             existing.ProductId = salesOrderItem.ProductId;
             existing.Quantity = salesOrderItem.Quantity;
@@ -87,6 +88,40 @@ namespace Marketplacesellerportal.SalesOrderItems.Services
             existing.Discount = salesOrderItem.Discount;
             existing.TaxAmount = salesOrderItem.TaxAmount;
             existing.TotalAmount = salesOrderItem.TotalAmount;
+
+            // TOPAZ fields
+            existing.Description = salesOrderItem.Description;
+            existing.Uom = salesOrderItem.Uom;
+            existing.Hsncode = salesOrderItem.Hsncode;
+            existing.GstPer = salesOrderItem.GstPer;
+            existing.SgstPer = salesOrderItem.SgstPer;
+            existing.SgstAmount = salesOrderItem.SgstAmount;
+            existing.CgstPer = salesOrderItem.CgstPer;
+            existing.CgstAmount = salesOrderItem.CgstAmount;
+            existing.IgstPer = salesOrderItem.IgstPer;
+            existing.IgstAmount = salesOrderItem.IgstAmount;
+            existing.AfterGSTAmount = salesOrderItem.AfterGSTAmount;
+            existing.QuantityAmount = salesOrderItem.QuantityAmount;
+            existing.TotalRateBeforeDiscount = salesOrderItem.TotalRateBeforeDiscount;
+            existing.TaxType = salesOrderItem.TaxType;
+            existing.BrandXID = salesOrderItem.BrandXID;
+            existing.ItemXID = salesOrderItem.ItemXID;
+            existing.Pid = salesOrderItem.Pid;
+            existing.InvoiceXID = salesOrderItem.InvoiceXID;
+            existing.Remarks = salesOrderItem.Remarks;
+
+            // UNIWARE 11 - THIS FIXES NULL ISSUE
+            existing.Sku = salesOrderItem.Sku ?? existing.Sku;
+            existing.ChannelSkuCode = salesOrderItem.ChannelSkuCode ?? existing.ChannelSkuCode;
+            existing.ChannelProductId = salesOrderItem.ChannelProductId ?? existing.ChannelProductId;
+            existing.VendorSkuCode = salesOrderItem.VendorSkuCode ?? existing.VendorSkuCode;
+            existing.FacilityCode = salesOrderItem.FacilityCode ?? existing.FacilityCode;
+            existing.Status = salesOrderItem.Status ?? existing.Status;
+            existing.FulfillmentStatus = salesOrderItem.FulfillmentStatus ?? existing.FulfillmentStatus;
+            existing.Mrp = salesOrderItem.Mrp ?? existing.Mrp;
+            existing.SellingPrice = salesOrderItem.SellingPrice ?? existing.SellingPrice;
+            existing.ChannelSaleOrderItemCode = salesOrderItem.ChannelSaleOrderItemCode ?? existing.ChannelSaleOrderItemCode;
+            existing.PacketNumber = salesOrderItem.PacketNumber ?? existing.PacketNumber;
 
             await _repository.UpdateAsync(existing);
             await _repository.SaveChangesAsync();

@@ -99,7 +99,7 @@ namespace Marketplacesellerportal.Models
         // STATUS / AUDIT
         // =========================================================
 
-        public bool IsActive { get; set; } = true;
+        public bool IsActive { get; set; }
 
         public DateTime CreatedDate { get; set; }
 
@@ -107,6 +107,8 @@ namespace Marketplacesellerportal.Models
 
         // =========================================================
         // RELATED ENTITIES
+        // These are NOT columns in SellerCustomers.
+        // They are populated separately by the repository.
         // =========================================================
 
         [NotMapped]

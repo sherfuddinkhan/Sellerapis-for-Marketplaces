@@ -86,7 +86,10 @@ namespace Marketplacesellerportal.Shipments.Services
             existing.CourierName = shipment.CourierName;
             existing.TrackingNumber = shipment.TrackingNumber;
             existing.ShipmentDate = shipment.ShipmentDate;
-            existing.DeliveryDate = shipment.DeliveryDate;
+            // If shipment.DeliveryDate is DateTime (non-nullable) -> cast it to nullable:
+            existing.ActualDeliveryDate = shipment.ActualDeliveryDate ?? (DateTime?)shipment.DeliveryDate ?? existing.ActualDeliveryDate;
+            existing.ExpectedDeliveryDate = shipment.ExpectedDeliveryDate ?? (DateTime?)shipment.DeliveryDate ?? existing.ExpectedDeliveryDate;
+            existing.UpdatedDate = DateTime.UtcNow;
             existing.ShipmentStatus = shipment.ShipmentStatus;
 
             await _repository.UpdateAsync(existing);

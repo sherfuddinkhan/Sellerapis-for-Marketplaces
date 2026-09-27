@@ -464,7 +464,10 @@ namespace Marketplacesellerportal.Warehouses.Repositories
             {
                 SellerIds = sellerIds,
 
-                CustomerIds = customerIds,
+                CustomerIds = customerIds
+    .Where(id => id.HasValue)
+    .Select(id => id.Value)
+    .ToList(),
 
                 Cities = cities,
 

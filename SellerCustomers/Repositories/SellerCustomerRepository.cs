@@ -46,24 +46,46 @@ namespace Marketplacesellerportal.SellerCustomers.Repositories
         // Warehouse
         // =========================================================
         public async Task<SellerCustomer?> GetCustomerAsync(
-            int sellerId,
-            int customerId)
+ int sellerId,
+ int customerId)
         {
-            // =====================================================
-            // 1. GET CUSTOMER
-            // =====================================================
-            var customer = await _dbSet
-                .FirstOrDefaultAsync(c =>
-                    c.SellerId == sellerId &&
-                    c.CustomerId == customerId);
+            var customer = await _context.SellerCustomers
+                .AsNoTracking()
+                .Where(x =>
+                    x.SellerId == sellerId &&
+                    x.CustomerId == customerId)
+                .Select(x => new SellerCustomer
+                {
+                    CustomerId = x.CustomerId,
+                    SellerId = x.SellerId,
+                    CustomerCode = x.CustomerCode,
+                    CustomerName = x.CustomerName,
+                    TradeName = x.TradeName,
+                    LegalName = x.LegalName,
+                    ContactPerson = x.ContactPerson,
+                    Email = x.Email,
+                    Phone = x.Phone,
+                    GSTIN = x.GSTIN,
+                    AddressLine1 = x.AddressLine1,
+                    AddressLine2 = x.AddressLine2,
+                    BuildingName = x.BuildingName,
+                    Location = x.Location,
+                    City = x.City,
+                    State = x.State,
+                    StateCode = x.StateCode,
+                    FloorNo = x.FloorNo,
+                    Country = x.Country,
+                    PostalCode = x.PostalCode,
+                    CreditLimit = x.CreditLimit,
+                    IsActive = x.IsActive,
+                    CreatedDate = x.CreatedDate,
+                    UpdatedDate = x.UpdatedDate
+                })
+                .FirstOrDefaultAsync();
 
             if (customer == null)
                 return null;
 
-
-            // =====================================================
-            // 2. STOCK MOVEMENTS
-            // =====================================================
             customer.StockMovements = await _context.StockMovements
                 .Where(x =>
                     x.SellerId == sellerId &&
@@ -71,10 +93,6 @@ namespace Marketplacesellerportal.SellerCustomers.Repositories
                 .OrderByDescending(x => x.MovementDate)
                 .ToListAsync();
 
-
-            // =====================================================
-            // 3. STOCK LEDGER
-            // =====================================================
             customer.StockLedgers = await _context.StockLedgers
                 .Where(x =>
                     x.SellerId == sellerId &&
@@ -82,10 +100,6 @@ namespace Marketplacesellerportal.SellerCustomers.Repositories
                 .OrderByDescending(x => x.TransactionDate)
                 .ToListAsync();
 
-
-            // =====================================================
-            // 4. WAREHOUSES
-            // =====================================================
             customer.Warehouses = await _context.Warehouses
                 .Where(x =>
                     x.SellerId == sellerId &&
@@ -93,10 +107,6 @@ namespace Marketplacesellerportal.SellerCustomers.Repositories
                 .OrderBy(x => x.WarehouseId)
                 .ToListAsync();
 
-
-            // =====================================================
-            // RETURN CUSTOMER
-            // =====================================================
             return customer;
         }
 
