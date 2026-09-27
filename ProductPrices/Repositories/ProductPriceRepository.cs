@@ -330,23 +330,18 @@ namespace Marketplacesellerportal.ProductPrices.Repositories
                     return await query
                         .OrderByDescending(x => x.ProductId)
                         .ToListAsync();
-
                 // CREATED ASC
                 case "created_asc":
 
                     return await query
-                        .OrderBy(x =>
-                            x.CreatedDate ??
-                            DateTime.MinValue)
+                        .OrderBy(x => x.CreatedDate)
                         .ToListAsync();
 
                 // CREATED DESC
                 case "created_desc":
 
                     return await query
-                        .OrderByDescending(x =>
-                            x.CreatedDate ??
-                            DateTime.MinValue)
+                        .OrderByDescending(x => x.CreatedDate)
                         .ToListAsync();
 
                 // UPDATED ASC

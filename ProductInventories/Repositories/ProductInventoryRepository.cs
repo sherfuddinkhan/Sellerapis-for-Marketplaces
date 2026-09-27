@@ -1,4 +1,5 @@
 ﻿using Marketplacesellerportal.Database;
+using Marketplacesellerportal.Models;
 using Marketplacesellerportal.ProductInventories.DTOs;
 using Marketplacesellerportal.ProductInventories.Interfaces;
 using Microsoft.EntityFrameworkCore;
@@ -82,17 +83,11 @@ namespace Marketplacesellerportal.ProductInventories.Repositories
                 .OrderBy(x => x.ProductInventoryId)
                 .ToListAsync();
         }
-
-        public async Task<IEnumerable<ProductInventoryModel>>
-            GetBySellerCustomerAsync(
-                int sellerId,
-                int customerId)
+        public async Task<IEnumerable<ProductInventory>> GetBySellerCustomerAsync(int sellerId, int customerId)
         {
             return await _context.ProductInventory
                 .AsNoTracking()
-                .Where(x =>
-                    x.SellerId == sellerId &&
-                    x.CustomerId == customerId)
+                .Where(x => x.SellerId == sellerId && x.CustomerId == customerId)
                 .OrderBy(x => x.ProductInventoryId)
                 .ToListAsync();
         }

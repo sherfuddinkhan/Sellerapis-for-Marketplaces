@@ -14,7 +14,10 @@ namespace Marketplacesellerportal.SalesInvoices.Interfaces
         Task<IEnumerable<SalesInvoice>> GetByStatusAsync(string status);
 
         Task<IEnumerable<SalesInvoice>> GetByPaymentStatusAsync(string paymentStatus);
-
+        Task<IEnumerable<SalesInvoice>>
+    GetBySellerAndCustomerAsync(
+        int sellerId,
+        int customerId);
         Task<SalesInvoice?> GetByInvoiceNumberAsync(string invoiceNumber);
 
         Task<SalesInvoice> CreateAsync(SalesInvoice salesInvoice);

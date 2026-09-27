@@ -23,4 +23,6 @@
 
     public DateTime? CreatedDate { get; set; }
     public DateTime? UpdatedDate { get; set; }
+
+    public List<SellerCustomerSalesInvoiceItemResponse> Items { get; set; } = new();
 }

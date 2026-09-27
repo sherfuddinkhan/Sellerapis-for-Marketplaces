@@ -1,4 +1,7 @@
-﻿namespace Marketplacesellerportal.SellerCustomers.DTOs
+﻿using Marketplacesellerportal.EInvoice.DTOs;
+using Marketplacesellerportal.EWayBill.DTOs;
+
+namespace Marketplacesellerportal.SellerCustomers.DTOs
 {
     public class SellerCustomerWithProductsResponse
     {
@@ -50,6 +53,14 @@
 
         public string? Country { get; set; }
         public string? PostalCode { get; set; }
+
+
+
+        public List<SellerCustomerMarketplaceResponse> Marketplaces { get; set; } = new();
+        public List<SellerCustomerDeliveryChallanItemResponse> DeliveryChallanItems { get; set; } = new();
+        public SellerCustomerSellerResponse? Seller { get; set; }
+        public List<SellerCustomerEInvoiceResponse> EInvoices { get; set; } = new();
+        public List<SellerCustomerEWayBillResponse> EWayBills { get; set; } = new();
 
         // =========================================================
         // FINANCIAL DETAILS
@@ -159,6 +170,8 @@
         public SellerCustomerTransactionResponse Transactions { get; set; }
             = new();
 
+        public List<SellerCustomerAddressResponse> CustomerAddresses { get; set; }
+    = new();
 
     }
 }

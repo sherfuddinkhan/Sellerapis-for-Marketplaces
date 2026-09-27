@@ -27,5 +27,20 @@
 
         public DateTime? CreatedDate { get; set; }
         public DateTime? UpdatedDate { get; set; }
+        public string? PurchaseOrderCode { get; set; }
+        public DateTime? ReceiptDate { get; set; }
+        public string? POStatus { get; set; }
+        public string? ApprovalStatus { get; set; }
+        public string? FacilityCode { get; set; }
+        public string? VendorCode { get; set; }
+        public string? VendorName { get; set; }
+        public string? ChannelCode { get; set; }
+        public decimal? SubTotal { get; set; }
+        public decimal? TaxAmount { get; set; }
+        public string? CurrencyCode { get; set; }
+        public decimal? TotalQuantity { get; set; }
+        public decimal? ReceivedQuantity { get; set; }
+        public decimal? PendingQuantity { get; set; }
+        public string? CreatedBy { get; set; }
     }
 }

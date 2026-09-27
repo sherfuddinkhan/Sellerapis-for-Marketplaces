@@ -107,8 +107,8 @@ namespace Marketplacesellerportal.ProductPrices.Services
         public async Task<ProductPrice>
             CreateAsync(ProductPrice model)
         {
-            model.CreatedDate ??= DateTime.Now;
-            model.IsActive ??= true;
+            model.CreatedDate = DateTime.Now;
+            model.IsActive = true;
 
             await _repository.AddAsync(model);
             await _repository.SaveChangesAsync();
