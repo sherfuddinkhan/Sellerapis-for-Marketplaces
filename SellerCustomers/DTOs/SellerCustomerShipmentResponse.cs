@@ -17,6 +17,9 @@
         public string? ShipmentStatus { get; set; }
         public string? CarrierName { get; set; }
         public string? Status { get; set; }
+        // Audit fields present in Shipment entity
+        public string? CreatedBy { get; set; }
+        public string? UpdatedBy { get; set; }
         public DateTime? ExpectedDeliveryDate { get; set; }
         public DateTime? ActualDeliveryDate { get; set; }
         public string? SalesOrderNumber { get; set; }

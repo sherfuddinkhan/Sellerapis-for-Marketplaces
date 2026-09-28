@@ -18,23 +18,27 @@ namespace Marketplacesellerportal.Models
         [Required] public int CustomerId { get; set; }
 
         // ============================================================
-        // BASIC PRODUCT INFORMATION
+        // BASIC PRODUCT INFORMATION - ALL NULL-SAFE
         // ============================================================
-        [Required][MaxLength(250)] public string ProductName { get; set; } = string.Empty;
-        [Required][MaxLength(100)] public string SKU { get; set; } = string.Empty;
-
+        [MaxLength(250)] public string? ProductName { get; set; }
+        [MaxLength(100)] public string? SKU { get; set; }
         [MaxLength(100)] public string? Barcode { get; set; }
         [MaxLength(2000)] public string? Description { get; set; }
 
-        // === ADD THESE 15 IN Product.cs AFTER ProcurementSla ===
+        public string? ScanIdentifier { get; set; }
 
+        [NotMapped] public string? BrandName { get; set; }
+        public int? MinOrderSize { get; set; }
+        public string? Features { get; set; }
+        public string? ProductPageUrl { get; set; }
+
+        // === Uniware Product Codes ===
         [MaxLength(100)] public string? ProductCode { get; set; }
         [MaxLength(100)] public string? UniwareItemCode { get; set; }
         [MaxLength(100)] public string? UniwareProductCode { get; set; }
         [MaxLength(50)] public string? ItemType { get; set; } = "STANDARD";
         public int? ProductXID { get; set; }
         public decimal? CostPrice { get; set; }
-      
         public decimal? MRP { get; set; }
         public decimal? GSTPercentage { get; set; } = 18;
         public bool? IsReturnable { get; set; } = true;
@@ -52,21 +56,22 @@ namespace Marketplacesellerportal.Models
         public int? ProductTypeId { get; set; }
 
         // ============================================================
-        // UNIWARE ITEM TYPE CORE - YOU WERE MISSING
+        // UNIWARE ITEM TYPE CORE
         // ============================================================
-        [MaxLength(100)] public string? ItemTypeCode { get; set; } // TN-WBH-001-TYPE
-        [MaxLength(100)] public string? ItemTypeName { get; set; } // Wireless Audio
-        [MaxLength(100)] public string? ProductGroupCode { get; set; } // ELECTRONICS_GROUP
-        [MaxLength(100)] public string? BrandCode { get; set; } // SAMSUNG
+        [MaxLength(100)] public string? ItemTypeCode { get; set; }
+        [MaxLength(100)] public string? ItemTypeName { get; set; }
+        [MaxLength(100)] public string? ProductGroupCode { get; set; }
+        [MaxLength(100)] public string? BrandCode { get; set; }
         [MaxLength(100)] public string? ProductDetailFieldColor { get; set; }
         [MaxLength(100)] public string? ProductDetailFieldSize { get; set; }
         [MaxLength(100)] public string? ProductDetailFieldMaterial { get; set; }
-        public string? ProductDetailFieldsJson { get; set; } // {"color":"Black","size":"M"}
-        [MaxLength(20)] public string? DimUnit { get; set; } = "CM"; // CM, IN
-        [MaxLength(20)] public string? WeightUnit { get; set; } = "KG"; // KG, GM
-        public int? ShelfLife { get; set; } // 730 days
-        [MaxLength(20)] public string? ShelfLifeType { get; set; } = "DAYS"; // DAYS, MONTHS
+        public string? ProductDetailFieldsJson { get; set; }
+        [MaxLength(20)] public string? DimUnit { get; set; } = "CM";
+        [MaxLength(20)] public string? WeightUnit { get; set; } = "KG";
+        public int? ShelfLife { get; set; }
+        [MaxLength(20)] public string? ShelfLifeType { get; set; } = "DAYS";
         [MaxLength(20)] public string? ItemTypeStatus { get; set; } = "ACTIVE";
+
         // ============================================================
         // PHYSICAL DIMENSIONS
         // ============================================================
@@ -84,8 +89,8 @@ namespace Marketplacesellerportal.Models
         [MaxLength(50)] public string? Status { get; set; }
         public bool? IsActive { get; set; }
         [MaxLength(50)] public string? TaxCategory { get; set; }
-        [MaxLength(50)] public string? TaxTypeCode { get; set; } = "GST"; // GST, VAT
-        public decimal? TaxPercentage { get; set; } = 18; // 18% for Uniware
+        [MaxLength(50)] public string? TaxTypeCode { get; set; } = "GST";
+        public decimal? TaxPercentage { get; set; } = 18;
 
         // ============================================================
         // AMOUNT / TAX CALCULATION FIELDS
@@ -104,10 +109,10 @@ namespace Marketplacesellerportal.Models
         [Column("exciseDutyTotalInWords")][MaxLength(500)] public string? ExciseDutyTotalInWords { get; set; }
 
         // ============================================================
-        // MRP / SELLING PRICE - YOU WERE MISSING REAL COLUMN
+        // MRP / SELLING PRICE
         // ============================================================
-        [Column(TypeName = "decimal(18,2)")] public decimal? Mrp { get; set; } // 2999 - Uniware mandatory
-        [Column(TypeName = "decimal(18,2)")] public decimal? SellingPrice { get; set; } // 2499
+        [Column(TypeName = "decimal(18,2)")] public decimal? Mrp { get; set; }
+        [Column(TypeName = "decimal(18,2)")] public decimal? SellingPrice { get; set; }
         [MaxLength(10)] public string? CurrencyCode { get; set; } = "INR";
 
         // ============================================================
@@ -141,7 +146,7 @@ namespace Marketplacesellerportal.Models
         [Column("colorCode")][MaxLength(50)] public string? ColorCode { get; set; }
         [Column("remarks")][MaxLength(500)] public string? Remarks { get; set; }
         [Column("isAdditionalCharges")] public bool? IsAdditionalCharges { get; set; }
-        [Column("size")][MaxLength(100)] public string? Size { get; set; } // ADD THIS - Free Size
+        [Column("size")][MaxLength(100)] public string? Size { get; set; }
 
         // ============================================================
         // PRODUCT X-ID
@@ -201,7 +206,7 @@ namespace Marketplacesellerportal.Models
         [NotMapped] public bool IsChannelCodeMatch => !string.IsNullOrWhiteSpace(ChannelCode) && !string.IsNullOrWhiteSpace(UniwareChannelCode) && string.Equals(ChannelCode, UniwareChannelCode, StringComparison.OrdinalIgnoreCase);
 
         // ============================================================
-        // UNIWARE - VENDOR & FACILITY - YOU WERE MISSING
+        // UNIWARE - VENDOR & FACILITY
         // ============================================================
         [MaxLength(100)] public string? VendorCode { get; set; }
         [MaxLength(100)] public string? VendorSkuCode { get; set; }

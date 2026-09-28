@@ -183,6 +183,10 @@ namespace Marketplacesellerportal.Database
         // MARKETPLACE
         // =========================================================
 
+        public DbSet<MarketplaceListing> MarketplaceListings { get; set; }
+        public DbSet<MarketplaceListingInventory> MarketplaceListingInventory { get; set; }
+        public DbSet<AmazonAccount> AmazonAccounts { get; set; }
+        public DbSet<AmazonInventorySync> AmazonInventorySync { get; set; }
         public DbSet<Marketplace> Marketplaces { get; set; }
 
         public DbSet<MarketplaceReturnEntity> MarketplaceReturns { get; set; }

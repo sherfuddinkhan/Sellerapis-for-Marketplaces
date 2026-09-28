@@ -16,6 +16,9 @@
 
         public decimal ReturnAmount { get; set; }
 
+        public decimal TotalAmount { get; set; }
+                        
+        public string? Remarks { get; set; }
         public string? Reason { get; set; }
 
         public string? Status { get; set; }
