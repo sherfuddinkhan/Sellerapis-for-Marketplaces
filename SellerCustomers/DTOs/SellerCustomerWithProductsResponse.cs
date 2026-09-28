@@ -173,5 +173,17 @@ namespace Marketplacesellerportal.SellerCustomers.DTOs
         public List<SellerCustomerAddressResponse> CustomerAddresses { get; set; }
     = new();
 
+
+        // =========================================================
+        // NEW - INVENTORY & WMS TABLES YOU FIXED
+        // =========================================================
+        public List<SellerCustomerShelfwiseInventoryResponse> ShelfwiseInventories { get; set; } = new();
+        public List<SellerCustomerVendorItemMasterResponse> VendorItemMasters { get; set; } = new();
+        public List<SellerCustomerGatepassResponse> Gatepasses { get; set; } = new();
+        public List<SellerCustomerPutawayResponse> Putaways { get; set; } = new();
+        public List<SellerCustomerReversePickupResponse> ReversePickups { get; set; } = new();
+        public List<SellerCustomerMarketplaceListingInventoryResponse> MarketplaceListingInventories { get; set; } = new();
+        public List<SellerCustomerAmazonInventorySyncResponse> AmazonInventorySyncs { get; set; } = new();
+
     }
 }

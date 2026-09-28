@@ -39,20 +39,29 @@ public class SellerCustomerProductResponse
 
     public bool? IsPrimary { get; set; } = true;
 
+    // === FIXED: KEEP ONLY PASCALCASE - REMOVED 13 CAMELCASE DUPLICATES ===
+    public string? ScanIdentifier { get; set; }
+    public int? MinOrderSize { get; set; }
+    public string? Features { get; set; }
+    public string? ProductPageUrl { get; set; }
+    public string? TaxTypeCode { get; set; }
+    public string? BrandCode { get; set; }
+    public string? ItemTypeCode { get; set; }
+    public string? ProductDetailFieldsJson { get; set; }
+
     public List<ProductPackageResponse> Packages { get; set; } = new();
     public ProductAddressLabelResponse? AddressLabel { get; set; }
 
     public string? ItemTypeName { get; set; }
-    public string? ItemTypeCode { get; set; }
     public string? ProductGroupCode { get; set; }
 
-    // 4 TOPAZ fields
+    // 4 TOPAZ fields - KEEP ONLY THESE
     public string? FulfillmentProfile { get; set; } = "NON_FBF";
     public string? ShippingProvider { get; set; } = "SELLER";
     public string? ProcurementType { get; set; } = "REGULAR";
     public int? ProcurementSla { get; set; } = 2;
 
-    // === ADD THESE 15 - YOU MISSED ===
+    // Uniware fields
     public string? ProductCode { get; set; }
     public string? UniwareItemCode { get; set; }
     public string? UniwareProductCode { get; set; }
@@ -73,70 +82,15 @@ public class SellerCustomerProductResponse
     public string? Size { get; set; }
     public string? ColorCode { get; set; }
 
-    // Flattened from addressLabel for Uniware - ADD THESE
     public string? ManufacturerDetails { get; set; }
     public string? ImporterDetails { get; set; }
     public string? PackerDetails { get; set; }
     public string? CountryOfOrigin { get; set; }
     public long? ShelfLifeSeconds { get; set; }
-
-   public string ? ItemSkuForUniware { get; set; }
-
-    // For Uniware binding - computed
+    public string? ItemSkuForUniware { get; set; }
     public string? CategoryCodeForUniware { get; set; }
-
-
-
-    // Computed for Uniware Item Master
-    // Replace these 2 lines:
     public string? BrandForUniware => BrandName ?? "Samsung";
 }
 
-public class ProductPackageResponse
-{
-    public string Name { get; set; } = string.Empty;
-    public decimal Length { get; set; }
-    public decimal Breadth { get; set; }
-    public decimal Height { get; set; }
-    public decimal Weight { get; set; }
-    public string? Description { get; set; }
-    public bool IsFragile { get; set; }
-    public string? PackageType { get; set; } = "DEFAULT";
-    public bool IsHazardous { get; set; } = false;
-    public int DefectCount { get; set; } = 0;
-    public string? DefectDetails { get; set; }
-
-    // In Models/ProductPackage.cs
-    public int? PackageXID { get; set; }
-    public bool? IsPrimary { get; set; } = true;
-
-    // In Models/ProductAddressLabel.cs
-    public int? AddressLabelXID { get; set; }
-    [MaxLength(100)] public string? FSSAILicense { get; set; }
 
 
-}
-
-public class ProductAddressLabelResponse
-{
-    public string ManufacturerDetails { get; set; } = string.Empty;
-    public string? ImporterDetails { get; set; }
-    public string? PackerDetails { get; set; }
-    public string CountryOfOrigin { get; set; } = "IN";
-    public long? MfgDateEpoch { get; set; }
-    public long? ShelfLifeSeconds { get; set; }
-    public long? ExpiryDateEpoch { get; set; }
-    public string? Quantity { get; set; }
-    public decimal? Mrp { get; set; }
-
-    // === ADD THESE 2 - YOU MISSED ===
-    public int? AddressLabelXID { get; set; }
-    public string? FSSAILicense { get; set; }
-
-    // In Models/ProductPackage.cs
-    public int? PackageXID { get; set; }
-    public bool? IsPrimary { get; set; } = true;
-
-    // In Models/ProductAddressLabel.cs
-
-}

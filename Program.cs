@@ -243,8 +243,9 @@ builder.Services.AddAuthorization();
 builder.Services.AddDbContext<ApplicationDbContext>(
     options =>
         options.UseSqlServer(
-            builder.Configuration
-                .GetConnectionString("DefaultConnection")));
+            builder.Configuration.GetConnectionString("DefaultConnection"),
+            sql => sql.CommandTimeout(100) // 180 sec
+        ));
 
 
 // =========================================================

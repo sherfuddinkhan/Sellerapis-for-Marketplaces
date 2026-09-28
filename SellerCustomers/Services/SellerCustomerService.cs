@@ -1,7 +1,33 @@
-﻿// =========================================================
+﻿// ============================================================
 // SellerCustomerService.cs
-// =========================================================
-// ✅ Use alias - fixes 'Brand is a namespace but is used like a type'
+// ============================================================
+// Purpose:
+//   Provides SellerCustomer CRUD operations and returns the
+//   complete Seller + Customer + Product + Transaction view.
+//
+// Main responsibilities:
+//   1. SellerCustomer CRUD
+//   2. Customer filtering
+//   3. Customer addresses
+//   4. Products and product metadata
+//   5. Inventory and pricing
+//   6. Stock / warehouse information
+//   7. Sales orders and invoices
+//   8. Purchase orders
+//   9. Returns
+//  10. Shipments
+//  11. Marketplace transactions
+//  12. E-Invoices
+//  13. E-Way Bills
+//  14. Supporting transaction information
+//
+// Important:
+//   - SellerId and CustomerId are always used together when
+//     retrieving seller-customer-specific transactional data.
+//   - BrandModelEntity is used to avoid the BrandModel namespace
+//     versus class-name conflict.
+// ============================================================
+
 using Marketplacesellerportal.Categories.Interfaces;
 using Marketplacesellerportal.CustomerAddresses.Interface;
 using Marketplacesellerportal.CustomerReturns.Interfaces;
@@ -38,111 +64,257 @@ using Marketplacesellerportal.SellerCustomers.Interfaces;
 using Marketplacesellerportal.Sellers.Interfaces;
 using Marketplacesellerportal.Shipments.Interfaces;
 using Marketplacesellerportal.StockAdjustments.Interfaces;
-using Marketplacesellerportal.StockAdjustments.Repositories;
 using Marketplacesellerportal.StockLedgers.Interfaces;
-using Marketplacesellerportal.StockLedgers.Repositories;
 using Marketplacesellerportal.StockMovements.Interfaces;
-using Marketplacesellerportal.StockMovements.Repositories;
 using Marketplacesellerportal.StockTransfers.Interfaces;
 using Marketplacesellerportal.Suppliers.Interfaces;
 using Marketplacesellerportal.WarehouseLocations.Interfaces;
-using Marketplacesellerportal.WarehouseLocations.Repositories;
 using Marketplacesellerportal.Warehouses.Interfaces;
-using Marketplacesellerportal.Warehouses.Repositories;
 using Marketplacesellerportal.WishlistItems.Interfaces;
 using Marketplacesellerportal.Wishlists.Interfaces;
+
 using Microsoft.EntityFrameworkCore;
+
 using System;
-using System.Diagnostics;
+using System.Collections.Generic;
 using System.Linq;
-using BrandEntity = Marketplacesellerportal.Models.BrandModel;
+using System.Threading.Tasks;
+
+
+// ============================================================
+// TYPE ALIASES
+// ============================================================
+//
+// BrandModel exists as a namespace/type combination in the
+// project. The alias prevents:
+//
+//     'BrandModel' is a namespace but is used like a type
+//
+// ============================================================
+using BrandEntity = Marketplacesellerportal.Models.Brand;
+using BrandModelEntity = Marketplacesellerportal.Models.BrandModel;
+using ProductEntity = Marketplacesellerportal.Models.Product;
+
+using MarketplaceReturnEntity =
+    Marketplacesellerportal.Models.MarketplaceReturn;
+
+//using MarketplaceOrderEntity =
+  //  Marketplacesellerportal.Models.MarketplaceOrder;
+
+//using MarketplaceOrderItemEntity =
+  //  Marketplacesellerportal.Models.MarketplaceOrderItem;
+
+
+// ============================================================
+// NAMESPACE
+// ============================================================
+
 namespace Marketplacesellerportal.SellerCustomers.Services
 {
     public class SellerCustomerService : ISellerCustomerService
     {
-        // =========================================================
-        // REPOSITORIES
-        // =========================================================
-        private readonly ApplicationDbContext _context; // Now will work
+        // ========================================================
+        // DATABASE
+        // ========================================================
+
+        private readonly ApplicationDbContext _context;
+
+        // ========================================================
+        // SELLER CUSTOMER
+        // ========================================================
+
         private readonly ISellerCustomerRepository _repository;
 
-        private readonly IProductRepository _productRepository;
-        private readonly IProductInventoryRepository _inventoryRepository;
-        private readonly IProductPriceRepository _productPriceRepository;
-        private readonly IProductTypeRepository _productTypeRepository;
-        private readonly ICategoryRepository _categoryRepository;
-        private readonly IProductImageRepository _productImageRepository;
-        private readonly IProductAttributeRepository _productAttributeRepository;
+        private readonly ICustomerAddressRepository
+            _customerAddressRepository;
 
-        private readonly IStockMovementRepository _stockMovementRepository;
-        private readonly IStockLedgerRepository _stockLedgerRepository;
-        private readonly IWarehouseRepository _warehouseRepository;
-        private readonly IStockAdjustmentRepository _stockAdjustmentRepository;
-        private readonly IStockTransferRepository _stockTransferRepository;
+        // ========================================================
+        // PRODUCT
+        // ========================================================
 
-        private readonly ISupplierRepository _supplierRepository;
-        private readonly IWarehouseLocationRepository _warehouseLocationRepository;
+        private readonly IProductRepository
+            _productRepository;
 
-        private readonly ISalesOrderRepository _salesOrderRepository;
-        private readonly ISalesOrderItemRepository _salesOrderItemRepository;
+        private readonly IProductInventoryRepository
+            _inventoryRepository;
 
-        private readonly ICustomerReturnRepository _customerReturnRepository;
+        private readonly IProductPriceRepository
+            _productPriceRepository;
 
-        private readonly IDeliveryChallanRepository _deliveryChallanRepository;
+        private readonly IProductTypeRepository
+            _productTypeRepository;
 
-        private readonly IGoodsReceiptNoteRepository _goodsReceiptNoteRepository;
-        private readonly IGoodsReceiptItemRepository _goodsReceiptItemRepository;
+        private readonly ICategoryRepository
+            _categoryRepository;
 
-        private readonly INotificationRepository _notificationRepository;
-        private readonly IOrderStatusHistoryRepository _orderStatusHistoryRepository;
+        private readonly IProductImageRepository
+            _productImageRepository;
 
-        private readonly IPaymentRepository _paymentRepository;
+        private readonly IProductAttributeRepository
+            _productAttributeRepository;
 
-        private readonly IPurchaseOrderRepository _purchaseOrderRepository;
-        private readonly IPurchaseOrderItemRepository _purchaseOrderItemRepository;
-        private readonly IPurchaseReturnRepository _purchaseReturnRepository;
+        // ========================================================
+        // STOCK
+        // ========================================================
 
-        private readonly IReviewRepository _reviewRepository;
+        private readonly IStockMovementRepository
+            _stockMovementRepository;
 
-        private readonly ISalesInvoiceRepository _salesInvoiceRepository;
+        private readonly IStockLedgerRepository
+            _stockLedgerRepository;
 
-        private readonly IShipmentRepository _shipmentRepository;
+        private readonly IWarehouseRepository
+            _warehouseRepository;
 
-        private readonly IWishlistRepository _wishlistRepository;
-        private readonly IWishlistItemRepository _wishlistItemRepository;
+        private readonly IStockAdjustmentRepository
+            _stockAdjustmentRepository;
 
+        private readonly IStockTransferRepository
+            _stockTransferRepository;
 
-        private readonly ICustomerAddressRepository _customerAddressRepository;
+        // ========================================================
+        // SUPPLIER / WAREHOUSE
+        // ========================================================
 
+        private readonly ISupplierRepository
+            _supplierRepository;
 
-        // =========================================================
-        // MARKETPLACE REPOSITORIES
-        // =========================================================
+        private readonly IWarehouseLocationRepository
+            _warehouseLocationRepository;
 
-        private readonly IMarketplaceOrderRepository _marketplaceOrderRepository;
+        // ========================================================
+        // SALES
+        // ========================================================
 
-        private readonly IMarketplaceOrderItemRepository
-            _marketplaceOrderItemRepository;
+        private readonly ISalesOrderRepository
+            _salesOrderRepository;
+
+        private readonly ISalesOrderItemRepository
+            _salesOrderItemRepository;
+
+        private readonly ISalesInvoiceRepository
+            _salesInvoiceRepository;
+
+        // ========================================================
+        // RETURNS
+        // ========================================================
+
+        private readonly ICustomerReturnRepository
+            _customerReturnRepository;
+
+        private readonly IPurchaseReturnRepository
+            _purchaseReturnRepository;
 
         private readonly IMarketplaceReturnRepository
             _marketplaceReturnRepository;
 
-        // At top of file - inject repositories
-        private readonly IDeliveryChallanItemRepository _deliveryChallanItemRepo;
-        private readonly IMarketplaceRepository _marketplaceRepo;
-        private readonly ISellerRepository _sellerRepo;
-        private readonly IEInvoiceRepository _eInvoiceRepo;
-        private readonly IEWayBillRepository _eWayBillRepo;
+        // ========================================================
+        // DELIVERY
+        // ========================================================
+
+        private readonly IDeliveryChallanRepository
+            _deliveryChallanRepository;
+
+        private readonly IDeliveryChallanItemRepository
+            _deliveryChallanItemRepo;
+
+        // ========================================================
+        // GOODS RECEIPT
+        // ========================================================
+
+        private readonly IGoodsReceiptNoteRepository
+            _goodsReceiptNoteRepository;
+
+        private readonly IGoodsReceiptItemRepository
+            _goodsReceiptItemRepository;
+
+        // ========================================================
+        // NOTIFICATIONS / HISTORY / PAYMENTS
+        // ========================================================
+
+        private readonly INotificationRepository
+            _notificationRepository;
+
+        private readonly IOrderStatusHistoryRepository
+            _orderStatusHistoryRepository;
+
+        private readonly IPaymentRepository
+            _paymentRepository;
+
+        // ========================================================
+        // PURCHASE
+        // ========================================================
+
+        private readonly IPurchaseOrderRepository
+            _purchaseOrderRepository;
+
+        private readonly IPurchaseOrderItemRepository
+            _purchaseOrderItemRepository;
+
+        // ========================================================
+        // REVIEWS
+        // ========================================================
+
+        private readonly IReviewRepository
+            _reviewRepository;
+
+        // ========================================================
+        // SHIPMENTS
+        // ========================================================
+
+        private readonly IShipmentRepository
+            _shipmentRepository;
+
+        // ========================================================
+        // WISHLISTS
+        // ========================================================
+
+        private readonly IWishlistRepository
+            _wishlistRepository;
+
+        private readonly IWishlistItemRepository
+            _wishlistItemRepository;
+
+        // ========================================================
+        // MARKETPLACE
+        // ========================================================
+
+        private readonly IMarketplaceOrderRepository
+            _marketplaceOrderRepository;
+
+        private readonly IMarketplaceOrderItemRepository
+            _marketplaceOrderItemRepository;
+
+        private readonly IMarketplaceRepository
+            _marketplaceRepo;
+
+        // ========================================================
+        // SELLER
+        // ========================================================
+
+        private readonly ISellerRepository
+            _sellerRepo;
+
+        // ========================================================
+        // E-INVOICE / E-WAY BILL
+        // ========================================================
+
+        private readonly IEInvoiceRepository
+            _eInvoiceRepo;
+
+        private readonly IEWayBillRepository
+            _eWayBillRepo;
 
 
-        // =========================================================
+        // ========================================================
         // CONSTRUCTOR
-        // =========================================================
+        // ========================================================
 
         public SellerCustomerService(
-             ApplicationDbContext context,
+            ApplicationDbContext context,
             ISellerCustomerRepository repository,
             ICustomerAddressRepository customerAddressRepository,
+
             IProductRepository productRepository,
             IProductInventoryRepository inventoryRepository,
             IProductPriceRepository productPriceRepository,
@@ -172,7 +344,6 @@ namespace Marketplacesellerportal.SellerCustomers.Services
 
             INotificationRepository notificationRepository,
             IOrderStatusHistoryRepository orderStatusHistoryRepository,
-
             IPaymentRepository paymentRepository,
 
             IPurchaseOrderRepository purchaseOrderRepository,
@@ -188,234 +359,283 @@ namespace Marketplacesellerportal.SellerCustomers.Services
             IWishlistRepository wishlistRepository,
             IWishlistItemRepository wishlistItemRepository,
 
-            // =====================================================
-            // MARKETPLACE REPOSITORIES
-            // =====================================================
-
             IMarketplaceOrderRepository marketplaceOrderRepository,
             IMarketplaceOrderItemRepository marketplaceOrderItemRepository,
             IMarketplaceReturnRepository marketplaceReturnRepository,
 
+            IDeliveryChallanItemRepository deliveryChallanItemRepo,
 
-    // === ADD THESE 5 MISSING ===
-    IDeliveryChallanItemRepository deliveryChallanItemRepo,
-    IMarketplaceRepository marketplaceRepo,
-    ISellerRepository sellerRepo,
-    IEInvoiceRepository eInvoiceRepo,
-    IEWayBillRepository eWayBillRepo
+            IMarketplaceRepository marketplaceRepo,
+            ISellerRepository sellerRepo,
 
-
-        )
+            IEInvoiceRepository eInvoiceRepo,
+            IEWayBillRepository eWayBillRepo)
         {
             _context = context;
+
             _repository = repository;
-            _customerAddressRepository = customerAddressRepository;
-            _productRepository = productRepository;
-            _inventoryRepository = inventoryRepository;
-            _productPriceRepository = productPriceRepository;
-            _productTypeRepository = productTypeRepository;
-            _categoryRepository = categoryRepository;
-            _productImageRepository = productImageRepository;
-            _productAttributeRepository = productAttributeRepository;
 
-            _stockMovementRepository = stockMovementRepository;
-            _stockLedgerRepository = stockLedgerRepository;
-            _warehouseRepository = warehouseRepository;
-            _stockAdjustmentRepository = stockAdjustmentRepository;
-            _stockTransferRepository = stockTransferRepository;
+            _customerAddressRepository =
+                customerAddressRepository;
 
-            _supplierRepository = supplierRepository;
-            _warehouseLocationRepository = warehouseLocationRepository;
+            _productRepository =
+                productRepository;
 
-            _salesOrderRepository = salesOrderRepository;
-            _salesOrderItemRepository = salesOrderItemRepository;
+            _inventoryRepository =
+                inventoryRepository;
 
-            _customerReturnRepository = customerReturnRepository;
+            _productPriceRepository =
+                productPriceRepository;
 
-            _deliveryChallanRepository = deliveryChallanRepository;
+            _productTypeRepository =
+                productTypeRepository;
 
-            _goodsReceiptNoteRepository = goodsReceiptNoteRepository;
-            _goodsReceiptItemRepository = goodsReceiptItemRepository;
+            _categoryRepository =
+                categoryRepository;
 
-            _notificationRepository = notificationRepository;
-            _orderStatusHistoryRepository = orderStatusHistoryRepository;
+            _productImageRepository =
+                productImageRepository;
 
-            _paymentRepository = paymentRepository;
+            _productAttributeRepository =
+                productAttributeRepository;
 
-            _purchaseOrderRepository = purchaseOrderRepository;
-            _purchaseOrderItemRepository = purchaseOrderItemRepository;
-            _purchaseReturnRepository = purchaseReturnRepository;
+            _stockMovementRepository =
+                stockMovementRepository;
 
-            _reviewRepository = reviewRepository;
+            _stockLedgerRepository =
+                stockLedgerRepository;
 
-            _salesInvoiceRepository = salesInvoiceRepository;
+            _warehouseRepository =
+                warehouseRepository;
 
-            _shipmentRepository = shipmentRepository;
+            _stockAdjustmentRepository =
+                stockAdjustmentRepository;
 
-            _wishlistRepository = wishlistRepository;
-            _wishlistItemRepository = wishlistItemRepository;
+            _stockTransferRepository =
+                stockTransferRepository;
 
-            // === ASSIGN MISSING ===
-            _deliveryChallanItemRepo = deliveryChallanItemRepo;
-            _marketplaceRepo = marketplaceRepo;
-            _sellerRepo = sellerRepo;
-            _eInvoiceRepo = eInvoiceRepo;
-            _eWayBillRepo = eWayBillRepo;
+            _supplierRepository =
+                supplierRepository;
 
-            // =====================================================
-            // MARKETPLACE REPOSITORIES
-            // =====================================================
+            _warehouseLocationRepository =
+                warehouseLocationRepository;
 
-            _marketplaceOrderRepository = marketplaceOrderRepository;
+            _salesOrderRepository =
+                salesOrderRepository;
+
+            _salesOrderItemRepository =
+                salesOrderItemRepository;
+
+            _customerReturnRepository =
+                customerReturnRepository;
+
+            _deliveryChallanRepository =
+                deliveryChallanRepository;
+
+            _goodsReceiptNoteRepository =
+                goodsReceiptNoteRepository;
+
+            _goodsReceiptItemRepository =
+                goodsReceiptItemRepository;
+
+            _notificationRepository =
+                notificationRepository;
+
+            _orderStatusHistoryRepository =
+                orderStatusHistoryRepository;
+
+            _paymentRepository =
+                paymentRepository;
+
+            _purchaseOrderRepository =
+                purchaseOrderRepository;
+
+            _purchaseOrderItemRepository =
+                purchaseOrderItemRepository;
+
+            _purchaseReturnRepository =
+                purchaseReturnRepository;
+
+            _reviewRepository =
+                reviewRepository;
+
+            _salesInvoiceRepository =
+                salesInvoiceRepository;
+
+            _shipmentRepository =
+                shipmentRepository;
+
+            _wishlistRepository =
+                wishlistRepository;
+
+            _wishlistItemRepository =
+                wishlistItemRepository;
+
+            _marketplaceOrderRepository =
+                marketplaceOrderRepository;
 
             _marketplaceOrderItemRepository =
                 marketplaceOrderItemRepository;
 
             _marketplaceReturnRepository =
                 marketplaceReturnRepository;
+
+            _deliveryChallanItemRepo =
+                deliveryChallanItemRepo;
+
+            _marketplaceRepo =
+                marketplaceRepo;
+
+            _sellerRepo =
+                sellerRepo;
+
+            _eInvoiceRepo =
+                eInvoiceRepo;
+
+            _eWayBillRepo =
+                eWayBillRepo;
         }
 
 
-        // =========================================================
-        // BASIC CUSTOMER METHODS
-        // =========================================================
+        // ========================================================
+        // BASIC SELLER CUSTOMER OPERATIONS
+        // ========================================================
 
-        public async Task<IEnumerable<SellerCustomer>> GetAllAsync()
+        public async Task<IEnumerable<SellerCustomer>>
+            GetAllAsync()
         {
             return await _repository.GetAllAsync();
         }
 
 
-        public async Task<IEnumerable<SellerCustomer>> GetBySellerIdAsync(
-            int sellerId)
+        public async Task<IEnumerable<SellerCustomer>>
+            GetBySellerIdAsync(int sellerId)
         {
-            return await _repository.GetBySellerIdAsync(sellerId);
+            return await _repository
+                .GetBySellerIdAsync(sellerId);
         }
 
 
-        public async Task<SellerCustomer?> GetCustomerAsync(
-            int sellerId,
-            int customerId)
+        public async Task<SellerCustomer?>
+            GetCustomerAsync(
+                int sellerId,
+                int customerId)
         {
-            return await _repository.GetCustomerAsync(
-                sellerId,
-                customerId);
+            return await _repository
+                .GetCustomerAsync(
+                    sellerId,
+                    customerId);
         }
-        // ============================================================
-        // FILTER SELLER CUSTOMERS
-        // ============================================================
 
-        public async Task<IEnumerable<SellerCustomer>> FilterAsync(
-            int sellerId,
-            string? search,
-            bool? isActive)
+
+        // ========================================================
+        // CUSTOMER FILTER
+        // ========================================================
+
+        public async Task<IEnumerable<SellerCustomer>>
+            FilterAsync(
+                int sellerId,
+                string? search,
+                bool? isActive)
         {
-            // Get customers belonging to this seller
             var customers =
                 await GetBySellerIdAsync(sellerId);
 
-            IEnumerable<SellerCustomer> result = customers;
-
-            // ========================================================
-            // SEARCH
-            // ========================================================
+            IEnumerable<SellerCustomer> result =
+                customers;
 
             if (!string.IsNullOrWhiteSpace(search))
             {
                 search = search.Trim();
 
                 result = result.Where(customer =>
-                    (!string.IsNullOrWhiteSpace(customer.CustomerCode) &&
-                     customer.CustomerCode.Contains(
-                         search,
-                         StringComparison.OrdinalIgnoreCase))
+                    ContainsIgnoreCase(
+                        customer.CustomerCode,
+                        search)
 
                     ||
 
-                    (!string.IsNullOrWhiteSpace(customer.CustomerName) &&
-                     customer.CustomerName.Contains(
-                         search,
-                         StringComparison.OrdinalIgnoreCase))
+                    ContainsIgnoreCase(
+                        customer.CustomerName,
+                        search)
 
                     ||
 
-                    (!string.IsNullOrWhiteSpace(customer.ContactPerson) &&
-                     customer.ContactPerson.Contains(
-                         search,
-                         StringComparison.OrdinalIgnoreCase))
+                    ContainsIgnoreCase(
+                        customer.ContactPerson,
+                        search)
 
                     ||
 
-                    (!string.IsNullOrWhiteSpace(customer.Email) &&
-                     customer.Email.Contains(
-                         search,
-                         StringComparison.OrdinalIgnoreCase))
+                    ContainsIgnoreCase(
+                        customer.Email,
+                        search)
 
                     ||
 
-                    (!string.IsNullOrWhiteSpace(customer.Phone) &&
-                     customer.Phone.Contains(
-                         search,
-                         StringComparison.OrdinalIgnoreCase))
+                    ContainsIgnoreCase(
+                        customer.Phone,
+                        search)
 
                     ||
 
-                    (!string.IsNullOrWhiteSpace(customer.GSTIN) &&
-                     customer.GSTIN.Contains(
-                         search,
-                         StringComparison.OrdinalIgnoreCase))
+                    ContainsIgnoreCase(
+                        customer.GSTIN,
+                        search)
 
                     ||
 
-                    (!string.IsNullOrWhiteSpace(customer.City) &&
-                     customer.City.Contains(
-                         search,
-                         StringComparison.OrdinalIgnoreCase))
+                    ContainsIgnoreCase(
+                        customer.City,
+                        search)
 
                     ||
 
-                    (!string.IsNullOrWhiteSpace(customer.State) &&
-                     customer.State.Contains(
-                         search,
-                         StringComparison.OrdinalIgnoreCase))
+                    ContainsIgnoreCase(
+                        customer.State,
+                        search)
                 );
             }
 
-            // ========================================================
-            // ACTIVE / INACTIVE FILTER
-            // ========================================================
-
             if (isActive.HasValue)
             {
-                result = result.Where(customer =>
-                    customer.IsActive == isActive.Value);
+                result = result.Where(
+                    customer =>
+                        customer.IsActive ==
+                        isActive.Value);
             }
 
             return result.ToList();
         }
 
-        public async Task<SellerCustomer?> GetByCustomerCodeAsync(
-            int sellerId,
-            string customerCode)
+
+        // ========================================================
+        // CUSTOMER CODE LOOKUP
+        // ========================================================
+
+        public async Task<SellerCustomer?>
+            GetByCustomerCodeAsync(
+                int sellerId,
+                string customerCode)
         {
-            return await _repository.GetByCustomerCodeAsync(
-                sellerId,
-                customerCode);
+            return await _repository
+                .GetByCustomerCodeAsync(
+                    sellerId,
+                    customerCode);
         }
 
 
-        // =========================================================
-        // CUSTOMER + COMPLETE DATA
-        // =========================================================
+        // ========================================================
+        // COMPLETE SELLER CUSTOMER DETAILS
+        // ========================================================
 
-        public async Task<SellerCustomerWithProductsResponse?>
-            GetCustomerWithProductsAsync(
-                int sellerId,
-                int customerId)
+        public async Task<SellerCustomerWithProductsResponse?> GetCustomerWithProductsAsync(
+     int sellerId,
+     int customerId)
         {
-            // =====================================================
+            // ============================================================
             // CUSTOMER
-            // =====================================================
+            // ============================================================
 
             var customer =
                 await _repository.GetCustomerAsync(
@@ -425,2364 +645,3210 @@ namespace Marketplacesellerportal.SellerCustomers.Services
             if (customer == null)
                 return null;
 
-            // =====================================================
-            // CUSTOMER ADDRESSES
-            // =====================================================
-
             var customerAddresses =
-                await _customerAddressRepository
-                    .GetByCustomerIdAsync(customerId);
+                await _customerAddressRepository.GetByCustomerIdAsync(
+                    customerId);
 
-            // =====================================================
+
+            // ============================================================
             // PRODUCTS
-            // =====================================================
+            // ============================================================
 
             var products =
-                await _productRepository
-                    .GetProductsBySellerCustomerAsync(
-                        sellerId,
-                        customerId);
+                await _productRepository.GetProductsBySellerCustomerAsync(
+                    sellerId,
+                    customerId);
+
+            var productIds =
+                products
+                    .Select(p => p.ProductId)
+                    .Distinct()
+                    .ToList();
 
 
-
-
-            // =====================================================
-            // INVENTORIES
-            // =====================================================
+            // ============================================================
+            // PRODUCT RELATED DATA
+            // ============================================================
 
             var inventories =
-                await _inventoryRepository
-                    .GetBySellerCustomerAsync(
-                        sellerId,
-                        customerId);
-
-
-            // =====================================================
-            // ATTRIBUTES
-            // =====================================================
+                await _inventoryRepository.GetBySellerCustomerAsync(
+                    sellerId,
+                    customerId);
 
             var attributes =
-                await _productAttributeRepository
-                    .GetBySellerCustomerAsync(
-                        sellerId,
-                        customerId);
-
-
-            // =====================================================
-            // PRICES
-            // =====================================================
+                await _productAttributeRepository.GetBySellerCustomerAsync(
+                    sellerId,
+                    customerId);
 
             var prices =
-                await _productPriceRepository
-                    .GetBySellerCustomerAsync(
-                        sellerId,
-                        customerId);
-
-
-            // =====================================================
-            // PRODUCT IMAGES
-            // =====================================================
-
-            var productIds = products
-                .Select(p => p.ProductId)
-                .Distinct()
-                .ToList();
-            // Fetch from DB - Your code - CORRECT
-            var packages = _context.ProductPackages
-                .Where(p => productIds.Contains(p.ProductId))
-                .ToList();
-
-            var addressLabels = _context.ProductAddressLabels
-                .Where(a => productIds.Contains(a.ProductId))
-                .ToList();
+                await _productPriceRepository.GetBySellerCustomerAsync(
+                    sellerId,
+                    customerId);
 
             var images =
-                await _productImageRepository
-                    .GetByProductIdsAsync(productIds);
-
-
-            // =====================================================
-            // PRODUCT TYPES
-            // =====================================================
+                await _productImageRepository.GetByProductIdsAsync(
+                    productIds);
 
             var productTypes =
-                await _productTypeRepository
-                    .GetBySellerCustomerAsync(
-                        sellerId,
-                        customerId);
+                await _productTypeRepository.GetBySellerCustomerAsync(
+                    sellerId,
+                    customerId);
 
-
-            // =====================================================
-            // CATEGORIES
-            // =====================================================
-
-            var categoryIds = products
-                .Where(p => p.CategoryId.HasValue)
-                .Select(p => p.CategoryId!.Value)
-                .Distinct()
-                .ToList();
+            var categoryIds =
+                products
+                    .Where(p => p.CategoryId.HasValue)
+                    .Select(p => p.CategoryId!.Value)
+                    .Distinct()
+                    .ToList();
 
             var categories =
-                await _categoryRepository
-                    .GetByIdsAsync(categoryIds);
+                await _categoryRepository.GetByIdsAsync(
+                    categoryIds);
 
-            // =====================================================
+
+            // ============================================================
             // STOCK
-            // =====================================================
+            // ============================================================
 
             var stockAdjustments =
-                await _stockAdjustmentRepository
-                    .GetBySellerCustomerAsync(
-                        sellerId,
-                        customerId);
+                await _stockAdjustmentRepository.GetBySellerCustomerAsync(
+                    sellerId,
+                    customerId);
 
             var stockTransfers =
-                await _stockTransferRepository
-                    .GetBySellerCustomerAsync(
-                        sellerId,
-                        customerId);
+                await _stockTransferRepository.GetBySellerCustomerAsync(
+                    sellerId,
+                    customerId);
 
             var suppliers =
-                await _supplierRepository
-                    .GetBySellerCustomerAsync(
-                        sellerId,
-                        customerId);
+                await _supplierRepository.GetBySellerCustomerAsync(
+                    sellerId,
+                    customerId);
 
             var stockMovements =
-                await _stockMovementRepository
-                    .GetBySellerCustomerAsync(
-                        sellerId,
-                        customerId);
+                await _stockMovementRepository.GetBySellerCustomerAsync(
+                    sellerId,
+                    customerId);
 
             var stockLedgers =
-                await _stockLedgerRepository
-                    .GetBySellerCustomerAsync(
-                        sellerId,
-                        customerId);
+                await _stockLedgerRepository.GetBySellerCustomerAsync(
+                    sellerId,
+                    customerId);
 
             var warehouses =
-                await _warehouseRepository
-                    .GetBySellerCustomerAsync(
-                        sellerId,
-                        customerId);
+                await _warehouseRepository.GetBySellerCustomerAsync(
+                    sellerId,
+                    customerId);
 
 
-            // =====================================================
-            // SALES ORDERS
-            // =====================================================
+            // ============================================================
+            // SALES / TRANSACTIONS
+            // ============================================================
 
-            // =====================================================
-            // SALES ORDERS - FINAL FIX 100% UNIWARE READY
-            // =====================================================
-
-            var salesOrders = await _salesOrderRepository.GetBySellerCustomerAsync(sellerId, customerId);
-
-            var salesOrderItems = new List<SalesOrderItem>(); 
-
-
-            // =====================================================
-            // CUSTOMER RETURNS
-            // =====================================================
+            var salesOrders =
+                await _salesOrderRepository.GetBySellerCustomerAsync(
+                    sellerId,
+                    customerId);
 
             var customerReturns =
-                await _customerReturnRepository
-                    .GetBySellerCustomerAsync(
-                        sellerId,
-                        customerId);
-
-
-            // =====================================================
-            // DELIVERY CHALLANS
-            // =====================================================
+                await _customerReturnRepository.GetBySellerCustomerAsync(
+                    sellerId,
+                    customerId);
 
             var deliveryChallans =
-                await _deliveryChallanRepository
-                    .GetBySellerCustomerAsync(
-                        sellerId,
-                        customerId);
-
-
-            // =====================================================
-            // GOODS RECEIPT NOTES
-            // =====================================================
+                await _deliveryChallanRepository.GetBySellerCustomerAsync(
+                    sellerId,
+                    customerId);
 
             var goodsReceiptNotes =
-                await _goodsReceiptNoteRepository
-                    .GetBySellerCustomerAsync(
-                        sellerId,
-                        customerId);
-
-
-            // =====================================================
-            // GOODS RECEIPT ITEMS
-            // =====================================================
+                await _goodsReceiptNoteRepository.GetBySellerCustomerAsync(
+                    sellerId,
+                    customerId);
 
             var goodsReceiptItems =
-                await _goodsReceiptItemRepository
-                    .GetBySellerCustomerAsync(
-                        sellerId,
-                        customerId);
-
-
-            // =====================================================
-            // NOTIFICATIONS
-            // =====================================================
+                await _goodsReceiptItemRepository.GetBySellerCustomerAsync(
+                    sellerId,
+                    customerId);
 
             var notifications =
-                await _notificationRepository
-                    .GetBySellerCustomerAsync(
-                        sellerId,
-                        customerId);
-
-
-            // =====================================================
-            // ORDER STATUS HISTORY
-            // =====================================================
+                await _notificationRepository.GetBySellerCustomerAsync(
+                    sellerId,
+                    customerId);
 
             var orderStatusHistories =
-                await _orderStatusHistoryRepository
-                    .GetBySellerCustomerAsync(
-                        sellerId,
-                        customerId);
-
-
-            // =====================================================
-            // PAYMENTS
-            // =====================================================
+                await _orderStatusHistoryRepository.GetBySellerCustomerAsync(
+                    sellerId,
+                    customerId);
 
             var payments =
-                await _paymentRepository
-                    .GetBySellerCustomerAsync(
-                        sellerId,
-                        customerId);
-
-
-            // =====================================================
-            // PURCHASE ORDERS
-            // =====================================================
+                await _paymentRepository.GetBySellerCustomerAsync(
+                    sellerId,
+                    customerId);
 
             var purchaseOrders =
-                await _purchaseOrderRepository
-                    .GetBySellerCustomerAsync(
-                        sellerId,
-                        customerId);
-
-
-            // =====================================================
-            // PURCHASE ORDER ITEMS
-            // =====================================================
-
-            var purchaseOrderIds =
-     purchaseOrders
-         .Select(x => x.PurchaseOrderId)
-         .ToList();
-
-            // DIRECT DB - bypass broken repository
-            var purchaseOrderItems = purchaseOrderIds.Any()
-                ? await _context.PurchaseOrderItems
-                    .Where(i => purchaseOrderIds.Contains(i.PurchaseOrderId))
-                    .ToListAsync()
-                : new List<PurchaseOrderItem>();
-
-         
-
-            // =====================================================
-            // PURCHASE RETURNS
-            // =====================================================
+                await _purchaseOrderRepository.GetBySellerCustomerAsync(
+                    sellerId,
+                    customerId);
 
             var purchaseReturns =
-                await _purchaseReturnRepository
-                    .GetBySellerCustomerAsync(
-                        sellerId,
-                        customerId);
-
-
-            // =====================================================
-            // REVIEWS
-            // =====================================================
+                await _purchaseReturnRepository.GetBySellerCustomerAsync(
+                    sellerId,
+                    customerId);
 
             var reviews =
-                await _reviewRepository
-                    .GetBySellerCustomerAsync(
-                        sellerId,
-                        customerId);
-
-            // =====================================================
-            // SHIPMENTS
-            // =====================================================
+                await _reviewRepository.GetBySellerCustomerAsync(
+                    sellerId,
+                    customerId);
 
             var shipments =
-                await _shipmentRepository
-                    .GetBySellerCustomerAsync(
-                        sellerId,
-                        customerId);
-
-
-            // =====================================================
-            // WISHLISTS
-            // =====================================================
+                await _shipmentRepository.GetBySellerCustomerAsync(
+                    sellerId,
+                    customerId);
 
             var wishlists =
-                await _wishlistRepository
-                    .GetBySellerCustomerAsync(
-                        sellerId,
-                        customerId);
-
-
-            // =====================================================
-            // WISHLIST ITEMS
-            // =====================================================
+                await _wishlistRepository.GetBySellerCustomerAsync(
+                    sellerId,
+                    customerId);
 
             var wishlistItems =
-                await _wishlistItemRepository
-                    .GetBySellerCustomerAsync(
-                        sellerId,
-                        customerId);
-
-
-            // =====================================================
-            // MARKETPLACE ORDERS
-            // =====================================================
+                await _wishlistItemRepository.GetBySellerCustomerAsync(
+                    sellerId,
+                    customerId);
 
             var marketplaceOrders =
-                await _marketplaceOrderRepository
-                    .GetBySellerCustomerAsync(
-                        sellerId,
-                        customerId);
-
-
-            // =====================================================
-            // MARKETPLACE ORDER ITEMS
-            // =====================================================
+                await _marketplaceOrderRepository.GetBySellerCustomerAsync(
+                    sellerId,
+                    customerId);
 
             var marketplaceOrderItems =
-                await _marketplaceOrderItemRepository
-                    .GetBySellerCustomerAsync(
-                        sellerId,
-                        customerId);
-
-
-            // =====================================================
-            // MARKETPLACE RETURNS
-            // =====================================================
+                await _marketplaceOrderItemRepository.GetBySellerCustomerAsync(
+                    sellerId,
+                    customerId);
 
             var marketplaceReturns =
-                await _marketplaceReturnRepository
-                    .GetBySellerCustomerAsync(
-                        sellerId,
-                        customerId);
+                await _marketplaceReturnRepository.GetBySellerCustomerAsync(
+                    sellerId,
+                    customerId);
 
 
-          
+            // ============================================================
+            // PRODUCT PACKAGES
+            // ============================================================
 
-            // DeliveryChallanItems - filter via DeliveryChallan table
-            var deliveryChallanIds = deliveryChallans.Select(d => d.DeliveryChallanId).ToList();
-            var deliveryChallanItems = deliveryChallanIds.Any()
-                ? await _context.DeliveryChallanItems
-                    .Where(i => deliveryChallanIds.Contains(i.DeliveryChallanId))
-                    .ToListAsync()
+            var packages =
+                productIds.Count > 0
+                    ? await _context.ProductPackages
+                        .Where(p =>
+                            productIds.Contains(
+                                p.ProductId))
+                        .AsNoTracking()
+                        .ToListAsync()
+                    : new List<ProductPackage>();
+
+
+            // ============================================================
+            // ADDRESS LABELS
+            // ============================================================
+
+            var addressLabels =
+                productIds.Count > 0
+                    ? await _context.ProductAddressLabels
+                        .Where(l =>
+                            productIds.Contains(
+                                l.ProductId))
+                        .AsNoTracking()
+                        .ToListAsync()
+                    : new List<ProductAddressLabel>();
+
+
+            // ============================================================
+            // DELIVERY CHALLAN ITEMS
+            // ============================================================
+
+            var deliveryChallanIds = await _context.DeliveryChallans
+     .Where(d => d.SellerId == sellerId && d.CustomerId == customerId)
+     .Select(d => d.DeliveryChallanId)
+     .ToListAsync();
+            var salesOrderIds = await _context.SalesOrders
+  .Where(o => o.SellerId == sellerId && o.CustomerId == customerId)
+  .Select(o => o.SalesOrderId)
+  .ToListAsync();
+
+            var deliveryChallanItems = salesOrderIds.Count > 0 || deliveryChallanIds.Count > 0
+               ? await _context.DeliveryChallanItems
+                   .Where(dci => deliveryChallanIds.Contains(dci.DeliveryChallanId))
+                   .AsNoTracking()
+                   .ToListAsync()
                 : new List<DeliveryChallanItem>();
-
-            // Marketplaces - GetAll is correct
-            var marketplaces = await _marketplaceRepo.GetAllAsync();
-
-            // Seller - GetByIdAsync is correct, use your existing
-            var sellers = await _context.Sellers.FirstOrDefaultAsync(s => s.SellerId == sellerId);
-
-            // =====================================================
-            // MAIN RESPONSE
-            // =====================================================
-
-            var response =
-   new SellerCustomerWithProductsResponse
-   {
-       CustomerId = customer.CustomerId,
-       SellerId = customer.SellerId,
-
-       CustomerCode = customer.CustomerCode,
-       CustomerName = customer.CustomerName,
-
-       TradeName = customer.TradeName,
-       LegalName = customer.LegalName,
-
-       ContactPerson = customer.ContactPerson,
-
-       Email = customer.Email,
-       Phone = customer.Phone,
-
-       GSTIN = customer.GSTIN,
-
-       AddressLine1 = customer.AddressLine1,
-       AddressLine2 = customer.AddressLine2,
-
-       BuildingName = customer.BuildingName,
-       Location = customer.Location,
-
-       City = customer.City,
-       State = customer.State,
-       StateCode = customer.StateCode,
-
-       FloorNo = customer.FloorNo,
-
-       Country = customer.Country,
-       PostalCode = customer.PostalCode,
-
-       CreditLimit =
-           customer.CreditLimit ?? 0,
-
-       IsActive = customer.IsActive,
-
-       CreatedDate = customer.CreatedDate,
-       UpdatedDate = customer.UpdatedDate,
-
-       CustomerAddresses =
-           customerAddresses
-               .Select(a =>
-                   new SellerCustomerAddressResponse
-                   {
-                       CustomerAddressId = a.CustomerAddressId,
-                       CustomerId = a.CustomerId,
-                       AddressType = a.AddressType,
-                       AddressLine1 = a.AddressLine1,
-                       AddressLine2 = a.AddressLine2,
-                       City = a.City,
-                       State = a.State,
-                       Country = a.Country,
-                       PostalCode = a.PostalCode,
-                       IsDefault = a.IsDefault,
-                       CreatedDate = a.CreatedDate
-                   })
-               .ToList(),
-   };
-
-            var brandIds = products.Select(p => p.BrandId).Where(id => id.HasValue).Select(id => id.Value).Distinct().ToList();
-
-            var brands = await _context.Brands
-                .Where(b => brandIds.Contains(b.BrandId))
-                .ToListAsync();  // <-- This is line 850 that throws 500 if Brands table in your connection string DB doesn't have BrandName
-
-            // =====================================================
-            // BRAND MODELS - THIS LINE WAS MISSING - this is why you get 'does not exist'
-            // =====================================================
-            var brandModels = await _context.BrandModels
-               .Include(m => m.Brand)
-               .Where(m => brandIds.Contains(m.BrandId))
-               .ToListAsync();
+            var salesOrderItems = salesOrderIds.Count > 0
+   ? await _context.SalesOrderItems
+       .Where(item => salesOrderIds.Contains(item.SalesOrderId))
+       .AsNoTracking()
+       .ToListAsync()
+    : new List<SalesOrderItem>();
 
 
+            // ============================================================
+            // MARKETPLACES
+            // ============================================================
 
-            // =====================================================
-            // BRAND DICTIONARY
-            // =====================================================
-
-            var brandDict =
-                brands.ToDictionary(
-                    b => b.BrandId,
-                    b => b.BrandName);
+            var marketplaces =
+                await _marketplaceRepo.GetAllAsync();
 
 
-            // =====================================================
-            // PRODUCTS - FINAL WITH ALL MISSING
-            // =====================================================
-            response.Products = products.Select(p =>
+            // ============================================================
+            // SELLER
+            // ============================================================
+
+            var seller =
+                await _context.Sellers
+                    .AsNoTracking()
+                    .FirstOrDefaultAsync(
+                        s => s.SellerId == sellerId);
+
+
+            // ============================================================
+            // BRANDS
+            // ============================================================
+
+            var brandIds =
+                products
+                    .Where(p => p.BrandId.HasValue)
+                    .Select(p => p.BrandId!.Value)
+                    .Distinct()
+                    .ToList();
+
+            List<BrandEntity> brands = new();
+            List<BrandModelEntity> brandModels = new();
+
+            if (brandIds.Count > 0)
             {
-                // Fix ContainsKey double lookup warning
-                brandDict.TryGetValue(p.BrandId ?? 0, out var bName);
-                var addr = addressLabels.FirstOrDefault(a => a.ProductId == p.ProductId);
+                brands =
+                    await _context.Brands
+                        .Where(b =>
+                            brandIds.Contains(
+                                b.BrandId))
+                        .AsNoTracking()
+                        .ToListAsync();
 
-                return new SellerCustomerProductResponse
-                {
-                    ProductId = p.ProductId,
-                    SellerId = p.SellerId,
-                    ItemSkuForUniware = p.SKU,
-                    CustomerId = p.CustomerId,
-                    ProductName = p.ProductName,
-                    SKU = p.SKU,
-                    Barcode = p.Barcode,
-                    BrandId = p.BrandId,
-                    BrandName = bName ?? "Samsung",
-                    CategoryId = p.CategoryId,
-                    ProductTypeId = p.ProductTypeId,
-                    Description = p.Description,
-                    Weight = p.Weight,
-                    Length = p.Length,
-                    Width = p.Width,
-                    Height = p.Height,
-                    HSNCode = p.HSNCode,
-                    UnitOfMeasure = p.UnitOfMeasure,
-                    Status = p.Status,
-                    IsActive = p.IsActive ?? true,
-                    CreatedDate = p.CreatedDate,
-                    UpdatedDate = p.UpdatedDate,
-                    ItemTypeName = p.ItemTypeName,
-                    ItemTypeCode = p.ItemTypeCode,
-                    ProductGroupCode = p.ProductGroupCode,
-                    TaxCategory = p.TaxCategory,
-                    VisibilityStatus = p.VisibilityStatus,
-                    FulfillmentType = p.FulfillmentType,
-                    CarrierType = p.CarrierType,
-                    ReadyToDispatchDays = p.ReadyToDispatchDays,
-                    ShippingChargeLocal = p.ShippingChargeLocal,
-                    ShippingChargeRegional = p.ShippingChargeRegional,
-                    ShippingChargeNational = p.ShippingChargeNational,
-                    IsComboPack = p.IsComboPack,
-                    ExternalProductId = p.ExternalProductId,
-                    ExternalSystemCode = p.ExternalSystemCode,
-
-                    FulfillmentProfile = p.FulfillmentProfile,
-                    ShippingProvider = p.ShippingProvider,
-                    ProcurementType = p.ProcurementType,
-                    ProcurementSla = p.ProcurementSla,
-
-                    // === UNIWARE FIELDS - NO DUPLICATES ===
-                    ProductCode = p.ProductCode ?? p.SKU,
-                    UniwareItemCode = p.UniwareItemCode ?? p.SKU,
-                    UniwareProductCode = p.UniwareProductCode ?? p.SKU,
-                    ItemType = p.ItemType ?? "STANDARD",
-                    ProductXID = p.ProductId,
-                    CostPrice = p.CostPrice,
-                    SellingPrice = p.SellingPrice ?? p.MRP,
-                    MRP = p.MRP,
-                    GSTPercentage = p.GSTPercentage ?? 18,
-                    IsReturnable = p.IsReturnable ?? true,
-                    IsCancellable = p.IsCancellable ?? true,
-                    IsCodAvailable = p.IsCodAvailable ?? true,
-                    ShelfLifeDays = p.ShelfLifeDays,
-                    WarrantyPeriod = p.WarrantyPeriod,
-                    IsSyncedToUniware = p.IsSyncedToUniware ?? false,
-                    Color = p.Color,
-                    Size = p.Size,
-                    ColorCode = p.ColorCode,
-
-                    // Flatten from addressLabels - FIXED - NO p.AddressLabel
-                    ManufacturerDetails = addr?.ManufacturerDetails ?? "TechNova Pvt Ltd, 45 MG Road, Bengaluru - 560001",
-                    ImporterDetails = addr?.ImporterDetails,
-                    PackerDetails = addr?.PackerDetails,
-                    CountryOfOrigin = addr?.CountryOfOrigin ?? "IN",
-                    ShelfLifeSeconds = addr?.ShelfLifeSeconds ?? 63072000,
-                    CategoryCodeForUniware = categories.FirstOrDefault(c => c.CategoryId == p.CategoryId)?.CategoryCode ?? "CONSUMER_ELECTRONICS",
-
-                    // Packages
-                    Packages = packages
-                        .Where(x => x.ProductId == p.ProductId)
-                        .Select(x => new ProductPackageResponse
-                        {
-                            Name = x.Name,
-                            Length = x.Length ?? 0,
-                            Breadth = x.Breadth ?? 0,
-                            Height = x.Height ?? 0,
-                            Weight = x.Weight ?? 0,
-                            Description = x.Description,
-                            IsFragile = x.IsFragile ?? false,
-                            PackageType = x.PackageType,
-                            IsHazardous = x.IsHazardous ?? false,
-                            DefectCount = x.DefectCount ?? 0,
-                            DefectDetails = x.DefectDetails,
-                            PackageXID = x.PackageId
-                        }).ToList(),
-
-                    AddressLabel = addressLabels
-                        .Where(x => x.ProductId == p.ProductId)
-                        .Select(x => new ProductAddressLabelResponse
-                        {
-                            ManufacturerDetails = x.ManufacturerDetails,
-                            ImporterDetails = x.ImporterDetails,
-                            PackerDetails = x.PackerDetails,
-                            CountryOfOrigin = x.CountryOfOrigin ?? "India",
-                            MfgDateEpoch = x.MfgDateEpoch,
-                            ShelfLifeSeconds = x.ShelfLifeSeconds,
-                            ExpiryDateEpoch = x.ExpiryDateEpoch,
-                            Quantity = x.Quantity,
-                            Mrp = x.Mrp,
-                            AddressLabelXID = x.AddressLabelId
-                        }).FirstOrDefault()
-                };
-            }).ToList();
-
-            // 1. Load invoices
-            var salesInvoices = await _context.SalesInvoices
-                .Where(s => s.SellerId == sellerId && s.CustomerId == customerId)
-                .ToListAsync();
-
-            var invoiceIds = salesInvoices.Select(x => x.SalesInvoiceId).ToList();
-
-            // 2. Load items
-            var salesInvoiceItems = await _context.SalesInvoiceItems
-                .Where(i => invoiceIds.Contains(i.SalesInvoiceId))
-                .ToListAsync();
-
-            Console.WriteLine($"DEBUG: Invoices={salesInvoices.Count}, Items={salesInvoiceItems.Count}");
-
-            // 3. Map with direct Where - THIS FIXES items:[]
-            response.Transactions.SalesInvoices = salesInvoices.Select(inv => new SellerCustomerSalesInvoiceResponse
-            {
-                SalesInvoiceId = inv.SalesInvoiceId,
-                SellerId = inv.SellerId,
-                CustomerId = inv.CustomerId,
-                SalesOrderId = inv.SalesOrderId,
-                InvoiceNumber = inv.InvoiceNumber,
-                InvoiceDate = inv.InvoiceDate,
-                SubTotal = inv.SubTotal,
-                DiscountAmount = inv.DiscountAmount,
-                TaxAmount = inv.TaxAmount,
-                TotalAmount = inv.TotalAmount,
-                PaidAmount = inv.PaidAmount,
-                BalanceAmount = inv.BalanceAmount,
-                PaymentStatus = inv.PaymentStatus,
-                Status = inv.Status,
-                Remarks = inv.Remarks,
-                CreatedDate = inv.CreatedDate,
-                UpdatedDate = inv.UpdatedDate,
-                Items = salesInvoiceItems.Where(x => x.SalesInvoiceId == inv.SalesInvoiceId).Select(item => new SellerCustomerSalesInvoiceItemResponse
-                {
-                    SalesInvoiceItemId = item.SalesInvoiceItemId,
-                    SalesInvoiceId = item.SalesInvoiceId,
-                    ProductId = item.ProductId,
-                    Quantity = item.Quantity,
-                    UnitPrice = item.UnitPrice,
-                    HsnCode = item.Hsncode,
-                    GstPer = item.GstPer,
-                    SgstPer = item.SgstPer,
-                    SgstAmount = item.SgstAmount,
-                    CgstPer = item.CgstPer,
-                    CgstAmount = item.CgstAmount,
-                    IgstPer = item.IgstPer,
-                    IgstAmount = item.IgstAmount,
-                    TotalAmount = item.TotalAmount,
-                    AfterGSTAmount = item.AfterGSTAmount,
-                    Uom = item.Uom,
-                    Description = item.Description
-                }).ToList()
-            }).ToList();
-            // 1. Get SalesInvoiceIds for this seller+customer
-            // FIXED - Uses fully qualified names and handles int vs int?
-            var salesInvoiceIds = await _context.SalesInvoices
-                .Where(s => s.SellerId == sellerId && s.CustomerId == customerId)
-                .Select(s => s.SalesInvoiceId)
-                .Distinct()
-                .ToListAsync();
-
-            // No HasValue - SalesInvoiceId in SalesInvoices is int
-            var sIds = salesInvoiceIds.Where(id => id != 0).Distinct().ToList();
-
-            var eInvoices = new List<Marketplacesellerportal.Models.EInvoice>();
-            var EWayBills = new List<Marketplacesellerportal.Models.EWayBill>();
-            var shipmentLookup = new Dictionary<int, Marketplacesellerportal.Models.Shipment>();
-
-            if (sIds.Count > 0)
-            {
-                eInvoices = await _context.EInvoices
-                    .Where(e => sIds.Contains(e.SalesInvoiceId))
-                    .ToListAsync();
-
-                EWayBills = await _context.EWayBills
-                    .Where(w => sIds.Contains(w.SalesInvoiceId))
-                    .ToListAsync();
-
-                shipmentLookup = await _context.Shipments
-                    .Where(s => s.SalesOrderId != null && sIds.Contains(s.SalesOrderId.Value))
-                    .GroupBy(s => s.SalesOrderId!.Value)
-                    .ToDictionaryAsync(g => g.Key, g => g.First());
+                brandModels =
+                    await _context.BrandModels
+                        .Where(m =>
+                            brandIds.Contains(
+                                m.BrandId))
+                        .AsNoTracking()
+                        .ToListAsync();
             }
 
-        
-            // === EInvoices - Dynamic ===
-            response.EInvoices = eInvoices.Select(e => new SellerCustomerEInvoiceResponse
-            {
-                EInvoiceId = e.EInvoiceId,
-                SellerId = e.SellerId,
-                CustomerId = e.CustomerId,
-                SalesInvoiceId = e.SalesInvoiceId,
-                InvoiceNumber = e.InvoiceNumber,
-                Irn = !string.IsNullOrEmpty(e.InvoiceNumber) ? $"IRN-{e.InvoiceNumber}-{e.EInvoiceId}" : $"IRN-{e.EInvoiceId}",
-                AckNo = $"1124108605723{e.EInvoiceId:D3}",
-                AckDate = DateTime.UtcNow,
-                Status = "Generated",
-                CreatedDate = DateTime.UtcNow
-            }).ToList();
 
-            // === EWayBills - 100% Dynamic from DB ===
-            response.EWayBills = EWayBills.Select(w =>
-            {
-                shipmentLookup.TryGetValue(w.SalesInvoiceId, out var ship);
+            // ============================================================
+            // SALES ORDER ITEMS
+            // ============================================================
 
-                return new SellerCustomerEWayBillResponse
+
+     
+
+
+            // ============================================================
+            // PURCHASE ORDER ITEMS
+            // ============================================================
+
+            var purchaseOrderIds =
+                purchaseOrders
+                    .Select(o => o.PurchaseOrderId)
+                    .ToList();
+
+            var purchaseOrderItems =
+                purchaseOrderIds.Count > 0
+                    ? await _context.PurchaseOrderItems
+                        .Where(i =>
+                            purchaseOrderIds.Contains(
+                                i.PurchaseOrderId))
+                        .AsNoTracking()
+                        .ToListAsync()
+                    : new List<PurchaseOrderItem>();
+
+
+            // ============================================================
+            // SALES INVOICES
+            // ============================================================
+
+            // ============================================================
+            // SALES INVOICES - FIXED
+            // ============================================================
+            var salesInvoices = salesOrderIds.Count > 0
+               ? await _context.SalesInvoices
+                   .Where(i => salesOrderIds.Contains(i.SalesOrderId)) // FIX: use SalesOrderId, not SellerId
+                   .AsNoTracking()
+                   .ToListAsync()
+                : new List<SalesInvoice>();
+
+            var invoiceIds =
+                salesInvoices
+                    .Select(i => i.SalesInvoiceId)
+                    .ToList();
+
+            var salesInvoiceItems =
+                invoiceIds.Count > 0
+                    ? await _context.SalesInvoiceItems
+                        .Where(i =>
+                            invoiceIds.Contains(
+                                i.SalesInvoiceId))
+                        .AsNoTracking()
+                        .ToListAsync()
+                    : new List<SalesInvoiceItem>();
+
+
+            // ============================================================
+            // WAREHOUSE LOCATIONS
+            // ============================================================
+
+            // ============================================================
+            // WAREHOUSE LOCATIONS - FIXED
+            // ============================================================
+            var warehouseLocations = await _context.WarehouseLocations
+               .Where(l => l.SellerId == sellerId && l.CustomerId == customerId) // add CustomerId
+               .AsNoTracking()
+               .ToListAsync();
+
+            // ============================================================
+            // SHELFWISE INVENTORIES
+            // ============================================================
+
+            var shelfwiseInventories =
+                await _context.ShelfwiseInventories
+                    .Where(i =>
+                        i.SellerId == sellerId &&
+                        i.CustomerId == customerId)
+                    .AsNoTracking()
+                    .ToListAsync();
+
+
+            // ============================================================
+            // VENDOR ITEM MASTERS
+            // ============================================================
+
+            var vendorItemMasters =
+                await _context.VendorItemMasters
+                    .Where(i =>
+                        i.SellerId == sellerId &&
+                        i.CustomerId == customerId)
+                    .AsNoTracking()
+                    .ToListAsync();
+
+
+            // ============================================================
+            // GATEPASSES
+            // ============================================================
+
+            var gatepasses =
+                await _context.Gatepasses
+                    .Where(g =>
+                        g.SellerId == sellerId &&
+                        g.CustomerId == customerId)
+                    .AsNoTracking()
+                    .ToListAsync();
+
+
+            // ============================================================
+            // PUTAWAYS
+            // ============================================================
+
+            var putaways =
+                await _context.Putaways
+                    .Where(p =>
+                        p.SellerId == sellerId &&
+                        p.CustomerId == customerId)
+                    .AsNoTracking()
+                    .ToListAsync();
+
+
+            // ============================================================
+            // REVERSE PICKUPS
+            // ============================================================
+
+            var reversePickups =
+                await _context.ReversePickups
+                    .Where(p =>
+                        p.SellerId == sellerId &&
+                        p.CustomerId == customerId)
+                    .AsNoTracking()
+                    .ToListAsync();
+
+
+            // ============================================================
+            // MARKETPLACE LISTING INVENTORIES
+            // ============================================================
+
+            var marketplaceListingInventories =
+         productIds.Count > 0
+             ? await _context.MarketplaceListingInventory
+                 .Where(x =>
+                     _context.MarketplaceListings.Any(l =>
+                         l.MarketplaceListingId == x.MarketplaceListingId &&
+                         productIds.Contains(l.ProductId)))
+                 .AsNoTracking()
+                 .ToListAsync()
+             : new List<MarketplaceListingInventory>();
+
+
+            // ============================================================
+            // AMAZON INVENTORY SYNCS
+            // ============================================================
+
+            var amazonInventorySyncs =
+                productIds.Count > 0
+                    ? await _context.AmazonInventorySync
+                        .Where(s =>
+                            s.ProductId.HasValue &&
+                            productIds.Contains(
+                                s.ProductId.Value))
+                        .AsNoTracking()
+                        .ToListAsync()
+                    : new List<AmazonInventorySync>();
+
+
+            // ============================================================
+            // E-INVOICES
+            // ============================================================
+
+            var eInvoices =
+                await _context.EInvoices
+                    .Where(i =>
+                        i.SellerId == sellerId &&
+                        i.CustomerId == customerId)
+                    .AsNoTracking()
+                    .ToListAsync();
+
+
+            // ============================================================
+            // E-WAY BILLS
+            // ============================================================
+
+            var eWayBills =
+                await _context.EWayBills
+                    .Where(e =>
+                        e.SellerId == sellerId &&
+                        e.CustomerId == customerId)
+                    .AsNoTracking()
+                    .ToListAsync();
+
+
+            // ============================================================
+            // BUILD MAIN RESPONSE
+            // ============================================================
+
+            var response =
+                new SellerCustomerWithProductsResponse
                 {
-                    EWayBillId = w.EWayBillId,
-                    SellerId = w.SellerId,
-                    CustomerId = w.CustomerId,
-                    SalesInvoiceId = w.SalesInvoiceId,
-                    EWayBillNumber = w.EWayBillNumber ?? $"EWB{w.EWayBillId:D12}",
-                    EWayBillDate = w.EWayBillDate ?? DateTime.UtcNow,
-                    ValidUpto = w.ValidUpto ?? DateTime.UtcNow.AddDays(1),
-                    Status = w.Status ?? "Generated",
-                    CreatedDate = w.CreatedDate ?? DateTime.UtcNow,
+                    CustomerId =
+                        customer.CustomerId,
 
-                    // ✅ DYNAMIC - EWayBill table > Shipment table > Auto-generated
-                    VehicleNo = w.VehicleNo ?? ship?.VehicleNo ?? $"TS09AB{Random.Shared.Next(1000, 9999)}",
-                    TransporterName = w.TransporterName ?? ship?.TransporterName ?? "VRL Logistics Ltd",
-                    TransporterID = w.TransporterID ?? ship?.TransporterID ?? "29ABCDE1234F1Z5",
-                    Distance = w.Distance ?? ship?.Distance ?? "100",
-                    TransportMode = w.TransportMode ?? ship?.TransportMode ?? "1"
+                    SellerId =
+                        customer.SellerId,
+
+                    CustomerCode =
+                        customer.CustomerCode,
+
+                    CustomerName =
+                        customer.CustomerName,
+
+                    TradeName =
+                        customer.TradeName,
+
+                    LegalName =
+                        customer.LegalName,
+
+                    ContactPerson =
+                        customer.ContactPerson,
+
+                    Email =
+                        customer.Email,
+
+                    Phone =
+                        customer.Phone,
+
+                    GSTIN =
+                        customer.GSTIN,
+
+                    AddressLine1 =
+                        customer.AddressLine1,
+
+                    AddressLine2 =
+                        customer.AddressLine2,
+
+                    BuildingName =
+                        customer.BuildingName,
+
+                    Location =
+                        customer.Location,
+
+                    City =
+                        customer.City,
+
+                    State =
+                        customer.State,
+
+                    StateCode =
+                        customer.StateCode,
+
+                    FloorNo =
+                        customer.FloorNo,
+
+                    Country =
+                        customer.Country,
+
+                    PostalCode =
+                        customer.PostalCode,
+
+                    CreditLimit =
+                        customer.CreditLimit ?? 0,
+
+                    IsActive =
+                        customer.IsActive,
+
+                    CreatedDate =
+                        customer.CreatedDate,
+
+                    UpdatedDate =
+                        customer.UpdatedDate,
+
+                    CustomerAddresses =
+                        customerAddresses
+                            .Select(a =>
+                                new SellerCustomerAddressResponse
+                                {
+                                    CustomerAddressId =
+                                        a.CustomerAddressId,
+
+                                    CustomerId =
+                                        a.CustomerId,
+
+                                    AddressType =
+                                        a.AddressType,
+
+                                    AddressLine1 =
+                                        a.AddressLine1,
+
+                                    AddressLine2 =
+                                        a.AddressLine2,
+
+                                    City =
+                                        a.City,
+
+                                    State =
+                                        a.State,
+
+                                    Country =
+                                        a.Country,
+
+                                    PostalCode =
+                                        a.PostalCode,
+
+                                    IsDefault =
+                                        a.IsDefault,
+
+                                    CreatedDate =
+                                        a.CreatedDate
+                                })
+                            .ToList(),
+
+                    Products =
+                        products
+                            .Select(product =>
+                            {
+                                var label =
+                                    addressLabels.FirstOrDefault(
+                                        l =>
+                                            l.ProductId ==
+                                            product.ProductId);
+
+                                var brandName =
+                                    brands
+                                        .FirstOrDefault(
+                                            b =>
+                                                b.BrandId ==
+                                                product.BrandId)
+                                        ?.BrandName;
+
+                                return new SellerCustomerProductResponse
+                                {
+                                    ProductId =
+                                        product.ProductId,
+
+                                    SellerId =
+                                        product.SellerId,
+
+                                    CustomerId =
+                                        product.CustomerId,
+
+                                    ProductName =
+                                        product.ProductName ?? "",
+
+                                    SKU =
+                                        product.SKU ?? "",
+
+                                    BrandId =
+                                        product.BrandId,
+
+                                    BrandName =
+                                        brandName,
+
+                                    CategoryId =
+                                        product.CategoryId,
+
+                                    ProductTypeId =
+                                        product.ProductTypeId,
+
+                                    Description =
+                                        product.Description,
+
+                                    HSNCode =
+                                        product.HSNCode,
+
+                                    Status =
+                                        product.Status,
+
+                                    IsActive =
+                                        product.IsActive ?? true
+                                };
+                            })
+                            .ToList()
                 };
-            }).ToList();
-
-            // =====================================================
-            // INVENTORIES
-            // =====================================================
-            // =====================================================
-            // INVENTORIES - FINAL
-            // =====================================================
-            response.Inventories = [.. inventories.Select(i => new SellerCustomerInventoryResponse
-{
-    ProductInventoryId = i.ProductInventoryId,
-    SellerId = i.SellerId,
-    CustomerId = i.CustomerId,
-    ProductId = i.ProductId,
-    WarehouseId = i.WarehouseId,
-    LocationId = i.LocationId,
-    Quantity = i.Quantity ?? 0,
-    ReservedQuantity = i.ReservedQuantity ?? 0,
-    DamagedQuantity = i.DamagedQuantity ?? 0,
-    ReorderLevel = i.ReorderLevel ?? 0,
-    ReorderQuantity = i.ReorderQuantity ?? 0,
-    LastStockUpdate = i.LastStockUpdate,
-    CreatedDate = i.CreatedDate,
-    UpdatedDate = i.UpdatedDate,
-
-    SKU = i.SKU ?? "TN-WBH-001",
-    Barcode = i.Barcode ?? "8901234567890",
-    WarehouseCode = i.WarehouseCode ?? "WH-TN-001",
-    FacilityCode = i.FacilityCode ?? "WH-TN-001",
-    UniwareFacilityCode = i.UniwareFacilityCode ?? "WH-TN-001",
-  IsFacilityCodeMatch = string.Equals(
-        warehouses.FirstOrDefault(w=>w.WarehouseId==i.WarehouseId)?.FacilityCode,
-        warehouses.FirstOrDefault(w=>w.WarehouseId==i.WarehouseId)?.UniwareFacilityCode,
-        StringComparison.OrdinalIgnoreCase),
-    ChannelCode = i.ChannelCode ?? "CUSTOM",
-    UniwareChannelCode = i.UniwareChannelCode ?? "CUSTOM",
-    IsChannelCodeMatch = i.IsChannelCodeMatch,
-    LocationCode = i.LocationCode ?? "009",
-    LocationName = i.LocationName ?? "Bandlaguda",
-    BatchId = i.BatchId,
-    ChannelPrice = i.ChannelPrice ?? 2499,
-    IsBulkUpload = i.IsBulkUpload ?? false,
-    BulkStatus = i.BulkStatus ?? "READY",
-    AdjustmentType = i.AdjustmentType,
-    AdjustmentQuantity = i.AdjustmentQuantity,
-    SellableQuantity = i.SellableQuantity,
-    Inventory = i.Quantity ?? 0,
-   // YOUR ERROR CODE:
-// ChannelInventory = i.SellableQuantity ?? ((i.Quantity ?? 0) - (i.ReservedQuantity ?? 0) - (i.DamagedQuantity ?? 0)),
-
-// FIXED 1 - If SellableQuantity is decimal (non-nullable) - USE THIS:
-ChannelInventory = i.SellableQuantity > 0 ? i.SellableQuantity : (decimal)((i.Quantity ?? 0) - (i.ReservedQuantity ?? 0) - (i.DamagedQuantity ?? 0)),
 
 
-    // === ADD THESE 4 YOU MISSED FOR UNIWARE SYNC ===
-    ProductName = i.Product?.ProductName ?? i.SKU,
-    IsSyncedToUniware = i.IsSyncedToUniware ?? false,
-    UniwareSyncDate = i.UniwareSyncDate,
-    UniwareItemCode = i.SKU
-})];
+            // ============================================================
+            // TRANSACTIONS
+            // ============================================================
 
-            // =====================================================
-            // PRICES
-            // =====================================================
-            response.Prices =
-    prices
-        .Select(p =>
-            new SellerCustomerPriceResponse
+            response.Transactions =
+      new SellerCustomerTransactionResponse
+      {
+          // ============================================================
+          // CUSTOMER / SELLER
+          // ============================================================
+
+          CustomerId = customerId,
+          SellerId = sellerId,
+
+
+          // ============================================================
+          // CUSTOMER RETURNS
+          // ============================================================
+
+          CustomerReturns =
+              customerReturns
+                  .Select(x =>
+                      new SellerCustomerCustomerReturnResponse
+                      {
+                          CustomerReturnId = x.CustomerReturnId,
+
+                          SellerId = x.SellerId,
+                          CustomerId = x.CustomerId,
+
+                          SalesInvoiceId = x.SalesInvoiceId,
+                          ProductId = x.ProductId,
+
+                          ReturnNumber = x.ReturnNumber,
+                          ReturnDate = x.ReturnDate,
+
+                          Quantity = x.Quantity,
+                          ReturnAmount = x.ReturnAmount,
+
+                          Reason = x.Reason,
+                          Status = x.Status,
+
+                          CreatedDate = x.CreatedDate
+                      })
+                  .ToList(),
+
+
+          // ============================================================
+          // DELIVERY CHALLANS
+          // ============================================================
+
+          DeliveryChallans =
+              deliveryChallans
+                  .Select(x =>
+                      new SellerCustomerDeliveryChallanResponse
+                      {
+                          DeliveryChallanId = x.DeliveryChallanId,
+
+                          SellerId = x.SellerId,
+                          CustomerId = x.CustomerId,
+
+                          ChallanNumber = x.ChallanNumber,
+                          ChallanDate = x.ChallanDate,
+
+                          VehicleNumber = x.VehicleNumber,
+                          DriverName = x.DriverName,
+                          DriverMobile = x.DriverMobile,
+
+                          TransporterName = x.TransporterName,
+
+                          SalesOrderId = x.SalesOrderId,
+
+                          Status = x.Status,
+
+                          DeliveryAddress = null,
+
+                          Remarks = x.Remarks,
+
+                          CreatedDate = x.CreatedDate,
+                          UpdatedDate = null
+                      })
+                  .ToList(),
+
+
+          // ============================================================
+          // GOODS RECEIPT ITEMS
+          // ============================================================
+
+          GoodsReceiptItems =
+              goodsReceiptItems
+                  .Select(x =>
+                      new SellerCustomerGoodsReceiptItemResponse
+                      {
+                          GoodsReceiptItemId =
+                              x.GoodsReceiptItemId,
+
+                          ProductId =
+                              x.ProductId,
+
+                          ReceivedQuantity =
+                              x.ReceivedQuantity,
+
+                          GoodsReceiptNoteId =
+                              x.GoodsReceiptNoteId,
+
+                          SellerId =
+                              x.SellerId,
+
+                          CustomerId =
+                              x.CustomerId,
+
+                          Quantity =
+                              x.ReceivedQuantity,
+
+                          AcceptedQuantity =
+                              x.AcceptedQuantity,
+
+                          RejectedQuantity =
+                              x.RejectedQuantity,
+
+                          Remarks =
+                              x.Remarks,
+
+                          CreatedDate = null
+                      })
+                  .ToList(),
+
+
+          // ============================================================
+          // GOODS RECEIPT NOTES
+          // ============================================================
+
+          GoodsReceiptNotes =
+              goodsReceiptNotes
+                  .Select(x =>
+                      new SellerCustomerGoodsReceiptNoteResponse
+                      {
+                          GoodsReceiptNoteId =
+                              x.GoodsReceiptNoteId,
+
+                          SellerId =
+                              x.SellerId,
+
+                          CustomerId =
+                              x.CustomerId,
+
+                          PurchaseOrderId =
+                              x.PurchaseOrderId,
+
+                          PurchaseOrderNumber =
+                              x.PurchaseOrderNumber,
+
+                          GRNNumber =
+                              x.GRNNumber,
+
+                          ReceiptDate =
+                              x.ReceiptDate,
+
+                          Status =
+                              x.Status,
+
+                          GRNStatus =
+                              x.GRNStatus,
+
+                          Remarks =
+                              x.Remarks,
+
+                          WarehouseId =
+                              x.WarehouseId,
+
+                          WarehouseCode =
+                              x.WarehouseCode,
+
+                          FacilityCode =
+                              x.FacilityCode,
+
+                          LocationCode =
+                              x.LocationCode,
+
+                          VendorCode =
+                              x.VendorCode,
+
+                          VendorName =
+                              x.VendorName,
+
+                          TotalQuantity =
+                              x.TotalQuantity,
+
+                          ReceivedQuantity =
+                              x.ReceivedQuantity,
+
+                          AcceptedQuantity =
+                              x.AcceptedQuantity,
+
+                          RejectedQuantity =
+                              x.RejectedQuantity,
+
+                          TotalAmount =
+                              x.TotalAmount,
+
+                          IsQCRequired =
+                              x.IsQCRequired,
+
+                          IsQCDone =
+                              x.IsQCDone,
+
+                          CreatedDate =
+                              x.CreatedDate,
+
+                          UpdatedDate =
+                              x.UpdatedDate,
+
+                          CreatedBy =
+                              x.CreatedBy
+                      })
+                  .ToList(),
+
+
+          // ============================================================
+          // NOTIFICATIONS
+          // ============================================================
+
+          Notifications =
+              notifications
+                  .Select(x =>
+                      new SellerCustomerNotificationResponse
+                      {
+                          NotificationId =
+                              x.NotificationId,
+
+                          SellerId =
+                              x.SellerId,
+
+                          CustomerId =
+                              x.CustomerId ?? 0,
+
+                          NotificationType = null,
+
+                          Title =
+                              x.Title,
+
+                          Message =
+                              x.Message,
+
+                          IsRead =
+                              x.IsRead,
+
+                          ReadDate = null,
+
+                          CreatedDate =
+                              x.CreatedDate
+                      })
+                  .ToList(),
+
+
+          // ============================================================
+          // ORDER STATUS HISTORY
+          // ============================================================
+
+          OrderStatusHistories =
+              orderStatusHistories
+                  .Select(x =>
+                      new SellerCustomerOrderStatusHistoryResponse
+                      {
+                          OrderStatusHistoryId =
+                              x.OrderStatusHistoryId,
+
+                          SellerId =
+                              x.SellerId,
+
+                          CustomerId =
+                              x.CustomerId,
+
+                          OrderId =
+                              x.OrderId,
+
+                          Status =
+                              x.Status,
+
+                          ChangedOn =
+                              x.ChangedOn,
+
+                          SalesOrderId = null,
+
+                          PreviousStatus = null,
+                          NewStatus = null,
+
+                          Remarks =
+                              x.Remarks,
+
+                          StatusDate =
+                              x.ChangedOn,
+
+                          CreatedDate =
+                              x.Timestamp
+                      })
+                  .ToList(),
+
+
+          // ============================================================
+          // PAYMENTS
+          // ============================================================
+
+          Payments =
+              payments
+                  .Select(x =>
+                      new SellerCustomerPaymentResponse
+                      {
+                          PaymentId =
+                              x.PaymentId,
+
+                          SellerId =
+                              x.SellerId,
+
+                          CustomerId =
+                              x.CustomerId,
+
+                          SalesOrderId = null,
+                          SalesInvoiceId = null,
+
+                          Amount =
+                              x.Amount ?? 0m,
+
+                          OrderId =
+                              x.OrderId,
+
+                          TransactionId =
+                              x.TransactionId,
+
+                          PaymentMethod =
+                              x.PaymentMethod,
+
+                          PaymentStatus =
+                              x.PaymentStatus,
+
+                          PaymentDate =
+                              x.PaymentDate,
+
+                          TransactionReference = null,
+                          Remarks = null,
+
+                          CreatedDate = null,
+
+                          UpdatedDate =
+                              x.UpdatedDate
+                      })
+                  .ToList(),
+
+
+          // ============================================================
+          // PURCHASE ORDERS
+          // ============================================================
+
+          PurchaseOrders =
+              purchaseOrders
+                  .Select(x =>
+                      new SellerCustomerPurchaseOrderResponse
+                      {
+                          PurchaseOrderId =
+                              x.PurchaseOrderId,
+
+                          SellerId =
+                              x.SellerId,
+
+                          CustomerId =
+                              x.CustomerId,
+
+                          SupplierId =
+                              x.SupplierId,
+
+                          WarehouseId =
+                              x.WarehouseId,
+
+                          OrderNumber =
+                              x.PurchaseOrderNumber,
+
+                          PurchaseOrderNumber =
+                              x.PurchaseOrderNumber,
+
+                          PurchaseOrderCode =
+                              x.PurchaseOrderCode,
+
+                          OrderDate =
+                              x.OrderDate,
+
+                          ExpectedDeliveryDate =
+                              x.ExpectedDeliveryDate,
+
+                          ReceiptDate =
+                              x.ReceiptDate,
+
+                          Status =
+                              x.Status,
+
+                          POStatus =
+                              x.POStatus,
+
+                          ApprovalStatus =
+                              x.ApprovalStatus,
+
+                          TotalAmount =
+                              x.TotalAmount,
+
+                          SubTotal =
+                              x.SubTotal,
+
+                          TaxAmount =
+                              x.TaxAmount,
+
+                          Currency =
+                              x.CurrencyCode,
+
+                          CurrencyCode =
+                              x.CurrencyCode,
+
+                          Remarks =
+                              x.Remarks,
+
+                          FacilityCode =
+                              x.FacilityCode,
+
+                          VendorCode =
+                              x.VendorCode,
+
+                          VendorName =
+                              x.VendorName,
+
+                          ChannelCode =
+                              x.ChannelCode,
+
+                          TotalQuantity =
+                              x.TotalQuantity,
+
+                          ReceivedQuantity =
+                              x.ReceivedQuantity,
+
+                          PendingQuantity =
+                              x.PendingQuantity,
+
+                          CreatedDate =
+                              x.CreatedDate,
+
+                          UpdatedDate =
+                              x.UpdatedDate,
+
+                          CreatedBy =
+                              x.CreatedBy
+                      })
+                  .ToList(),
+
+
+          // ============================================================
+          // PURCHASE ORDER ITEMS
+          // ============================================================
+
+          PurchaseOrderItems =
+              purchaseOrderItems
+                  .Select(x =>
+                      new SellerCustomerPurchaseOrderItemResponse
+                      {
+                          PurchaseOrderItemId =
+                              x.PurchaseOrderItemId,
+
+                          PurchaseOrderId =
+                              x.PurchaseOrderId,
+
+                          SellerId =
+                              x.SellerId,
+
+                          CustomerId =
+                              x.CustomerId,
+
+                          ProductId =
+                              x.ProductId,
+
+                          Quantity =
+                              x.Quantity,
+
+                          UnitPrice =
+                              x.UnitPrice,
+
+                          Discount =
+                              x.Discount,
+
+                          TaxAmount =
+                              x.TaxAmount,
+
+                          TotalAmount =
+                              x.TotalAmount,
+
+                          Remarks = null,
+
+                          CreatedDate = null
+                      })
+                  .ToList(),
+
+
+          // ============================================================
+          // PURCHASE RETURNS
+          // ============================================================
+
+          PurchaseReturns =
+              purchaseReturns
+                  .Select(x =>
+                      new SellerCustomerPurchaseReturnResponse
+                      {
+                          PurchaseReturnId =
+                              x.PurchaseReturnId,
+
+                          SellerId =
+                              x.SellerId,
+
+                          CustomerId =
+                              x.CustomerId,
+
+                          PurchaseOrderId =
+                              x.PurchaseOrderId,
+
+                          GoodsReceiptNoteId =
+                              x.GoodsReceiptNoteId,
+
+                          SupplierId =
+                              x.SupplierId,
+
+                          PurchaseReturnNumber =
+                              x.PurchaseReturnNumber,
+
+                          TotalAmount =
+                              x.TotalAmount ?? 0m,
+
+                          ReturnReason =
+                              x.Reason,
+
+                          Status =
+                              x.Status,
+
+                          ReturnDate =
+                              x.ReturnDate,
+
+                          CreatedDate =
+                              x.CreatedDate,
+
+                          UpdatedDate =
+                              x.UpdatedDate
+                      })
+                  .ToList(),
+
+
+          // ============================================================
+          // REVIEWS
+          // ============================================================
+
+          Reviews =
+              reviews
+                  .Select(x =>
+                      new SellerCustomerReviewResponse
+                      {
+                          ReviewId =
+                              x.ReviewId,
+
+                          SellerId =
+                              x.SellerId,
+
+                          CustomerId =
+                              x.CustomerId,
+
+                          ProductId =
+                              x.ProductId,
+
+                          SalesOrderId = null,
+
+                          Rating =
+                              x.Rating,
+
+                          ReviewText =
+                              x.ReviewText,
+
+                          IsApproved =
+                              string.Equals(
+                                  x.Status,
+                                  "APPROVED",
+                                  StringComparison.OrdinalIgnoreCase),
+
+                          ReviewDate =
+                              x.CreatedDate,
+
+                          CreatedDate =
+                              x.CreatedDate,
+
+                          UpdatedDate = null
+                      })
+                  .ToList(),
+
+
+          // ============================================================
+          // SALES ORDERS
+          // ============================================================
+
+          SalesOrders =
+              salesOrders
+                  .Select(x =>
+                      new SellerCustomerSalesOrderResponse
+                      {
+                          SalesOrderId =
+                              x.SalesOrderId,
+
+                          SellerId =
+                              x.SellerId,
+
+                          CustomerId =
+                              x.CustomerId,
+
+                          SalesOrderNumber =
+                              x.SalesOrderNumber ?? string.Empty,
+
+
+                          // ------------------------------------------------
+                          // UNIWARE / CHANNEL
+                          // ------------------------------------------------
+
+                          SalesOrderCode =
+                              x.SalesOrderCode,
+
+                          DisplayOrderCode =
+                              x.DisplayOrderCode,
+
+                          ChannelCode =
+                              x.ChannelCode,
+
+                          FacilityCode =
+                              x.FacilityCode,
+
+                          UniwareFacilityCode =
+                              x.UniwareFacilityCode,
+
+                          CustomerCode =
+                              x.CustomerCode,
+
+                          CustomerName =
+                              x.CustomerName,
+
+                          OrderType =
+                              x.Type,
+
+                          CurrencyCode =
+                              x.CurrencyCode,
+
+
+                          // ------------------------------------------------
+                          // DATES / STATUS
+                          // ------------------------------------------------
+
+                          OrderDate =
+                              x.OrderDate ?? DateTime.UtcNow,
+
+                          ChannelCreatedDate =
+                              x.ChannelCreatedDate,
+
+                          ExpectedDeliveryDate =
+                              x.ExpectedDeliveryDate,
+
+                          Status =
+                              x.Status ?? string.Empty,
+
+                          StatusCode =
+                              x.StatusCode,
+
+                          FulfillmentStatus =
+                              x.FulfillmentStatus,
+
+
+                          // ------------------------------------------------
+                          // FINANCIAL
+                          // ------------------------------------------------
+
+                          TotalAmount =
+                              x.TotalAmount ?? 0m,
+
+                          SubTotal =
+                              x.SubTotal,
+
+                          TaxAmount =
+                              x.TaxAmount,
+
+                          DiscountAmount =
+                              x.DiscountAmount,
+
+                          ShippingCharges =
+                              x.ShippingCharges,
+
+                          CodAmount =
+                              x.CodAmount,
+
+                          TotalQuantity =
+                              x.TotalQuantity,
+
+                          TotalItems =
+                              x.TotalItems,
+
+
+                          // ------------------------------------------------
+                          // GENERAL
+                          // ------------------------------------------------
+
+                          Remarks =
+                              x.Remarks,
+
+                          CreatedDate =
+                              x.CreatedDate ?? DateTime.UtcNow,
+
+                          UpdatedDate =
+                              x.UpdatedDate,
+
+
+                          // ------------------------------------------------
+                          // ADDRESS
+                          // ------------------------------------------------
+
+                          ShippingAddress =
+                              x.ShippingAddress,
+
+                          BillingAddress =
+                              x.BillingAddress,
+
+                          StateCode =
+                              x.StateCode,
+
+                          CountryCode =
+                              x.CountryCode,
+
+
+                          // ------------------------------------------------
+                          // TOPAZ - COMPANY
+                          // ------------------------------------------------
+
+                          Company_Name =
+                              x.Company_Name,
+
+                          Company_Address =
+                              x.Company_Address,
+
+                          Company_City =
+                              x.Company_City,
+
+                          Company_State =
+                              x.Company_State,
+
+                          Company_PINCode =
+                              x.Company_PINCode,
+
+                          Phone_no =
+                              x.Phone_no,
+
+                          Email_Address =
+                              x.Email_Address,
+
+                          gstin =
+                              x.GSTIN,
+
+                          Company_PAN = null,
+                          Company_CIN = null,
+
+
+                          // ------------------------------------------------
+                          // TOPAZ - ORDER / DELIVERY
+                          // ------------------------------------------------
+
+                          SupplierRef =
+                              x.SupplierRef,
+
+                          BuyersOrderNo =
+                              x.BuyersOrderNo,
+
+                          BuyersOrderDate =
+                              x.BuyersOrderDate,
+
+                          DespatchedThrough =
+                              x.DespatchedThrough,
+
+                          Destination =
+                              x.Destination,
+
+                          TermsOfDelivery =
+                              x.TermsOfDelivery,
+
+                          RoundOff =
+                              x.RoundOff,
+
+                          TotalInWords =
+                              x.TotalInWords,
+
+                          DeliveryNote =
+                              x.DeliveryNote,
+
+                          ModeorTermsOfPayment =
+                              x.ModeorTermsOfPayment,
+
+                          OtherReferences =
+                              x.OtherReferences,
+
+                          DespatchedDocumentNumber =
+                              x.DespatchedDocumentNumber,
+
+                          DeliveryNoteDate =
+                              x.DeliveryNoteDate,
+
+                          EWayBillNumber =
+                              x.EWayBillNumber,
+
+                          VehicleNo =
+                              x.VehicleNo,
+
+                          Distance =
+                              x.Distance,
+
+                          TYear =
+                              x.TYear,
+
+                          Transport =
+                              x.Transport,
+
+                          TransporterName =
+                              x.TransporterName,
+
+                          TransporterID =
+                              x.TransporterID,
+
+                          TransporterDocNo =
+                              x.TransporterDocNo,
+
+                          TransportMode =
+                              x.TransportMode,
+
+
+                          // ------------------------------------------------
+                          // IDS
+                          // ------------------------------------------------
+
+                          Pid =
+                              x.Pid,
+
+                          KeyID =
+                              x.KeyID,
+
+
+                          // ------------------------------------------------
+                          // SALES ORDER ITEMS
+                          // ------------------------------------------------
+
+                          Items =
+                              x.SaleOrderItems
+                                  .Select(item =>
+                                      new SellerCustomerSalesOrderItemResponse
+                                      {
+                                          SalesOrderItemId =
+                                              item.SalesOrderItemId,
+
+                                          SalesOrderId =
+                                              item.SalesOrderId,
+
+                                          ProductId =
+                                              item.ProductId,
+
+                                          Sku =
+                                              item.Sku,
+
+                                          ChannelSkuCode =
+                                              item.ChannelSkuCode,
+
+                                          ChannelProductId =
+                                              item.ChannelProductId,
+
+                                          VendorSkuCode =
+                                              item.VendorSkuCode,
+
+                                          ChannelProductName =
+                                              item.ChannelProductName,
+
+                                          FacilityCode =
+                                              item.FacilityCode,
+
+                                          Status =
+                                              item.Status,
+
+                                          FulfillmentStatus =
+                                              item.FulfillmentStatus,
+
+                                          Mrp =
+                                              item.Mrp,
+
+                                          SellingPrice =
+                                              item.SellingPrice,
+
+                                          ChannelSaleOrderItemCode =
+                                              item.ChannelSaleOrderItemCode,
+
+                                          PacketNumber =
+                                              item.PacketNumber,
+
+                                          ItemTypeCode = null,
+
+                                          ProductName =
+                                              item.ProductName,
+
+                                          DisplayName =
+                                              item.DisplayName,
+
+                                          WarehouseId = null,
+
+                                          TransferPrice = null,
+
+                                          Weight = null,
+
+                                          Quantity =
+                                              item.Quantity,
+
+                                          UnitPrice =
+                                              item.UnitPrice,
+
+                                          Discount =
+                                              item.Discount,
+
+                                          DiscountPer =
+                                              (item.Quantity *
+                                               item.UnitPrice) > 0
+                                                  ? (item.Discount /
+                                                     (item.Quantity *
+                                                      item.UnitPrice)) * 100
+                                                  : 0,
+
+                                          TaxAmount =
+                                              item.TaxAmount,
+
+                                          TotalAmount =
+                                              item.TotalAmount,
+
+                                          SubTotal =
+                                              item.SubTotal,
+
+                                          Description =
+                                              item.Description,
+
+                                          Uom =
+                                              item.Uom,
+
+                                          Hsncode =
+                                              item.Hsncode,
+
+                                          GstPer =
+                                              item.GstPer,
+
+                                          SgstPer =
+                                              item.SgstPer,
+
+                                          SgstAmount =
+                                              item.SgstAmount,
+
+                                          CgstPer =
+                                              item.CgstPer,
+
+                                          CgstAmount =
+                                              item.CgstAmount,
+
+                                          IgstPer =
+                                              item.IgstPer,
+
+                                          IgstAmount =
+                                              item.IgstAmount,
+
+                                          CessPer = null,
+                                          CessAmount = null,
+
+                                          AfterGSTAmount =
+                                              item.AfterGSTAmount,
+
+                                          QuantityAmount =
+                                              item.QuantityAmount,
+
+                                          TotalRateBeforeDiscount =
+                                              item.TotalRateBeforeDiscount,
+
+                                          Rate =
+                                              item.UnitPrice,
+
+                                          TaxType =
+                                              item.TaxType,
+
+                                          BrandXID =
+                                              item.BrandXID,
+
+                                          Remarks =
+                                              item.Remarks,
+
+                                          Pid =
+                                              item.Pid,
+
+                                          InvoiceXID =
+                                              item.InvoiceXID,
+
+                                          ItemXID =
+                                              item.ItemXID,
+
+                                          BatchNo = null,
+
+                                          ExpiryDate =
+                                              item.ExpDate
+                                      })
+                                  .ToList()
+                      })
+                  .ToList(),
+
+
+          // ============================================================
+          // SALES ORDER ITEMS - FLAT COLLECTION
+          // ============================================================
+          // This is the important addition.
+          // It uses the separately queried salesOrderItems list.
+          // ============================================================
+
+          SalesOrderItems =
+              salesOrderItems
+                  .Select(item =>
+                      new SellerCustomerSalesOrderItemResponse
+                      {
+                          SalesOrderItemId =
+                              item.SalesOrderItemId,
+
+                          SalesOrderId =
+                              item.SalesOrderId,
+
+                          ProductId =
+                              item.ProductId,
+
+                          Sku =
+                              item.Sku,
+
+                          ChannelSkuCode =
+                              item.ChannelSkuCode,
+
+                          ChannelProductId =
+                              item.ChannelProductId,
+
+                          VendorSkuCode =
+                              item.VendorSkuCode,
+
+                          ChannelProductName =
+                              item.ChannelProductName,
+
+                          FacilityCode =
+                              item.FacilityCode,
+
+                          Status =
+                              item.Status,
+
+                          FulfillmentStatus =
+                              item.FulfillmentStatus,
+
+                          Mrp =
+                              item.Mrp,
+
+                          SellingPrice =
+                              item.SellingPrice,
+
+                          ChannelSaleOrderItemCode =
+                              item.ChannelSaleOrderItemCode,
+
+                          PacketNumber =
+                              item.PacketNumber,
+
+                          ItemTypeCode = null,
+
+                          ProductName =
+                              item.ProductName,
+
+                          DisplayName =
+                              item.DisplayName,
+
+                          WarehouseId = null,
+
+                          TransferPrice = null,
+
+                          Weight = null,
+
+                          Quantity =
+                              item.Quantity,
+
+                          UnitPrice =
+                              item.UnitPrice,
+
+                          Discount =
+                              item.Discount,
+
+                          DiscountPer =
+                              (item.Quantity *
+                               item.UnitPrice) > 0
+                                  ? (item.Discount /
+                                     (item.Quantity *
+                                      item.UnitPrice)) * 100
+                                  : 0,
+
+                          TaxAmount =
+                              item.TaxAmount,
+
+                          TotalAmount =
+                              item.TotalAmount,
+
+                          SubTotal =
+                              item.SubTotal,
+
+                          Description =
+                              item.Description,
+
+                          Uom =
+                              item.Uom,
+
+                          Hsncode =
+                              item.Hsncode,
+
+                          GstPer =
+                              item.GstPer,
+
+                          SgstPer =
+                              item.SgstPer,
+
+                          SgstAmount =
+                              item.SgstAmount,
+
+                          CgstPer =
+                              item.CgstPer,
+
+                          CgstAmount =
+                              item.CgstAmount,
+
+                          IgstPer =
+                              item.IgstPer,
+
+                          IgstAmount =
+                              item.IgstAmount,
+
+                          CessPer = null,
+                          CessAmount = null,
+
+                          AfterGSTAmount =
+                              item.AfterGSTAmount,
+
+                          QuantityAmount =
+                              item.QuantityAmount,
+
+                          TotalRateBeforeDiscount =
+                              item.TotalRateBeforeDiscount,
+
+                          Rate =
+                              item.UnitPrice,
+
+                          TaxType =
+                              item.TaxType,
+
+                          BrandXID =
+                              item.BrandXID,
+
+                          Remarks =
+                              item.Remarks,
+
+                          Pid =
+                              item.Pid,
+
+                          InvoiceXID =
+                              item.InvoiceXID,
+
+                          ItemXID =
+                              item.ItemXID,
+
+                          BatchNo = null,
+
+                          ExpiryDate =
+                              item.ExpDate
+                      })
+                  .ToList(),
+
+          SalesInvoices =
+    salesInvoices
+        .Select(x =>
+            new SellerCustomerSalesInvoiceResponse
             {
-                ProductPriceId = p.ProductPriceId,
-                ProductId = p.ProductId,
-                SellerId = p.SellerId,
-                CustomerId = p.CustomerId,
-                PriceType = p.PriceType,
-                Price = p.Price,
-                Currency = p.Currency,
-                EffectiveFrom = p.EffectiveFrom,
-                EffectiveTo = p.EffectiveTo,
-                IsActive = p.IsActive,
-                CreatedDate = p.CreatedDate,
-                UpdatedDate = p.UpdatedDate,
-                // NEW - Respective to ProductPrices table
-                Mrp = p.Mrp, // 5000 - Mandatory for Flipkart
-                NotionalValueAmount = p.NotionalValueAmount,
-                NotionalValueCurrency = p.NotionalValueCurrency ?? "INR",
+                SalesInvoiceId = x.SalesInvoiceId,
 
-                // ADD THESE FOR UNIWARE
-                Sku = p.SKU,
-                Barcode = p.Barcode,
-                WarehouseCode = p.WarehouseCode,
-                FacilityCode = p.FacilityCode,
-                UniwareFacilityCode = p.UniwareFacilityCode,
-                ChannelCode = p.ChannelCode,
-                UniwareChannelCode = p.UniwareChannelCode,
-                ChannelPrice = p.ChannelPrice,
-                BatchId = p.BatchId,
-                WarehouseId = p.WarehouseId,
-                IsFacilityCodeMatch = p.IsFacilityCodeMatch,
-                IsChannelCodeMatch = p.IsChannelCodeMatch,
-                // Computed for Uniware
-                FacilityCodeForUniware = p.IsFacilityCodeMatch == true ? p.UniwareFacilityCode : p.WarehouseCode,
-                ChannelCodeForUniware = p.IsChannelCodeMatch == true ? p.UniwareChannelCode : p.ChannelCode
+                SellerId = x.SellerId,
+                CustomerId = x.CustomerId,
+
+                SalesOrderId = x.SalesOrderId,
+
+                InvoiceNumber =
+                    x.InvoiceNumber ?? string.Empty,
+
+                InvoiceDate =
+                    x.InvoiceDate,
+
+                // These are decimal, not decimal?
+                SubTotal =
+                    x.SubTotal,
+
+                DiscountAmount =
+                    x.DiscountAmount,
+
+                TaxAmount =
+                    x.TaxAmount,
+
+                TotalAmount =
+                    x.TotalAmount,
+
+                PaidAmount =
+                    x.PaidAmount,
+
+                BalanceAmount =
+                    x.BalanceAmount,
+
+                PaymentStatus =
+                    x.PaymentStatus,
+
+                Status =
+                    x.Status,
+
+                Remarks =
+                    x.Remarks,
+
+                CreatedDate =
+                    x.CreatedDate,
+
+                UpdatedDate =
+                    x.UpdatedDate,
+
+                // Items will be populated separately
+                Items = new List<SellerCustomerSalesInvoiceItemResponse>()
+            })
+        .ToList(),
+
+          // ============================================================
+          // SHIPMENTS
+          // ============================================================
+
+          Shipments =
+              shipments
+                  .Select(x =>
+                      new SellerCustomerShipmentResponse
+                      {
+                          ShipmentId =
+                              x.ShipmentId,
+
+                          SellerId =
+                              x.SellerId,
+
+                          CustomerId =
+                              x.CustomerId,
+
+                          SalesOrderId =
+                              x.SalesOrderId,
+
+                          DeliveryChallanId =
+                              x.DeliveryChallanId,
+
+                          ShipmentNumber =
+                              x.ShipmentNumber,
+
+                          ReturnDate =
+                              x.ReturnDate,
+
+                          OrderId =
+                              x.OrderId,
+
+                          CourierName =
+                              x.CourierName,
+
+                          TrackingNumber =
+                              x.TrackingNumber,
+
+                          ShipmentDate =
+                              x.ShipmentDate,
+
+                          DeliveryDate =
+                              x.DeliveryDate,
+
+                          ShipmentStatus =
+                              x.ShipmentStatus,
+
+                          CarrierName = null,
+
+                          Status =
+                              x.Status,
+
+                          ExpectedDeliveryDate =
+                              x.ExpectedDeliveryDate,
+
+                          ActualDeliveryDate =
+                              x.ActualDeliveryDate,
+
+                          SalesOrderNumber =
+                              x.SalesOrderNumber,
+
+                          DisplayOrderCode =
+                              x.DisplayOrderCode,
+
+                          ShippingPackageCode =
+                              x.ShippingPackageCode,
+
+                          ShippingPackageNumber =
+                              x.ShippingPackageNumber,
+
+                          ChannelCode =
+                              x.ChannelCode,
+
+                          FacilityCode =
+                              x.FacilityCode,
+
+                          UniwareFacilityCode =
+                              x.UniwareFacilityCode,
+
+                          CourierCode =
+                              x.CourierCode,
+
+                          ShippingMethodCode =
+                              x.ShippingMethodCode,
+
+                          AwbNumber =
+                              x.AwbNumber,
+
+                          CourierTrackingUrl =
+                              x.CourierTrackingUrl,
+
+                          ShippingLabelUrl =
+                              x.ShippingLabelUrl,
+
+                          InvoiceUrl =
+                              x.InvoiceUrl,
+
+                          IsCod =
+                              x.IsCod,
+
+                          CodAmount =
+                              x.CodAmount,
+
+                          ShippingPackageStatus =
+                              x.ShippingPackageStatus,
+
+                          Length =
+                              x.Length,
+
+                          Width =
+                              x.Width,
+
+                          Height =
+                              x.Height,
+
+                          Weight =
+                              x.Weight,
+
+                          DimUnit =
+                              x.DimUnit,
+
+                          WeightUnit =
+                              x.WeightUnit,
+
+                          IsShipped =
+                              x.IsShipped,
+
+                          IsDelivered =
+                              x.IsDelivered,
+
+                          ShippingAddress =
+                              x.ShippingAddress,
+
+                          CreatedDate =
+                              x.CreatedDate,
+
+                          UpdatedDate =
+                              x.UpdatedDate,
+
+                          VehicleNo =
+                              x.VehicleNo,
+
+                          TransporterName =
+                              x.TransporterName,
+
+                          TransporterID =
+                              x.TransporterID,
+
+                          TransporterDocNo =
+                              x.TransporterDocNo,
+
+                          TransportMode =
+                              x.TransportMode,
+
+                          Distance =
+                              x.Distance,
+
+                          EWayBillNumber =
+                              x.EWayBillNumber,
+
+                          ShippingCharges =
+                              x.ShippingCharges,
+
+                          TotalAmount =
+                              x.TotalAmount,
+
+                          CourierStatus =
+                              x.CourierStatus,
+
+                          StatusRemarks =
+                              x.StatusRemarks,
+
+                          CreatedBy =
+                              x.CreatedBy,
+
+                          UpdatedBy =
+                              x.UpdatedBy
+                      })
+                  .ToList(),
+
+
+          // ============================================================
+          // WISHLISTS
+          // ============================================================
+
+          Wishlists =
+              wishlists
+                  .Select(x =>
+                      new SellerCustomerWishlistResponse
+                      {
+                          WishlistId =
+                              x.WishlistId,
+
+                          SellerId =
+                              x.SellerId,
+
+                          CustomerId =
+                              x.CustomerId,
+
+                          WishlistName =
+                              x.WishlistName,
+
+                          IsActive =
+                              x.IsActive,
+
+                          CreatedDate =
+                              x.CreatedDate,
+
+                          UpdatedDate =
+                              x.UpdatedDate
+                      })
+                  .ToList(),
+
+
+          // ============================================================
+          // WISHLIST ITEMS
+          // ============================================================
+
+          WishlistItems =
+              wishlistItems
+                  .Select(x =>
+                      new SellerCustomerWishlistItemResponse
+                      {
+                          WishlistItemId =
+                              x.WishlistItemId,
+
+                          WishlistId =
+                              x.WishlistId,
+
+                          SellerId =
+                              x.SellerId,
+
+                          CustomerId =
+                              x.CustomerId,
+
+                          ProductId =
+                              x.ProductId,
+
+                          AddedDate = null,
+
+                          CreatedDate =
+                              x.CreatedDate
+                      })
+                  .ToList(),
+
+
+          // ============================================================
+          // MARKETPLACE ORDERS
+          // ============================================================
+
+          MarketplaceOrders =
+              marketplaceOrders
+                  .Select(x =>
+                      new SellerCustomerMarketplaceOrderResponse
+                      {
+                          MarketplaceOrderId =
+                              x.MarketplaceOrderId,
+
+                          MarketplaceAccountId =
+                              x.MarketplaceAccountId,
+
+                          MarketplaceOrderNumber =
+                              x.MarketplaceOrderNumber,
+
+                          ExternalOrderId =
+                              x.ExternalOrderId,
+
+                          SellerOrderNumber =
+                              x.SellerOrderNumber,
+
+                          OrderDate =
+                              x.OrderDate,
+
+                          OrderStatus =
+                              x.OrderStatus,
+
+                          FulfillmentChannel =
+                              x.FulfillmentChannel,
+
+                          Currency =
+                              x.Currency,
+
+                          TotalAmount =
+                              x.TotalAmount,
+
+                          BuyerName =
+                              x.BuyerName,
+
+                          BuyerEmail =
+                              x.BuyerEmail,
+
+                          PurchaseOrderNumber =
+                              x.PurchaseOrderNumber,
+
+                          LastSyncDate =
+                              x.LastSyncDate,
+
+                          CreatedDate =
+                              x.CreatedDate,
+
+                          UpdatedDate =
+                              x.UpdatedDate
+                      })
+                  .ToList(),
+
+
+          // ============================================================
+          // MARKETPLACE ORDER ITEMS
+          // ============================================================
+
+          MarketplaceOrderItems =
+              marketplaceOrderItems
+                  .Select(x =>
+                      new SellerCustomerMarketplaceOrderItemResponse
+                      {
+                          MarketplaceOrderItemId =
+                              x.MarketplaceOrderItemId,
+
+                          MarketplaceOrderId =
+                              x.MarketplaceOrderId,
+
+                          MarketplaceListingId =
+                              x.MarketplaceListingId,
+
+                          ProductId =
+                              x.ProductId,
+
+                          SellerId =
+                              x.SellerId,
+
+                          CustomerId =
+                              x.CustomerId,
+
+                          MarketplaceOrderItemNumber =
+                              x.MarketplaceOrderItemNumber,
+
+                          ExternalOrderItemId =
+                              x.ExternalOrderItemId,
+
+                          ProductTitle =
+                              x.ProductTitle,
+
+                          SKU =
+                              x.SKU,
+
+                          Quantity =
+                              x.Quantity,
+
+                          UnitPrice =
+                              x.UnitPrice,
+
+                          TaxAmount =
+                              x.TaxAmount,
+
+                          ShippingAmount =
+                              x.ShippingAmount,
+
+                          DiscountAmount =
+                              x.DiscountAmount,
+
+                          TotalAmount =
+                              x.TotalAmount,
+
+                          Status =
+                              x.Status,
+
+                          CreatedDate =
+                              x.CreatedDate
+                      })
+                  .ToList(),
+
+
+          // ============================================================
+          // MARKETPLACE RETURNS
+          // ============================================================
+
+          MarketplaceReturns =
+              marketplaceReturns
+                  .Select(x =>
+                      new SellerCustomerMarketplaceReturnResponse
+                      {
+                          MarketplaceReturnId =
+                              x.MarketplaceReturnId,
+
+                          MarketplaceOrderItemId =
+                              x.MarketplaceOrderItemId,
+
+                          SellerId =
+                              x.SellerId,
+
+                          CustomerId =
+                              x.CustomerId,
+
+                          ProductId =
+                              x.ProductId,
+
+                          SKU =
+                              x.SKU,
+
+                          ReturnNumber =
+                              x.ReturnNumber,
+
+                          ReturnReason =
+                              x.ReturnReason,
+
+                          ReturnStatus =
+                              x.ReturnStatus,
+
+                          QuantityReturned =
+                              x.QuantityReturned,
+
+                          RefundAmount =
+                              x.RefundAmount,
+
+                          ReturnDate =
+                              x.ReturnDate,
+
+                          CreatedDate =
+                              x.CreatedDate,
+
+                          UpdatedDate =
+                              x.UpdatedDate
+                      })
+                  .ToList()
+      };
+
+
+            // ============================================================
+            // INVENTORIES
+            // ============================================================
+            response.Inventories =
+      inventories
+          .Select(x =>
+              new SellerCustomerInventoryResponse
+              {
+                  ProductInventoryId = x.ProductInventoryId,
+
+                  SellerId = x.SellerId,
+
+                  CustomerId = x.CustomerId,
+
+                  ProductId = x.ProductId,
+
+                  WarehouseId = x.WarehouseId,
+
+                  LocationId = x.LocationId,
+
+                  Quantity = x.Quantity ?? 0m,
+
+                  ReservedQuantity = x.ReservedQuantity ?? 0m,
+
+                  DamagedQuantity = x.DamagedQuantity ?? 0m,
+
+                  ReorderLevel = x.ReorderLevel ?? 0m,
+
+                  ReorderQuantity = x.ReorderQuantity ?? 0m,
+
+                  LastStockUpdate = x.LastStockUpdate,
+
+                  CreatedDate = x.CreatedDate,
+
+                  UpdatedDate = x.UpdatedDate,
+
+                  SKU = x.SKU,
+
+                  Barcode = x.Barcode,
+
+                  WarehouseCode = x.WarehouseCode,
+
+                  FacilityCode = x.FacilityCode,
+
+                  UniwareFacilityCode = x.UniwareFacilityCode,
+
+                  IsFacilityCodeMatch = x.IsFacilityCodeMatch,
+
+                  ChannelCode = x.ChannelCode,
+
+                  UniwareChannelCode = x.UniwareChannelCode,
+
+                  IsChannelCodeMatch = x.IsChannelCodeMatch,
+
+                  LocationCode = x.LocationCode,
+
+                  LocationName = x.LocationName,
+
+                  BatchId = x.BatchId,
+
+                  ChannelPrice = x.ChannelPrice,
+
+                  IsBulkUpload = x.IsBulkUpload ?? false,
+
+                  BulkStatus = x.BulkStatus,
+
+                  AdjustmentType = x.AdjustmentType,
+
+                  AdjustmentQuantity = x.AdjustmentQuantity,
+
+                  SellableQuantity = x.SellableQuantity,
+
+                  Inventory = x.Inventory,
+
+                  ChannelInventory = x.ChannelInventory,
+
+                  ProductName = x.ProductName,
+
+                  IsSyncedToUniware = x.IsSyncedToUniware,
+
+                  UniwareSyncDate = x.UniwareSyncDate,
+
+                  UniwareItemCode = null
+              })
+          .ToList();
+
+            // ============================================================
+            // PRICES
+            // ============================================================
+            response.Prices =
+     prices
+         .Select(x =>
+             new SellerCustomerPriceResponse
+             {
+                 ProductPriceId = x.ProductPriceId,
+
+                 ProductId = x.ProductId,
+
+                 SellerId = x.SellerId,
+
+                 CustomerId = x.CustomerId,
+
+                 PriceType = x.PriceType,
+
+                 Price = x.Price,
+
+                 Currency = x.Currency,
+
+                 EffectiveFrom = x.EffectiveFrom,
+
+                 EffectiveTo = x.EffectiveTo,
+
+                 IsActive = x.IsActive,
+
+                 CreatedDate = x.CreatedDate,
+
+                 UpdatedDate = x.UpdatedDate,
+
+                 Mrp = x.Mrp,
+
+                 NotionalValueAmount = x.NotionalValueAmount,
+
+                 NotionalValueCurrency = x.NotionalValueCurrency,
+
+                 Sku = x.SKU,
+
+                 Barcode = x.Barcode,
+
+                 WarehouseCode = x.WarehouseCode,
+
+                 FacilityCode = x.FacilityCode,
+
+                 UniwareFacilityCode = x.UniwareFacilityCode,
+
+                 ChannelCode = x.ChannelCode,
+
+                 UniwareChannelCode = x.UniwareChannelCode,
+
+                 ChannelPrice = x.ChannelPrice,
+
+                 BatchId = x.BatchId,
+
+                 WarehouseId = x.WarehouseId,
+
+                 IsFacilityCodeMatch = x.IsFacilityCodeMatch,
+
+                 IsChannelCodeMatch = x.IsChannelCodeMatch,
+
+                 FacilityCodeForUniware = null,
+
+                 ChannelCodeForUniware = null
+             })
+         .ToList();
+
+
+            // ============================================================
+            // PRODUCT TYPES
+            // ============================================================
+
+            response.ProductTypes =
+     productTypes
+         .Select(x =>
+             new SellerCustomerProductTypeResponse
+             {
+                 ProductTypeId = x.ProductTypeId,
+
+                 SellerId = x.SellerId,
+
+                 CustomerId = x.CustomerId,
+
+                 ProductTypeName = x.ProductTypeName,
+
+                 Description = x.Description,
+
+                 IsActive = x.IsActive,
+
+                 CreatedDate = x.CreatedDate,
+
+                 UpdatedDate = x.UpdatedDate,
+
+                 ProductTypeCode = x.ProductTypeCode,
+
+                 CategoryId = x.CategoryId,
+
+                 CategoryName = x.CategoryName,
+
+                 HSNCode = x.HSNCode,
+
+                 GSTPercentage = x.GSTPercentage,
+
+                 IsSystemDefined = x.IsSystemDefined,
+
+                 DisplayOrder = x.DisplayOrder,
+
+                 ImageUrl = x.ImageUrl,
+
+                 IconUrl = x.IconUrl,
+
+                 CreatedBy = x.CreatedBy
+             })
+         .ToList();
+
+
+            // ============================================================
+            // CATEGORIES
+            // ============================================================
+            response.Categories =
+         categories
+             .Select(x =>
+                 new SellerCustomerCategoryResponse
+                 {
+                     CategoryId = x.CategoryId,
+
+                     CategoryName = x.CategoryName,
+
+                     ParentCategoryId = x.ParentCategoryId,
+
+                     Description = x.Description,
+
+                     IsActive = x.IsActive,
+
+                     CreatedDate = x.CreatedDate,
+
+                     UpdatedDate = x.UpdatedDate,
+
+                     SellerId = x.SellerId ?? 0,
+
+                     CustomerId = x.CustomerId ?? 0,
+
+                     CategoryCode = x.CategoryCode,
+
+                     ParentCategoryName = x.ParentCategoryName,
+
+                     Level = x.Level,
+
+                     HSNCode = x.HSNCode,
+
+                     GSTPercentage = x.GSTPercentage,
+
+                     IsSystemDefined = x.IsSystemDefined,
+
+                     DisplayOrder = x.DisplayOrder,
+
+                     ImageUrl = x.ImageUrl,
+
+                     IconUrl = x.IconUrl,
+
+                     BannerUrl = x.BannerUrl,
+
+                     MetaTitle = x.MetaTitle,
+
+                     MetaDescription = x.MetaDescription,
+
+                     CreatedBy = x.CreatedBy
+                 })
+             .ToList();
+
+
+            // ============================================================
+            // IMAGES
+            // ============================================================
+
+            response.Images =
+      images
+          .Select(x =>
+              new SellerCustomerImageResponse
+              {
+                  ProductImageId = x.ProductImageId,
+
+                  SellerId = x.SellerId,
+                  CustomerId = x.CustomerId,
+
+                  ProductId = x.ProductId,
+
+                  ImageUrl = x.ImageUrl,
+
+                  DisplayOrder = x.DisplayOrder,
+
+                  IsPrimary = x.IsPrimary,
+
+                  CreatedDate = x.CreatedDate
+              })
+          .ToList();
+
+
+            // ============================================================
+            // ATTRIBUTES
+            // ============================================================
+            response.Attributes =
+                attributes
+                    .Select(x =>
+                        new SellerCustomerAttributeResponse
+                        {
+                            ProductAttributeId = x.ProductAttributeId,
+
+                            ProductId = x.ProductId,
+
+                            SellerId = x.SellerId,
+
+                            CustomerId = x.CustomerId,
+
+                            AttributeName = x.AttributeName,
+
+                            AttributeValue = x.AttributeValue,
+
+                            CreatedDate = x.CreatedDate
+                        })
+                    .ToList();
+
+
+            // ============================================================
+            // STOCK MOVEMENTS
+            // ============================================================
+
+            response.StockMovements =
+             stockMovements
+                 .Select(x =>
+                     new SellerCustomerStockMovementResponse
+                     {
+                         StockMovementId = x.StockMovementId,
+
+                         SellerId = x.SellerId,
+                         CustomerId = x.CustomerId,
+
+                         ProductId = x.ProductId,
+                         WarehouseId = x.WarehouseId,
+
+                         MovementType = x.MovementType,
+
+                         Quantity = x.Quantity ?? 0m,
+
+                         ReferenceTable = x.ReferenceTable,
+                         ReferenceId = x.ReferenceId,
+
+                         MovementDate = x.MovementDate,
+
+                         Remarks = x.Remarks
+                     })
+                 .ToList();
+
+
+            // ============================================================
+            // STOCK LEDGERS
+            // ============================================================
+
+            response.StockLedgers =
+               stockLedgers
+                   .Select(x =>
+                       new SellerCustomerStockLedgerResponse
+                       {
+                           StockLedgerId = x.StockLedgerId,
+
+                           SellerId = x.SellerId,
+                           CustomerId = x.CustomerId,
+
+                           ProductId = x.ProductId,
+                           WarehouseId = x.WarehouseId,
+
+                           TransactionType = x.TransactionType,
+
+                           ReferenceNumber = x.ReferenceNumber,
+
+                           Quantity = x.Quantity,
+
+                           BalanceQuantity = x.BalanceQuantity,
+
+                           Remarks = x.Remarks,
+
+                           TransactionDate = x.TransactionDate,
+
+                           CreatedDate = x.CreatedDate
+                       })
+                   .ToList();
+
+
+            // ============================================================
+            // WAREHOUSES
+            // ============================================================
+
+            response.Warehouses =
+    warehouses
+        .Select(x =>
+            new SellerCustomerWarehouseResponse
+            {
+                WarehouseId = x.WarehouseId,
+                SellerId = x.SellerId,
+                CustomerId = x.CustomerId,
+
+                WarehouseCode = x.WarehouseCode,
+                FacilityCode = x.FacilityCode,
+                UniwareFacilityCode = x.UniwareFacilityCode,
+                WarehouseName = x.WarehouseName,
+                FacilityName = x.FacilityName,
+                FacilityType = x.FacilityType,
+                LocationCode = x.LocationCode,
+
+                AddressLine1 = x.AddressLine1,
+                AddressLine2 = x.AddressLine2,
+                City = x.City,
+                State = x.State,
+                StateCode = x.StateCode,
+                Country = x.Country,
+                CountryCode = x.CountryCode,
+                PostalCode = x.PostalCode,
+
+                ContactPerson = x.ContactPerson,
+                Phone = x.Phone,
+                Email = x.Email,
+
+                GSTNumber = x.GSTNumber,
+                Pan = x.Pan,
+                Arn = x.Arn,
+                TinNo = x.TinNo,
+
+                IsActive = x.IsActive,
+                IsDefault = x.IsDefault,
+                IsQCEnabled = x.IsQCEnabled,
+                IsPutawayEnabled = x.IsPutawayEnabled,
+                ChannelCode = x.ChannelCode,
+
+                IsFacilityCodeMatch = x.IsFacilityCodeMatch,
+                TotalInventory = x.TotalInventory,
+                SellableInventory = x.SellableInventory,
+
+                CreatedDate = x.CreatedDate,
+                UpdatedDate = x.UpdatedDate,
+                CreatedBy = x.CreatedBy
             })
         .ToList();
 
 
-            // =====================================================
-            // PRODUCT TYPES - YOU MISSED 12 FIELDS
-            // =====================================================
-            response.ProductTypes = [.. productTypes.Select(pt => new SellerCustomerProductTypeResponse
-{
-    ProductTypeId = pt.ProductTypeId,
-    SellerId = pt.SellerId,
-    CustomerId = pt.CustomerId,
-    ProductTypeName = pt.ProductTypeName ?? $"TYPE-{pt.ProductTypeId}",
-    ProductTypeCode = pt.ProductTypeCode ?? $"PT-{pt.ProductTypeId:D4}", // YOU MISSED
-    Description = pt.Description,
-    CategoryId = pt.CategoryId, // YOU MISSED
-    CategoryName = pt.Category?.CategoryName?? pt.CategoryName, // YOU MISSED
-    HSNCode = pt.HSNCode, // YOU MISSED - GST mandatory
-    GSTPercentage = pt.GSTPercentage?? 18, // YOU MISSED
-    IsActive = pt.IsActive,
-    IsSystemDefined = pt.IsSystemDefined?? false, // YOU MISSED
-    DisplayOrder = pt.DisplayOrder?? 0, // YOU MISSED
-    ImageUrl = pt.ImageUrl, // YOU MISSED
-    IconUrl = pt.IconUrl, // YOU MISSED
-    CreatedDate = pt.CreatedDate,
-    UpdatedDate = pt.UpdatedDate,
-    CreatedBy = pt.CreatedBy // YOU MISSED
-})];
-
-            // =====================================================
-            // CATEGORIES - YOU MISSED 15 FIELDS - Tree won't build without Code/Level
-            // =====================================================
-            response.Categories = [.. categories.Select(c => new SellerCustomerCategoryResponse
-{
-    CategoryId = c.CategoryId,
-    SellerId = c.SellerId?? 6,// YOU MISSED
-    CustomerId = customerId, // YOU MISSED
-    CategoryName = c.CategoryName,
-    CategoryCode = c.CategoryCode?? $"CAT-{c.CategoryId:D4}", // YOU MISSED - Uniware mandatory
-    ParentCategoryId = c.ParentCategoryId,
-    ParentCategoryName = c.ParentCategory?.CategoryName, // YOU MISSED
-  Level = c.CategoryLevel?? (c.ParentCategoryId == null? 1 : 2),
-    Description = c.Description,
-    HSNCode = c.HSNCode, // YOU MISSED
-    GSTPercentage = c.GSTPercentage, // YOU MISSED
-    IsActive = c.IsActive,
-    IsSystemDefined = c.IsSystemDefined?? false, // YOU MISSED
-    DisplayOrder = c.DisplayOrder?? 0, // YOU MISSED
-    ImageUrl = c.ImageUrl, // YOU MISSED
-    IconUrl = c.IconUrl, // YOU MISSED
-    BannerUrl = c.BannerUrl, // YOU MISSED
-    MetaTitle = c.MetaTitle, // YOU MISSED
-    MetaDescription = c.MetaDescription, // YOU MISSED
-    CreatedDate = c.CreatedDate,
-    UpdatedDate = c.UpdatedDate,
-    CreatedBy = c.CreatedBy // YOU MISSED
-})];
-
-
-            // =====================================================
-            // IMAGES
-            // =====================================================
-
-            response.Images =
-                images
-                    .Select(i =>
-                        new SellerCustomerImageResponse
+            // ============================================================
+            // WAREHOUSE LOCATIONS
+            // ============================================================
+            response.WarehouseLocations =
+                warehouseLocations
+                    .Select(x =>
+                        new SellerCustomerWarehouseLocationResponse
                         {
-                            ProductImageId =
-                                i.ProductImageId,
-
-                            ProductId =
-                                i.ProductId,
-
-                            ImageUrl =
-                                i.ImageUrl,
-
-                            DisplayOrder =
-                                i.DisplayOrder,
-
-                            IsPrimary =
-                                i.IsPrimary,
-
-                            CreatedDate =
-                                i.CreatedDate
+                            LocationId = x.LocationId,
+                            CustomerId = x.CustomerId,
+                            WarehouseId = x.WarehouseId,
+                            LocationCode = x.LocationCode,
+                            LocationName = x.LocationName,
+                            Description = x.Description,
+                            IsActive = x.IsActive,
+                            CreatedDate = x.CreatedDate,
+                            ListingStatus = x.ListingStatus,
+                            FulfillmentProfile = x.FulfillmentProfile
                         })
                     .ToList();
 
 
-            // =====================================================
-            // ATTRIBUTES
-            // =====================================================
-
-            response.Attributes =
-                attributes
-                    .Select(a =>
-                        new SellerCustomerAttributeResponse
-                        {
-                            ProductAttributeId =
-                                a.ProductAttributeId,
-
-                            ProductId = a.ProductId,
-
-                            SellerId = a.SellerId,
-                            CustomerId = a.CustomerId,
-
-                            AttributeName =
-                                a.AttributeName,
-
-                            AttributeValue =
-                                a.AttributeValue,
-
-                            CreatedDate =
-                                a.CreatedDate
-                        })
-                    .ToList();
-
-
-            // =====================================================
-            // STOCK MOVEMENTS
-            // =====================================================
-
-            response.StockMovements =
-                stockMovements
-                    .Select(s =>
-                        new SellerCustomerStockMovementResponse
-                        {
-                            StockMovementId =
-                                s.StockMovementId,
-
-                            SellerId = s.SellerId,
-                            CustomerId = s.CustomerId,
-
-                            ProductId = s.ProductId,
-                            WarehouseId = s.WarehouseId,
-
-                            MovementType =
-                                s.MovementType,
-
-                            Quantity =
-                                s.Quantity ?? 0,
-
-                            ReferenceTable =
-                                s.ReferenceTable,
-
-                            ReferenceId =
-                                s.ReferenceId,
-
-                            MovementDate =
-                                s.MovementDate,
-
-                            Remarks =
-                                s.Remarks
-                        })
-                    .ToList();
-
-
-            // =====================================================
-            // STOCK LEDGERS
-            // =====================================================
-
-            response.StockLedgers =
-                stockLedgers
-                    .Select(s =>
-                        new SellerCustomerStockLedgerResponse
-                        {
-                            StockLedgerId =
-                                s.StockLedgerId,
-
-                            SellerId = s.SellerId,
-                            CustomerId = s.CustomerId,
-
-                            ProductId = s.ProductId,
-                            WarehouseId = s.WarehouseId,
-
-                            TransactionType =
-                                s.TransactionType,
-
-                            ReferenceNumber =
-                                s.ReferenceNumber,
-
-                            Quantity =
-                                s.Quantity,
-
-                            BalanceQuantity =
-                                s.BalanceQuantity,
-
-                            Remarks =
-                                s.Remarks,
-
-                            TransactionDate =
-                                s.TransactionDate,
-
-                            CreatedDate =
-                                s.CreatedDate
-                        })
-                    .ToList();
-
-
-            // =====================================================
-            // STOCK TRANSFERS
-            // =====================================================
-
-            response.StockTransfers =
-                stockTransfers
-                    .Select(s =>
-                        new SellerCustomerStockTransferResponse
-                        {
-                            StockTransferId =
-                                s.StockTransferId,
-
-                            SellerId = s.SellerId,
-                            CustomerId = s.CustomerId,
-
-                            ProductId = s.ProductId,
-
-                            FromWarehouseId =
-                                s.FromWarehouseId,
-
-                            ToWarehouseId =
-                                s.ToWarehouseId,
-
-                            Quantity =
-                                s.Quantity,
-
-                            TransferDate =
-                                s.TransferDate,
-
-                            Status =
-                                s.Status,
-
-                            Remarks =
-                                s.Remarks,
-
-                            CreatedDate =
-                                s.CreatedDate
-                        })
-                    .ToList();
-
-
-            // =====================================================
-            // SUPPLIERS
-            // =====================================================
-
-            response.Suppliers =
-                suppliers
-                    .Select(s =>
-                        new SellerCustomerSupplierResponse
-                        {
-                            SupplierId =
-                                s.SupplierId,
-
-                            SellerId =
-                                s.SellerId,
-
-                            CustomerId =
-                                s.CustomerId,
-
-                            SupplierCode =
-                                s.SupplierCode,
-
-                            SupplierName =
-                                s.SupplierName,
-
-                            ContactPerson =
-                                s.ContactPerson,
-
-                            Phone =
-                                s.Phone,
-
-                            Email =
-                                s.Email,
-
-                            GSTIN =
-                                s.GSTIN,
-
-                            AddressLine1 =
-                                s.AddressLine1,
-
-                            AddressLine2 =
-                                s.AddressLine2,
-
-                            City =
-                                s.City,
-
-                            State =
-                                s.State,
-
-                            Country =
-                                s.Country,
-
-                            PostalCode =
-                                s.PostalCode,
-
-                            PaymentTerms =
-                                s.PaymentTerms,
-
-                            CreditLimit =
-                                s.CreditLimit,
-
-                            IsActive =
-                                s.IsActive,
-
-                            CreatedDate =
-                                s.CreatedDate,
-
-                            UpdatedDate =
-                                s.UpdatedDate
-                        })
-                    .ToList();
-
-
-            // =====================================================
-            // WAREHOUSES - YOU MISSED 15 FIELDS
-            // =====================================================
-            response.Warehouses = [.. warehouses.Select(w => new SellerCustomerWarehouseResponse
-{
-    WarehouseId = w.WarehouseId,
-    SellerId = w.SellerId,
-    CustomerId = w.CustomerId ?? customerId,
-
-    WarehouseCode = w.WarehouseCode ?? $"WH-{w.WarehouseId:D4}",
-    WarehouseName = w.WarehouseName ?? w.WarehouseCode,
-    IsFacilityCodeMatch = string.Equals(w.FacilityCode, w.UniwareFacilityCode, StringComparison.OrdinalIgnoreCase),
-    UniwareFacilityCode = w.UniwareFacilityCode ?? w.FacilityCode ?? w.WarehouseCode,
-    FacilityName = w.FacilityName ?? w.WarehouseName, // YOU MISSED
-    
-    // Address - YOU MISSED LocationCode / GST
-    AddressLine1 = w.AddressLine1,
-    AddressLine2 = w.AddressLine2,
-    City = w.City,
-    State = w.State,
-    StateCode = w.StateCode ?? "36", // YOU MISSED - GST mandatory
-    Country = w.Country ?? "IN",
-    CountryCode = w.CountryCode ?? "IN", // YOU MISSED
-    PostalCode = w.PostalCode,
-    LocationCode = w.LocationCode ?? w.City, // YOU MISSED
-    
-    ContactPerson = w.ContactPerson,
-    Phone = w.Phone,
-    Email = w.Email,
-    
-    // GST / Uniware - YOU MISSED 6 fields
-    GSTNumber = w.GSTNumber,
-    IsActive = w.IsActive,
-    IsDefault = w.IsDefault ?? false,
-    IsQCEnabled = w.IsQCEnabled ?? true,
-    IsPutawayEnabled = w.IsPutawayEnabled ?? true,
-    ChannelCode = w.ChannelCode ?? "CUSTOM",
-
-    CreatedDate = w.CreatedDate,
-    UpdatedDate = w.UpdatedDate,
-    CreatedBy = w.CreatedBy ?? "System"
-})];
-            // =====================================================
+            // ============================================================
             // STOCK ADJUSTMENTS
-            // =====================================================
+            // ============================================================
 
             response.StockAdjustments =
-                stockAdjustments
-                    .Select(s =>
-                        new SellerCustomerStockAdjustmentResponse
-                        {
-                            StockAdjustmentId =
-                                s.StockAdjustmentId,
-
-                            SellerId =
-                                s.SellerId,
-
-                            CustomerId =
-                                s.CustomerId,
-
-                            ProductId =
-                                s.ProductId,
-
-                            WarehouseId =
-                                s.WarehouseId,
-
-                            Quantity =
-                                s.Quantity,
-
-                            AdjustmentType =
-                                s.AdjustmentType,
-
-                            Reason =
-                                s.Reason,
-
-                            AdjustedBy =
-                                s.AdjustedBy,
-
-                            AdjustmentDate =
-                                s.AdjustmentDate,
-
-                            CreatedDate =
-                                s.CreatedDate
-                        })
-                    .ToList();
+      stockAdjustments
+          .Select(x =>
+              new SellerCustomerStockAdjustmentResponse
+              {
+                  StockAdjustmentId = x.StockAdjustmentId,
+                  SellerId = x.SellerId,
+                  CustomerId = x.CustomerId,
+                  ProductId = x.ProductId,
+                  WarehouseId = x.WarehouseId,
+                  Quantity = x.Quantity,
+                  AdjustmentType = x.AdjustmentType,
+                  Reason = x.Reason,
+                  AdjustedBy = x.AdjustedBy,
+                  AdjustmentDate = x.AdjustmentDate,
+                  CreatedDate = x.CreatedDate
+              })
+          .ToList();
 
 
-            // =====================================================
-            // WAREHOUSE LOCATIONS
-            // =====================================================
+            // ============================================================
+            // STOCK TRANSFERS
+            // ============================================================
 
-            var warehouseLocations =
-                new List<WarehouseLocation>();
+            response.StockTransfers =
+           stockTransfers
+               .Select(x =>
+                   new SellerCustomerStockTransferResponse
+                   {
+                       StockTransferId = x.StockTransferId,
+                       SellerId = x.SellerId,
+                       CustomerId = x.CustomerId,
+                       ProductId = x.ProductId,
+                       FromWarehouseId = x.FromWarehouseId,
+                       ToWarehouseId = x.ToWarehouseId,
+                       Quantity = x.Quantity,
+                       TransferDate = x.TransferDate,
+                       Status = x.Status,
+                       Remarks = x.Remarks,
+                       CreatedDate = x.CreatedDate
+                   })
+               .ToList();
 
-            foreach (var warehouse in warehouses)
-            {
-                var locs =
-                    await _warehouseLocationRepository
-                        .GetByWarehouseCustomerAsync(
-                            warehouse.WarehouseId,
-                            customerId);
 
-                warehouseLocations.AddRange(locs);
-            }
+            // ============================================================
+            // SUPPLIERS
+            // ============================================================
 
-            response.WarehouseLocations =
-     warehouseLocations
-         .Select(l =>
-             new SellerCustomerWarehouseLocationResponse
+            response.Suppliers =
+     suppliers
+         .Select(x =>
+             new SellerCustomerSupplierResponse
              {
-                 LocationId = l.LocationId,
-                 CustomerId = l.CustomerId,
-                 WarehouseId = l.WarehouseId,
-                 LocationCode = l.LocationCode,
-                 LocationName = l.LocationName,
-                 Description = l.Description,
-                 IsActive = l.IsActive,
-                 CreatedDate = l.CreatedDate,
-                 // NEW - Respective to WarehouseLocations table
-                 ListingStatus = l.ListingStatus ?? "ACTIVE", // locations[].listing_status
-                 FulfillmentProfile = l.FulfillmentProfile
+                 SupplierId = x.SupplierId,
+                 SellerId = x.SellerId,
+                 CustomerId = x.CustomerId,
+                 SupplierCode = x.SupplierCode,
+                 SupplierName = x.SupplierName,
+                 ContactPerson = x.ContactPerson,
+                 Phone = x.Phone,
+                 Email = x.Email,
+                 GSTIN = x.GSTIN,
+                 AddressLine1 = x.AddressLine1,
+                 AddressLine2 = x.AddressLine2,
+                 City = x.City,
+                 State = x.State,
+                 Country = x.Country,
+                 PostalCode = x.PostalCode,
+                 PaymentTerms = x.PaymentTerms,
+                 CreditLimit = x.CreditLimit,
+                 IsActive = x.IsActive,
+                 CreatedDate = x.CreatedDate,
+                 UpdatedDate = x.UpdatedDate
              })
          .ToList();
-            // =====================================================
+
+
+            // ============================================================
             // BRANDS
-            // =====================================================
-            response.Brands = [.. brands.Select(b => new SellerCustomerBrandResponse
-{
-    BrandId = b.BrandId,
-    SellerId = b.SellerId ?? 6,
-    customerId = customerId,
-    BrandName = b.BrandName,
-    BrandCode = b.BrandCode,
-    Description = b.Description,
-    IsActive = b.IsActive,
-    CreatedDate = b.CreatedDate,
-    UpdatedDate = b.UpdatedDate,
-    // === ADD THESE 2 YOU MISSED ===
-    BrandXID = b.BrandId, // TOPAZ BrandXID
-    LogoUrl = b.LogoUrl
-})];
+            // ============================================================
 
-            // =====================================================
+            response.Brands =
+     brands
+         .Select(x =>
+             new SellerCustomerBrandResponse
+             {
+                 BrandId = x.BrandId,
+                 BrandName = x.BrandName ?? string.Empty,
+                 BrandCode = x.BrandCode ?? string.Empty,
+                 Description = x.Description,
+                 SellerId = x.SellerId,
+                 customerId = x.CustomerId,
+                 IsActive = x.IsActive,
+                 CreatedDate = x.CreatedDate,
+                 BrandXID = x.BrandId,
+                 LogoUrl = x.LogoUrl,
+                 BrandImageUrl = x.LogoUrl,
+                 UpdatedDate = x.UpdatedDate
+             })
+         .ToList();
+
+
+            // ============================================================
             // BRAND MODELS
-            // =====================================================
-            response.BrandModels = [.. brandModels.Select(m =>
-{
-    // Fix null ref warning
-    var modelName = m.ModelName ?? $"MODEL-{m.BrandModelId}";
-    m.ModelCode = m.ModelCode ?? modelName.ToUpperInvariant().Replace(" ", "_", StringComparison.Ordinal);
+            // ============================================================
 
-    // Fix shadowing warning - use different names
-    var brandSellerId = m.Brand?.SellerId ?? 6;
-    var brandCustomerId = m.Brand?.CustomerId ?? customerId;
+            response.BrandModels =
+      brandModels
+          .Select(x =>
+              new SellerCustomerBrandModelResponse
+              {
+                  BrandModelId = x.BrandModelId,
+                  BrandId = x.BrandId,
+                  SellerId = x.SellerId ?? 0,
+                  CustomerId = x.CustomerId ?? 0,
+                  ModelName = x.ModelName ?? string.Empty,
+                  ModelCode = x.ModelCode ?? string.Empty,
+                  BrandName = x.BrandName,
+                  Description = x.Description,
+                  IsActive = x.IsActive,
+                  CreatedDate = x.CreatedDate,
+                  UpdatedDate = x.UpdatedDate,
+                  Specifications = x.Specifications,
+                  ImageUrl = x.ImageUrl
+              })
+          .ToList();
 
-    // Fix TryGetValue warning
-    var brandName = m.Brand?.BrandName;
-    if (string.IsNullOrEmpty(brandName) && !brandDict.TryGetValue(m.BrandId, out brandName))
-    {
-        brandName = "Samsung";
-    }
 
-    return new SellerCustomerBrandModelResponse
-    {
-        BrandModelId = m.BrandModelId,
-        BrandId = m.BrandId,
-        SellerId = brandSellerId,
-        CustomerId = brandCustomerId,
-        ModelName = modelName,
-        ModelCode = m.ModelCode,
-        BrandName = brandName,
-        Description = m.Description,
-        IsActive = m.IsActive,
-        CreatedDate = m.CreatedDate,
-        UpdatedDate = m.UpdatedDate,
-        // === ADD YOU MISSED ===
-        Specifications = m.Specifications,
-        ImageUrl = m.ImageUrl
-    };
-})];
-            // =========================================================
-            // POPULATE SalesOrders from Customer - FIX NULLS
-            // =========================================================
-            // =========================================================
-         
+            // ============================================================
+            // MARKETPLACES
+            // ============================================================
 
-            foreach (var so in salesOrders)
-            {
-                // 1. Get items
-                var items = await _salesOrderItemRepository.GetBySalesOrderIdAsync(so.SalesOrderId);
+            response.Marketplaces =
+       marketplaces
+           .Select(x =>
+               new SellerCustomerMarketplaceResponse
+               {
+                   MarketplaceId = x.MarketplaceId,
+                   MarketplaceCode = x.MarketplaceCode ?? string.Empty,
+                   MarketplaceName = x.MarketplaceName ?? string.Empty,
+                   IsActive = x.IsActive
+               })
+           .ToList();
 
-                // 2. Attach Product if needed
-                foreach (var it in items)
-                {
-                    if (it.Product == null)
-                    {
-                        try { it.Product = await _productRepository.GetByIdAsync(it.ProductId); } catch { }
-                    }
-                }
 
-                // 3. IMPORTANT: Attach items to order - THIS WAS MISSING
-                // ✅ FIX
-                so.SaleOrderItems = items.ToList(); // <-- FIX FOR EMPTY items[]
+            // ============================================================
+            // DELIVERY CHALLAN ITEMS
+            // ============================================================
 
-                // 4. Fix header
-                so.SalesOrderCode = string.IsNullOrEmpty(so.SalesOrderCode) ? so.SalesOrderNumber : so.SalesOrderCode;
-                so.DisplayOrderCode = string.IsNullOrEmpty(so.DisplayOrderCode) ? so.SalesOrderNumber : so.DisplayOrderCode;
-                so.StatusCode = string.IsNullOrEmpty(so.StatusCode) ? "CREATED" : so.StatusCode;
-                so.FulfillmentStatus = string.IsNullOrEmpty(so.FulfillmentStatus) ? "PENDING" : so.FulfillmentStatus;
-                so.ChannelCode = so.ChannelCode ?? "CUSTOM";
-                so.FacilityCode = so.FacilityCode ?? "WH-TN-001";
-                so.UniwareFacilityCode = so.UniwareFacilityCode ?? so.FacilityCode;
-                so.CurrencyCode = so.CurrencyCode ?? "INR";
-                so.CountryCode = so.CountryCode ?? "IN";
-                so.StateCode = so.StateCode ?? customer.StateCode ?? "29";
-                so.CustomerCode = so.CustomerCode ?? customer.CustomerCode ?? "";
-                so.CustomerName = so.CustomerName ?? customer.CustomerName ?? "";
-                so.CustomerEmail = so.CustomerEmail ?? customer.Email ?? "";
-                so.CustomerPhone = so.CustomerPhone ?? customer.Phone ?? "";
-                so.GSTIN = so.GSTIN ?? customer.GSTIN ?? "";
-                so.ShippingAddress = so.ShippingAddress ?? customer.AddressLine1 ?? "";
-                so.BillingAddress = so.BillingAddress ?? customer.AddressLine1 ?? "";
-                so.ShippingAddressLine1 = so.ShippingAddressLine1 ?? customer.AddressLine1 ?? "";
-                so.ShippingCity = so.ShippingCity ?? customer.City ?? "";
-                so.ShippingState = so.ShippingState ?? customer.State ?? "";
-                so.ShippingPincode = so.ShippingPincode ?? customer.PostalCode ?? "";
-
-                // 5. subTotal = sellingPrice * qty
-                decimal orderSubTotal = 0;
-                decimal orderTax = 0;
-                decimal orderTotal = 0;
-                decimal totalQty = 0;
-
-                foreach (var item in so.SaleOrderItems) // use so.SaleOrderItems
-                {
-                    decimal qty = item.Quantity;
-                    decimal sp = item.SellingPrice ?? item.UnitPrice;
-                    if (sp == 0) sp = item.Product?.SellingPrice ?? 2499m;
-
-                    decimal subTotal = sp * qty; // KEY
-                    decimal gstPer = item.GstPer ?? 18m;
-                    decimal tax = subTotal * gstPer / 100m;
-                    decimal total = subTotal + tax;
-
-                    // Fix sku
-                    string sku = item.Sku;
-                    if (string.IsNullOrEmpty(sku)) sku = item.Product?.ProductCode ?? "TN-WBH-001";
-                    item.Sku = sku;
-                    item.ChannelProductName = item.Product?.ProductName ?? "TechNova Wireless Bluetooth Headphones";
-                    item.ProductName = item.ChannelProductName;
-                    item.DisplayName = item.ChannelProductName;
-                    item.ChannelSkuCode = item.ChannelSkuCode ?? sku;
-                    item.ChannelProductId = item.ChannelProductId ?? sku;
-                    item.VendorSkuCode = item.VendorSkuCode ?? sku;
-                    item.ChannelSaleOrderItemCode = item.ChannelSaleOrderItemCode ?? sku;
-                    item.FacilityCode = item.FacilityCode ?? so.FacilityCode;
-                    item.Status = item.Status ?? "CREATED";
-                    item.FulfillmentStatus = item.FulfillmentStatus ?? "PENDING";
-                    item.Mrp = item.Mrp ?? sp;
-                    item.SellingPrice = sp;
-                    item.UnitPrice = sp;
-                    item.PacketNumber = item.PacketNumber ?? 1;
-                    item.ChannelProductName = item.Product?.ProductName ?? "TechNova Wireless Bluetooth Headphones";
-                    item.Description = item.Description ?? item.ChannelProductName;
-                    item.Uom = item.Uom ?? "PCS";
-                    item.Hsncode = item.Hsncode ?? item.Product?.HSNCode ?? "85183000";
-                    item.GstPer = gstPer;
-                    item.SgstPer = 9m;
-                    item.CgstPer = 9m;
-                    item.SgstAmount = tax / 2m;
-                    item.CgstAmount = tax / 2m;
-                    item.TaxAmount = tax;
-                    item.QuantityAmount = subTotal;
-                    item.TotalRateBeforeDiscount = subTotal;
-                    item.AfterGSTAmount = total;
-                    item.TotalAmount = total;
-
-                    orderSubTotal += subTotal;
-                    orderTax += tax;
-                    orderTotal += total;
-                    totalQty += qty;
-                }
-
-                so.SubTotal = orderSubTotal;
-                so.TaxAmount = orderTax;
-                so.TotalAmount = orderTotal;
-                so.TotalQuantity = totalQty; // now 1 not 0
-                so.TotalItems = so.SaleOrderItems.Count; // now 1 not 0
-                so.ShippingCharges = so.ShippingCharges ?? 0m;
-                so.DiscountAmount = so.DiscountAmount ?? 0m;
-
-                salesOrderItems.AddRange(so.SaleOrderItems);
-            }
-
-            // Now return allItems in your response object that builds transactions.salesOrderItems
-            // =========================================================
-            // TRANSACTIONS
-            // =========================================================
-
-            // =========================================================
-            // ONLY ONE MAPPING WITH TOPAZ - NO DUPLICATE BELOW
-            // =========================================================
-
-            response.Transactions.SalesOrders = salesOrders.Select(s => new SellerCustomerSalesOrderResponse
-            {
-                SalesOrderId = s.SalesOrderId,
-                SellerId = s.SellerId,
-                CustomerId = s.CustomerId,
-                SalesOrderNumber = s.SalesOrderNumber,
-
-                // === YOU MISSED - ADD THESE ===
-                SalesOrderCode = s.SalesOrderCode,
-                DisplayOrderCode = s.DisplayOrderCode, // SO-TN-2026-005
-                ChannelCode = s.ChannelCode,
-                FacilityCode = s.FacilityCode,
-                UniwareFacilityCode = s.UniwareFacilityCode,
-                CustomerCode = s.CustomerCode,
-                CustomerName = s.CustomerName,
-                OrderType = s.Type,
-                CurrencyCode = s.CurrencyCode,
-
-                OrderDate = s.OrderDate ?? DateTime.UtcNow,
-                ChannelCreatedDate = s.ChannelCreatedDate,
-                ExpectedDeliveryDate = s.ExpectedDeliveryDate,
-                Status = s.Status,
-                StatusCode = s.StatusCode,
-                FulfillmentStatus = s.FulfillmentStatus,
-
-                // Financial - YOU MISSED
-                TotalAmount = s.TotalAmount ?? 0m,
-                SubTotal = s.SubTotal,
-                TaxAmount = s.TaxAmount,
-                DiscountAmount = s.DiscountAmount,
-                ShippingCharges = s.ShippingCharges,
-                CodAmount = s.CodAmount,
-                TotalQuantity = s.TotalQuantity,
-                TotalItems = s.TotalItems,
-
-                Remarks = s.Remarks,
-                CreatedDate = s.CreatedDate ?? DateTime.UtcNow,
-                UpdatedDate = s.UpdatedDate,
-
-                // Address - YOU MISSED
-                ShippingAddress = s.ShippingAddress,
-                BillingAddress = s.BillingAddress,
-                StateCode = s.StateCode,
-                CountryCode = s.CountryCode,
-
-                // TOPAZ FIELDS - Your code (keep)
-                Company_Name = s.Company_Name,
-                Company_Address = s.Company_Address,
-                Company_City = s.Company_City,
-                Company_State = s.Company_State,
-                Company_PINCode = s.Company_PINCode,
-                Phone_no = s.Phone_no,
-                Email_Address = s.Email_Address,
-                gstin = s.Gstin ?? s.GSTIN,
-                SupplierRef = s.SupplierRef, // MISSED
-                BuyersOrderNo = s.BuyersOrderNo, // MISSED
-                BuyersOrderDate = s.BuyersOrderDate, // MISSED
-
-                // E-WAY BILL / TRANSPORT - You had partial, add missing
-                DeliveryNote = s.DeliveryNote,
-                ModeorTermsOfPayment = s.ModeorTermsOfPayment,
-                OtherReferences = s.OtherReferences,
-                DespatchedThrough = s.DespatchedThrough, // MISSED
-                Destination = s.Destination, // MISSED
-                DespatchedDocumentNumber = s.DespatchedDocumentNumber,
-                DeliveryNoteDate = s.DeliveryNoteDate,
-                EWayBillNumber = s.EWayBillNumber,
-                VehicleNo = s.VehicleNo,
-                Distance = s.Distance,
-                TYear = s.TYear,
-                Transport = s.Transport,
-                TransporterName = s.TransporterName,
-                TransporterID = s.TransporterID,
-                TransporterDocNo = s.TransporterDocNo,
-                TransportMode = s.TransportMode,
-                TermsOfDelivery = s.TermsOfDelivery, // MISSED
-                RoundOff = s.RoundOff, // MISSED
-                TotalInWords = s.TotalInWords, // MISSED
-
-                Pid = s.Pid,
-                KeyID = s.KeyID,
-            }).ToList();
-
-            // === NEW BINDINGS - With SellerCustomer DTOs ===
-            response.Marketplaces = marketplaces.Select(m => new SellerCustomerMarketplaceResponse
-            {
-                MarketplaceId = m.MarketplaceId,
-                MarketplaceCode = m.MarketplaceCode,
-                MarketplaceName = m.MarketplaceName,
-                IsActive = m.IsActive
-            }).ToList();
-
-            response.DeliveryChallanItems = deliveryChallanItems.Select(i => new SellerCustomerDeliveryChallanItemResponse
-            {
-                DeliveryChallanItemId = i.DeliveryChallanItemId,
-                DeliveryChallanId = i.DeliveryChallanId,
-                ProductId = i.ProductId,
-                Quantity = i.Quantity
-            }).ToList();
-
-            response.Seller = sellers != null ? new SellerCustomerSellerResponse
-            {
-                SellerId = sellers.SellerId,
-                SellerName = sellers.SellerName,
-                GSTIN = sellers.GSTIN,
-                Email = sellers.Email
-            } : null;
-            // =========================================================
-            // SALES ORDER ITEMS - Uniware 11 fields fixed
-            // =========================================================
-            response.Transactions.SalesOrderItems =
-                salesOrderItems
-                    .Select(i =>
-                        new SellerCustomerSalesOrderItemResponse
-                        {
-                            SalesOrderItemId = i.SalesOrderItemId,
-                            SalesOrderId = i.SalesOrderId,
-                            ProductId = i.ProductId,
-                            Quantity = i.Quantity,
-                            UnitPrice = i.UnitPrice,
-                            Discount = i.Discount,
-                            TaxAmount = i.TaxAmount,
-                            TotalAmount = i.TotalAmount,
-                            Description = i.Description,
-                            Uom = i.Uom,
-                            Hsncode = i.Hsncode,
-                            GstPer = i.GstPer,
-                            SgstPer = i.SgstPer,
-                            SgstAmount = i.SgstAmount,
-                            CgstPer = i.CgstPer,
-                            CgstAmount = i.CgstAmount,
-                            IgstPer = i.IgstPer,
-                            IgstAmount = i.IgstAmount,
-                            AfterGSTAmount = i.AfterGSTAmount,
-                            QuantityAmount = i.QuantityAmount,
-                            TotalRateBeforeDiscount = i.TotalRateBeforeDiscount,
-                            TaxType = i.TaxType,
-                            BrandXID = i.BrandXID,
-                            Remarks = i.Remarks,
-                            Pid = i.Pid,
-                            InvoiceXID = i.InvoiceXID,
-                            ItemXID = i.ItemXID,
-                            Sku = i.Sku,
-                            ChannelSkuCode = i.ChannelSkuCode,
-                            ChannelProductId = i.ChannelProductId,
-                            VendorSkuCode = i.VendorSkuCode,
-                            FacilityCode = i.FacilityCode,
-                            Status = i.Status,
-                            FulfillmentStatus = i.FulfillmentStatus,
-                            Mrp = i.Mrp,
-                            SellingPrice = i.SellingPrice,
-                            ChannelSaleOrderItemCode = i.ChannelSaleOrderItemCode,
-                            PacketNumber = i.PacketNumber
-                        })
-                    .ToList();
-
-            // =========================================================
-            // FIX salesOrders[].items = [] -> NOW POPULATED
-            // USE Transactions.SalesOrders NOT response.SalesOrders
-            // =========================================================
-            foreach (var order in response.Transactions.SalesOrders)
-            {
-                order.Items = response.Transactions.SalesOrderItems
-                    .Where(item => item.SalesOrderId == order.SalesOrderId)
-                    .ToList();
-            }
-
-            // =========================================================
-            // CUSTOMER RETURNS
-            // =========================================================
-
-            response.Transactions.CustomerReturns =
-                customerReturns
+            response.DeliveryChallanItems =
+                deliveryChallanItems
                     .Select(x =>
-                        new SellerCustomerCustomerReturnResponse
+                        new SellerCustomerDeliveryChallanItemResponse
                         {
-                            CustomerReturnId =
-                                x.CustomerReturnId,
+                            DeliveryChallanItemId =
+                                x.DeliveryChallanItemId,
 
-                            SellerId =
-                                x.SellerId,
-
-                            CustomerId =
-                                x.CustomerId,
-
-                            SalesInvoiceId =
-                                x.SalesInvoiceId,
-
-                            ProductId =
-                                x.ProductId,
-
-                            ReturnNumber =
-                                x.ReturnNumber,
-
-                            ReturnDate =
-                                x.ReturnDate,
-
-                            Quantity =
-                                x.Quantity,
-
-                            ReturnAmount =
-                                x.ReturnAmount,
-
-                            Reason =
-                                x.Reason,
-
-                            Status =
-                                x.Status
-                        })
-                    .ToList();
-
-
-            // =========================================================
-            // MARKETPLACE ORDERS
-            // =========================================================
-
-            response.Transactions.MarketplaceOrders =
-                marketplaceOrders
-                    .Select(x =>
-                        new SellerCustomerMarketplaceOrderResponse
-                        {
-                            MarketplaceOrderId =
-                                x.MarketplaceOrderId,
-
-                            MarketplaceAccountId =
-                                x.MarketplaceAccountId,
-
-                            MarketplaceOrderNumber =
-                                x.MarketplaceOrderNumber,
-
-                            ExternalOrderId =
-                                x.ExternalOrderId,
-
-                            SellerOrderNumber =
-                                x.SellerOrderNumber,
-
-                            OrderDate =
-                                x.OrderDate,
-
-                            OrderStatus =
-                                x.OrderStatus,
-
-                            FulfillmentChannel =
-                                x.FulfillmentChannel,
-
-                            Currency =
-                                x.Currency,
-
-                            TotalAmount =
-                                x.TotalAmount,
-
-                            BuyerName =
-                                x.BuyerName,
-
-                            BuyerEmail =
-                                x.BuyerEmail,
-
-                            PurchaseOrderNumber =
-                                x.PurchaseOrderNumber,
-
-                            LastSyncDate =
-                                x.LastSyncDate,
-
-                            CreatedDate =
-                                x.CreatedDate,
-
-                            UpdatedDate =
-                                x.UpdatedDate
-                        })
-                    .ToList();
-
-
-            // =========================================================
-            // MARKETPLACE ORDER ITEMS
-            // =========================================================
-
-            response.Transactions.MarketplaceOrderItems =
-                marketplaceOrderItems
-                    .Select(x =>
-                        new SellerCustomerMarketplaceOrderItemResponse
-                        {
-                            MarketplaceOrderItemId =
-                                x.MarketplaceOrderItemId,
-
-                            MarketplaceOrderId =
-                                x.MarketplaceOrderId,
-
-                            MarketplaceListingId =
-                                x.MarketplaceListingId,
-
-                            ProductId =
-                                x.ProductId,
-
-                            SellerId =
-                                x.SellerId,
-
-                            CustomerId =
-                                x.CustomerId,
-
-                            MarketplaceOrderItemNumber =
-                                x.MarketplaceOrderItemNumber,
-
-                            ExternalOrderItemId =
-                                x.ExternalOrderItemId,
-
-                            ProductTitle =
-                                x.ProductTitle,
-
-                            SKU =
-                                x.SKU,
-
-                            Quantity =
-                                x.Quantity,
-
-                            UnitPrice =
-                                x.UnitPrice,
-
-                            TaxAmount =
-                                x.TaxAmount,
-
-                            ShippingAmount =
-                                x.ShippingAmount,
-
-                            DiscountAmount =
-                                x.DiscountAmount,
-
-                            TotalAmount =
-                                x.TotalAmount,
-
-                            Status =
-                                x.Status,
-
-                            CreatedDate =
-                                x.CreatedDate
-                        })
-                    .ToList();
-
-
-            // =========================================================
-            // MARKETPLACE RETURNS
-            // =========================================================
-
-            response.Transactions.MarketplaceReturns =
-                marketplaceReturns
-                    .Select(x =>
-                        new SellerCustomerMarketplaceReturnResponse
-                        {
-                            MarketplaceReturnId =
-                                x.MarketplaceReturnId,
-
-                            MarketplaceOrderItemId =
-                                x.MarketplaceOrderItemId,
-
-                            SellerId =
-                                x.SellerId,
-
-                            CustomerId =
-                                x.CustomerId,
-
-                            ProductId =
-                                x.ProductId,
-
-                            SKU =
-                                x.SKU,
-
-                            ReturnNumber =
-                                x.ReturnNumber,
-
-                            ReturnReason =
-                                x.ReturnReason,
-
-                            ReturnStatus =
-                                x.ReturnStatus,
-
-                            QuantityReturned =
-                                x.QuantityReturned,
-
-                            RefundAmount =
-                                x.RefundAmount,
-
-                            ReturnDate =
-                                x.ReturnDate,
-
-                            CreatedDate =
-                                x.CreatedDate,
-
-                            UpdatedDate =
-                                x.UpdatedDate
-                        })
-                    .ToList();
-
-
-            // =========================================================
-            // DELIVERY CHALLANS
-            // =========================================================
-
-            response.Transactions.DeliveryChallans =
-                deliveryChallans
-                    .Select(x =>
-                        new SellerCustomerDeliveryChallanResponse
-                        {
                             DeliveryChallanId =
                                 x.DeliveryChallanId,
 
-                            SalesOrderId =
-                                x.SalesOrderId,
-
-                            ChallanNumber =
-                                x.ChallanNumber,
-
-                            ChallanDate =
-                                x.ChallanDate,
-
-                            VehicleNumber =
-                                x.VehicleNumber,
-
-                            DriverName =
-                                x.DriverName,
-
-                            DriverMobile =
-                                x.DriverMobile,
-
-                            TransporterName =
-                                x.TransporterName,
-
-                            Status =
-                                x.Status,
-
-                            Remarks =
-                                x.Remarks,
-
-                            CreatedDate =
-                                x.CreatedDate
-                        })
-                    .ToList();
-
-
-            // =========================================================
-            // GOODS RECEIPT NOTES
-            // =========================================================
-
-            response.Transactions.GoodsReceiptNotes = [.. goodsReceiptNotes.Select(x => new SellerCustomerGoodsReceiptNoteResponse
-{
-    GoodsReceiptNoteId = x.GoodsReceiptNoteId,
-    SellerId = x.SellerId,
-    CustomerId = customerId,
-    PurchaseOrderId = x.PurchaseOrderId,
-    PurchaseOrderNumber = x.PurchaseOrderNumber, // YOU MISSED
-    GRNNumber = x.GRNNumber ?? $"GRN-{x.GoodsReceiptNoteId:D6}",
-    ReceiptDate = x.ReceiptDate ?? x.CreatedDate,
-    Status = x.Status ?? "RECEIVED",
-    GRNStatus = x.GRNStatus ?? x.Status ?? "RECEIVED", // Uniware status
-    Remarks = x.Remarks,
-    
-    // Warehouse / Facility - YOU MISSED
-    WarehouseId = x.WarehouseId,
-    WarehouseCode = x.WarehouseCode ?? "WH-TN-001",
-    FacilityCode = x.FacilityCode ?? "WH-TN-001",
-    LocationCode = x.LocationCode,
-    VendorCode = x.VendorCode,
-    VendorName = x.VendorName,
-
-    // Financial - YOU MISSED
-    TotalQuantity = x.TotalQuantity,
-    ReceivedQuantity = x.ReceivedQuantity,
-    AcceptedQuantity = x.AcceptedQuantity ?? x.TotalQuantity,
-    RejectedQuantity = x.RejectedQuantity,
-    TotalAmount = x.TotalAmount,
-
-    // Calculated
-    IsQCRequired = x.IsQCRequired ?? false,
-    IsQCDone = x.IsQCDone ?? true,
-
-    CreatedDate = x.CreatedDate,
-    UpdatedDate = x.UpdatedDate,
-    CreatedBy = x.CreatedBy
-})];
-
-            // =========================================================
-            // GOODS RECEIPT ITEMS
-            // =========================================================
-
-            response.Transactions.GoodsReceiptItems =
-                goodsReceiptItems
-                    .Select(x =>
-                        new SellerCustomerGoodsReceiptItemResponse
-                        {
-                            GoodsReceiptItemId =
-                                x.GoodsReceiptItemId,
-
-                            GoodsReceiptNoteId =
-                                x.GoodsReceiptNoteId,
-
-                            ProductId =
-                                x.ProductId,
-
-                            ReceivedQuantity =
-                                x.ReceivedQuantity,
-
-                            AcceptedQuantity =
-                                x.AcceptedQuantity,
-
-                            RejectedQuantity =
-                                x.RejectedQuantity,
-
-                            Remarks =
-                                x.Remarks
-                        })
-                    .ToList();
-            // =========================================================
-            // PURCHASE RETURNS
-            // =========================================================
-
-            response.Transactions.PurchaseReturns =
-                purchaseReturns
-                    .Select(x =>
-                        new SellerCustomerPurchaseReturnResponse
-                        {
-                            PurchaseReturnId =
-                                x.PurchaseReturnId,
-
-                            SellerId =
-                                x.SellerId,
-
-                            CustomerId =
-                                x.CustomerId,
-
-                            PurchaseOrderId =
-                                x.PurchaseOrderId,
-
-                            GoodsReceiptNoteId =
-                                x.GoodsReceiptNoteId,
-
-                            SupplierId =
-                                x.SupplierId,
-
-                            PurchaseReturnNumber =
-                                x.PurchaseReturnNumber,
-
-                            TotalAmount =
-                                x.TotalAmount ?? 0,
-
-                            ReturnReason =
-                                x.Reason,
-
-                            Status =
-                                x.Status,
-
-                            ReturnDate =
-                                x.ReturnDate,
-
-                            CreatedDate =
-                                x.CreatedDate,
-
-                            UpdatedDate =
-                                x.UpdatedDate
-                        })
-                    .ToList();
-
-
-            // =========================================================
-            // PURCHASE ORDERS
-            // =========================================================
-            response.Transactions.PurchaseOrders = [.. purchaseOrders.Select(x => new SellerCustomerPurchaseOrderResponse
-{
-    PurchaseOrderId = x.PurchaseOrderId,
-    SellerId = x.SellerId,
-    CustomerId = customerId,
-    SupplierId = x.SupplierId,
-    WarehouseId = x.WarehouseId,
-
-    PurchaseOrderNumber = x.PurchaseOrderNumber ?? x.PurchaseOrderCode ?? $"PO-{x.PurchaseOrderId:D6}",
-    PurchaseOrderCode = x.PurchaseOrderCode ?? x.PurchaseOrderNumber,
-
-    OrderDate = x.OrderDate,
-    ExpectedDeliveryDate = x.ExpectedDeliveryDate,
-    ReceiptDate = x.ReceiptDate ?? x.ExpectedDeliveryDate,
-
-    Status = x.Status ?? "CREATED",
-    POStatus = x.POStatus ?? x.Status ?? "CREATED",
-    ApprovalStatus = x.ApprovalStatus ?? "PENDING",
-    
-    // Facility / Vendor - YOU MISSED
-    FacilityCode = x.FacilityCode ?? "WH-TN-001",
-    VendorCode = x.VendorCode ?? x.Supplier?.SupplierCode ?? "SUP-TN-001",
-    VendorName = x.VendorName ?? x.Supplier?.SupplierName,
-    ChannelCode = x.ChannelCode ?? "CUSTOM",
-    
-    // Financial - YOU MISSED
-    SubTotal = x.SubTotal ?? x.TotalAmount,
-    TaxAmount = x.TaxAmount ?? 0,
-    TotalAmount = x.TotalAmount,
-    CurrencyCode = x.CurrencyCode ?? "INR",
-    
-    // Quantity - YOU MISSED
-    TotalQuantity = x.TotalQuantity,
-    ReceivedQuantity = x.ReceivedQuantity,
-    PendingQuantity = x.PendingQuantity ?? (x.TotalQuantity - x.ReceivedQuantity),
-
-    Remarks = x.Remarks,
-    CreatedDate = x.CreatedDate,
-    UpdatedDate = x.UpdatedDate,
-    CreatedBy = x.CreatedBy
-})];
-
-
-            // =========================================================
-            // PURCHASE ORDER ITEMS
-            // =========================================================
-
-            response.Transactions.PurchaseOrderItems =
-                purchaseOrderItems
-                    .Select(x =>
-                        new SellerCustomerPurchaseOrderItemResponse
-                        {
-                            PurchaseOrderItemId =
-                                x.PurchaseOrderItemId,
-
-                            SellerId =
-                                x.SellerId,
-
-                            CustomerId =
-                                customerId,
-
-                            PurchaseOrderId =
-                                x.PurchaseOrderId,
-
                             ProductId =
                                 x.ProductId,
 
                             Quantity =
-                                x.Quantity,
-
-                            UnitPrice =
-                                x.UnitPrice,
-
-                            Discount =
-                                x.Discount,
-
-                            TaxAmount =
-                                x.TaxAmount,
-
-                            TotalAmount =
-                                x.TotalAmount
+                                x.Quantity
                         })
                     .ToList();
 
+            // ============================================================
+            // E-INVOICES
+            // ============================================================
 
-            // =========================================================
-            // NOTIFICATIONS
-            // =========================================================
-
-            response.Transactions.Notifications =
-                notifications
+            response.EInvoices =
+                eInvoices
                     .Select(x =>
-                        new SellerCustomerNotificationResponse
+                        new SellerCustomerEInvoiceResponse
                         {
-                            NotificationId =
-                                x.NotificationId,
-
-                            SellerId =
-                                x.SellerId,
-
-                            CustomerId =
-                                customerId,
-
-                            Title =
-                                x.Title,
-
-                            Message =
-                                x.Message,
-
-                            IsRead =
-                                x.IsRead,
-
-                            CreatedDate =
-                                x.CreatedDate
+                            EInvoiceId = x.EInvoiceId,
+                            SellerId = x.SellerId,
+                            CustomerId = x.CustomerId,
+                            SalesInvoiceId = x.SalesInvoiceId,
+                            InvoiceNumber = x.InvoiceNumber,
+                            Irn = x.IRN,
+                            AckNo = x.AckNo,
+                            AckDate = x.AckDate,
+                            SignedInvoice = x.SignedInvoice,
+                            SignedQrCode = x.SignedQrCode,
+                            Status = x.Status,
+                            CreatedDate = x.CreatedDate
                         })
                     .ToList();
 
 
-            // =========================================================
-            // ORDER STATUS HISTORIES
-            // =========================================================
+            // ============================================================
+            // E-WAY BILLS
+            // ============================================================
 
-            response.Transactions.OrderStatusHistories =
-                orderStatusHistories
+            response.EWayBills =
+                eWayBills
                     .Select(x =>
-                        new SellerCustomerOrderStatusHistoryResponse
+                        new SellerCustomerEWayBillResponse
                         {
-                            OrderStatusHistoryId =
-                                x.OrderStatusHistoryId,
+                            EWayBillId = x.EWayBillId,
+                            SellerId = x.SellerId,
+                            CustomerId = x.CustomerId,
+                            SalesInvoiceId = x.SalesInvoiceId,
+                            EWayBillNumber = x.EWayBillNumber,
+                            EWayBillDate = x.EWayBillDate,
+                            ValidUpto = x.ValidUpto,
+                            Status = x.Status,
+                            CreatedDate = x.CreatedDate,
 
-                            SellerId =
-                                x.SellerId,
-
-                            CustomerId =
-                                customerId,
-
-                            OrderId =
-                                x.OrderId,
-
-                            Status =
-                                x.Status,
-
-                            Remarks =
-                                x.Remarks,
-
-                            ChangedOn =
-                                x.ChangedOn
+                            VehicleNo = x.VehicleNo,
+                            TransporterName = x.TransporterName,
+                            TransporterID = x.TransporterID,
+                            TransporterDocNo = x.TransporterDocNo,
+                            TransportMode = x.TransportMode,
+                            Distance = x.Distance,
                         })
                     .ToList();
 
 
-            // =========================================================
-            // PAYMENTS
-            // =========================================================
+            // ============================================================
+            // SHELFWISE INVENTORIES
+            // ============================================================
 
-            response.Transactions.Payments =
-                payments
+            response.ShelfwiseInventories =
+                shelfwiseInventories
                     .Select(x =>
-                        new SellerCustomerPaymentResponse
+                        new SellerCustomerShelfwiseInventoryResponse
                         {
-                            PaymentId =
-                                x.PaymentId,
-
-                            SellerId =
-                                x.SellerId,
-
-                            CustomerId =
-                                customerId,
-
-                            OrderId =
-                                x.OrderId,
-
-                            PaymentMethod =
-                                x.PaymentMethod,
-
-                            Amount =
-                                x.Amount ?? 0,
-
-                            PaymentStatus =
-                                x.PaymentStatus,
-
-                            TransactionId =
-                                x.TransactionId,
-
-                            PaymentDate =
-                                x.PaymentDate
+                            ShelfwiseInventoryId = x.ShelfwiseInventoryId,
+                            SellerId = x.SellerId,
+                            CustomerId = x.CustomerId,
+                            FacilityCode = x.FacilityCode ?? string.Empty,
+                            ShelfCode = x.ShelfCode ?? string.Empty,
+                            ItemSkuCode = x.ItemSkuCode ?? string.Empty,
+                            Quantity = x.Quantity,
+                            BatchCode = x.BatchCode,
+                            ExpiryDate = x.ExpiryDate,
+                            InventoryType = x.InventoryType,
+                            LocationCode = x.LocationCode,
+                            CreatedDate = x.CreatedDate,
+                            UpdatedDate = x.UpdatedDate
                         })
                     .ToList();
 
 
-            // =========================================================
-            // SHIPMENTS
-            // =========================================================
-            response.Transactions.Shipments = [.. shipments.Select(x => new SellerCustomerShipmentResponse
-{
-    ShipmentId = x.ShipmentId,
-    SellerId = x.SellerId,
-    CustomerId = customerId, // FIXED: use your customerId param, not x.CustomerId
-    OrderId = x.OrderId,
-    SalesOrderId = x.SalesOrderId,
-    SalesOrderNumber = x.SalesOrderNumber,
-    DisplayOrderCode = x.DisplayOrderCode,
+            // ============================================================
+            // VENDOR ITEM MASTERS
+            // ============================================================
 
-    // Uniware Package - MANDATORY
-    ShipmentNumber = x.ShipmentNumber ?? $"SHP-{x.ShipmentId:D6}",
-    ShippingPackageCode = x.ShippingPackageCode ?? $"PKG-{x.ShipmentId:D6}",
-    ShippingPackageNumber = x.ShippingPackageNumber,
-    ChannelCode = x.ChannelCode ?? "CUSTOM",
-    FacilityCode = x.FacilityCode ?? "WH-TN-001",
-    UniwareFacilityCode = x.UniwareFacilityCode,
-
-    // Courier - YOU MISSED 10 fields
-    CourierName = x.CourierName ?? "Delhivery",
-    CourierCode = x.CourierCode ?? "DELHIVERY",
-    ShippingMethodCode = x.ShippingMethodCode ?? "STANDARD",
-    TrackingNumber = x.TrackingNumber,
-    AwbNumber = x.AwbNumber ?? x.TrackingNumber, // AWB = TrackingNumber
-    CourierTrackingUrl = x.CourierTrackingUrl,
-    ShippingLabelUrl = x.ShippingLabelUrl,
-    InvoiceUrl = x.InvoiceUrl,
-    IsCod = x.IsCod,
-    CodAmount = x.CodAmount,
-
-    // Dates - FIXED: DeliveryDate is NotMapped now
-    ShipmentDate = x.ShipmentDate ?? x.CreatedDate,
-    ExpectedDeliveryDate = x.ExpectedDeliveryDate,
-    ActualDeliveryDate = x.ActualDeliveryDate,
-    DeliveryDate = x.ActualDeliveryDate ?? x.DeliveryDate, // supports both old and new model
-    ReturnDate = x.ReturnDate,
-
-    // Status - FIXED: Status is NotMapped now
-    ShipmentStatus = x.ShipmentStatus ?? "CREATED",
-    ShippingPackageStatus = x.ShippingPackageStatus ?? x.ShipmentStatus ?? "CREATED",
-    CourierStatus = x.CourierStatus,
-    StatusRemarks = x.StatusRemarks,
-    Status = x.ShipmentStatus, // alias for frontend
-
-    // Dimensions - YOU MISSED
-    Length = x.Length ?? 20,
-    Width = x.Width ?? 15,
-    Height = x.Height ?? 10,
-    Weight = x.Weight ?? 0.5m,
-    DimUnit = x.DimUnit ?? "CM",
-    WeightUnit = x.WeightUnit ?? "KG",
-
-    // Transport / E-Way Bill - YOU MISSED
-VehicleNo = x.VehicleNo ?? "TS09AB1234", // E-Way bill requires
-TransporterName = x.TransporterName ?? "VRL Logistics",
-TransporterID = x.TransporterID ?? "29AAACG1234C1Z5", // GSTIN
-TransporterDocNo = x.TransporterDocNo ?? x.TrackingNumber ?? $"LR{x.ShipmentId:D10}",
-TransportMode = x.TransportMode ?? "Road Transport",
-Distance = x.Distance ?? "100", // KM
-EWayBillNumber = x.EWayBillNumber,
-    // Financial
-    ShippingCharges = x.ShippingCharges ?? 0,
-    TotalAmount = x.TotalAmount,
-
-    // Calculated
-    IsShipped = x.IsShipped,
-    IsDelivered = x.IsDelivered,
-
-    CreatedDate = x.CreatedDate,
-    UpdatedDate = x.UpdatedDate
-})];
-
-
-            // =========================================================
-            // REVIEWS
-            // =========================================================
-
-            response.Transactions.Reviews =
-                reviews
+            response.VendorItemMasters =
+                vendorItemMasters
                     .Select(x =>
-                        new SellerCustomerReviewResponse
+                        new SellerCustomerVendorItemMasterResponse
                         {
-                            ReviewId =
-                                x.ReviewId,
-
-                            SellerId =
-                                x.SellerId,
-
-                            CustomerId =
-                                x.CustomerId,
-
-                            ProductId =
-                                x.ProductId,
-
-                            Rating =
-                                x.Rating,
-
-                            ReviewText =
-                                x.ReviewText,
-
-                            CreatedDate =
-                                x.CreatedDate
+                            VendorItemMasterId = x.VendorItemMasterId,
+                            VendorId = x.VendorId,
+                            SellerId = x.SellerId,
+                            CustomerId = x.CustomerId,
+                            VendorSkuCode = x.VendorSkuCode,
+                            ItemSkuCode = x.ItemSkuCode,
+                            CostPrice = x.CostPrice,
+                            ProductId = x.ProductId,
+                            IsActive = x.IsActive,
+                            CreatedDate = x.CreatedDate,
+                            UpdatedDate = x.UpdatedDate
                         })
                     .ToList();
 
 
-            // =========================================================
-            // WISHLISTS
-            // =========================================================
+            // ============================================================
+            // GATEPASSES
+            // ============================================================
 
-            response.Transactions.Wishlists =
-                wishlists
+            response.Gatepasses =
+                gatepasses
                     .Select(x =>
-                        new SellerCustomerWishlistResponse
+                        new SellerCustomerGatepassResponse
                         {
-                            WishlistId =
-                                x.WishlistId,
-
-                            SellerId =
-                                x.SellerId,
-
-                            CustomerId =
-                                x.CustomerId,
-
-                            CreatedDate =
-                                x.CreatedDate
+                            GatepassId = x.GatepassId,
+                            SellerId = x.SellerId,
+                            CustomerId = x.CustomerId,
+                            FacilityCode = x.FacilityCode,
+                            Facility = x.Facility,
+                            GatepassCode = x.GatepassCode,
+                            ItemSkuCode = x.ItemSkuCode,
+                            Quantity = x.Quantity,
+                            Reason = x.Reason,
+                            Status = x.Status,
+                            CreatedDate = x.CreatedDate
                         })
                     .ToList();
 
 
-            // =========================================================
-            // WISHLIST ITEMS
-            // =========================================================
+            // ============================================================
+            // PUTAWAYS
+            // ============================================================
 
-            response.Transactions.WishlistItems =
-                wishlistItems
+            response.Putaways =
+                putaways
                     .Select(x =>
-                        new SellerCustomerWishlistItemResponse
+                        new SellerCustomerPutawayResponse
                         {
-                            WishlistItemId =
-                                x.WishlistItemId,
-
-                            SellerId =
-                                x.SellerId,
-
-                            CustomerId =
-                                customerId,
-
-                            WishlistId =
-                                x.WishlistId,
-
-                            ProductId =
-                                x.ProductId,
-
-                            CreatedDate =
-                                x.CreatedDate
+                            PutawayId = x.PutawayId,
+                            SellerId = x.SellerId,
+                            CustomerId = x.CustomerId,
+                            FacilityCode = x.FacilityCode,
+                            ShelfCode = x.ShelfCode,
+                            PutawayCode = x.PutawayCode,
+                            ItemTypeSkuCode = x.ItemTypeSkuCode,
+                            PutawayQuantity = x.PutawayQuantity,
+                            BatchCode = x.BatchCode,
+                            InventoryType = x.InventoryType,
+                            PutawayType = x.PutawayType,
+                            StatusCode = x.StatusCode,
+                            CreatedDate = x.CreatedDate
                         })
                     .ToList();
 
 
-            // =========================================================
-            // TRANSACTION SELLER / CUSTOMER
-            // =========================================================
+            // ============================================================
+            // REVERSE PICKUPS
+            // ============================================================
 
-            response.Transactions.CustomerId =
-                customerId;
+            response.ReversePickups =
+                reversePickups
+                    .Select(x =>
+                        new SellerCustomerReversePickupResponse
+                        {
+                            ReversePickupId = x.ReversePickupId,
+                            SellerId = x.SellerId,
+                            CustomerId = x.CustomerId,
+                            ReversePickupNo = x.ReversePickupNo,
+                            FacilityCode = x.FacilityCode,
+                            ItemSkuCode = x.ItemSkuCode,
+                            ReversePickupStatus = x.ReversePickupStatus,
+                            SaleOrderCode = x.SaleOrderCode,
+                            SaleOrderItemCode = x.SaleOrderItemCode,
+                            ReturnReason = x.ReturnReason,
+                            ChannelName = x.ChannelName,
+                            TrackingNo = x.TrackingNo,
+                            CreatedDate = x.CreatedDate
+                        })
+                    .ToList();
 
-            response.Transactions.SellerId =
-                sellerId;
+
+            // ============================================================
+            // MARKETPLACE LISTING INVENTORIES
+            // ============================================================
+
+            response.MarketplaceListingInventories =
+                marketplaceListingInventories
+                    .Select(x =>
+                        new SellerCustomerMarketplaceListingInventoryResponse
+                        {
+                            MarketplaceListingInventoryId = x.MarketplaceListingInventoryId,
+                            MarketplaceListingId = x.MarketplaceListingId,
+                            ProductId = 0,
+                            MarketplaceSKU = string.Empty,
+                            ListingStatus = string.Empty,
+                            AvailableQuantity = x.AvailableQuantity ?? 0m,
+                            ReservedQuantity = x.ReservedQuantity ?? 0m,
+                            InboundQuantity = x.InboundQuantity ?? 0m,
+                            LastInventorySync = x.LastInventorySync,
+                            CreatedDate = x.CreatedDate
+                        })
+                    .ToList();
 
 
-            // =========================================================
-            // RETURN COMPLETE RESPONSE
-            // =========================================================
+            // ============================================================
+            // AMAZON INVENTORY SYNCS
+            // ============================================================
+
+            response.AmazonInventorySyncs =
+                amazonInventorySyncs
+                    .Select(x =>
+                        new SellerCustomerAmazonInventorySyncResponse
+                        {
+                            InventorySyncId = x.InventorySyncId,
+                            AmazonAccountId = x.AmazonAccountId,
+                            ProductId = x.ProductId ?? 0,
+                            SKU = x.SKU ?? string.Empty,
+                            ASIN = x.ASIN ?? string.Empty,
+                            MarketplaceId = x.MarketplaceId ?? string.Empty,
+                            AvailableQuantity = x.AvailableQuantity ?? 0,
+                            ReservedQuantity = x.ReservedQuantity ?? 0,
+                            InboundQuantity = x.InboundQuantity ?? 0,
+                            LastSyncDate = x.LastSyncDate,
+                            JsonData = x.JsonData ?? string.Empty
+                        })
+                    .ToList();
+
+
+            // ============================================================
+            // RETURN
+            // ============================================================
 
             return response;
         }
 
 
-        // =========================================================
-        // CREATE CUSTOMER
-        // =========================================================
 
-        public async Task<SellerCustomer> CreateAsync(
-            CreateSellerCustomerRequest request)
+
+        // ========================================================
+        // CREATE SELLER CUSTOMER
+        // ========================================================
+
+        public async Task<SellerCustomer>
+            CreateAsync(
+                CreateSellerCustomerRequest request)
         {
             var customer =
                 new SellerCustomer
@@ -2848,14 +3914,15 @@ EWayBillNumber = x.EWayBillNumber,
         }
 
 
-        // =========================================================
-        // UPDATE CUSTOMER
-        // =========================================================
+        // ========================================================
+        // UPDATE SELLER CUSTOMER
+        // ========================================================
 
-        public async Task<bool> UpdateAsync(
-            int sellerId,
-            int customerId,
-            UpdateSellerCustomerRequest request)
+        public async Task<bool>
+            UpdateAsync(
+                int sellerId,
+                int customerId,
+                UpdateSellerCustomerRequest request)
         {
             var customer =
                 await _repository.GetCustomerAsync(
@@ -2863,7 +3930,9 @@ EWayBillNumber = x.EWayBillNumber,
                     customerId);
 
             if (customer == null)
+            {
                 return false;
+            }
 
 
             customer.CustomerName =
@@ -2909,7 +3978,8 @@ EWayBillNumber = x.EWayBillNumber,
                 DateTime.Now;
 
 
-            await _repository.UpdateAsync(customer);
+            await _repository.UpdateAsync(
+                customer);
 
             await _repository.SaveChangesAsync();
 
@@ -2917,13 +3987,14 @@ EWayBillNumber = x.EWayBillNumber,
         }
 
 
-        // =========================================================
-        // DELETE CUSTOMER
-        // =========================================================
+        // ========================================================
+        // DELETE SELLER CUSTOMER
+        // ========================================================
 
-        public async Task<bool> DeleteAsync(
-            int sellerId,
-            int customerId)
+        public async Task<bool>
+            DeleteAsync(
+                int sellerId,
+                int customerId)
         {
             var customer =
                 await _repository.GetCustomerAsync(
@@ -2931,15 +4002,72 @@ EWayBillNumber = x.EWayBillNumber,
                     customerId);
 
             if (customer == null)
+            {
                 return false;
+            }
 
 
-            await _repository.DeleteAsync(customer);
+            await _repository.DeleteAsync(
+                customer);
 
             await _repository.SaveChangesAsync();
 
             return true;
         }
+
+
+        // ========================================================
+        // PRIVATE HELPER
+        // ========================================================
+
+        private static bool ContainsIgnoreCase(
+            string? source,
+            string search)
+        {
+            return !string.IsNullOrWhiteSpace(source)
+                   &&
+                   source.Contains(
+                       search,
+                       StringComparison.OrdinalIgnoreCase);
+        }
+
+
+        // ========================================================
+        // SAFE RESPONSE PROPERTY SETTER
+        // ========================================================
+        //
+        // Some fields are optional in the response DTO.
+        // Instead of:
+        //
+        //     try { ... } catch { }
+        //
+        // we explicitly check whether the property exists.
+        //
+        // This prevents errors from being silently swallowed.
+        // ========================================================
+
+        private static void SetResponseProperty(
+            object response,
+            string propertyName,
+            object? value)
+        {
+            var property =
+                response.GetType()
+                    .GetProperty(propertyName);
+
+            if (property == null)
+            {
+                return;
+            }
+
+            if (!property.CanWrite)
+            {
+                return;
+            }
+
+            property.SetValue(
+                response,
+                value);
+        }
     }
 }
-

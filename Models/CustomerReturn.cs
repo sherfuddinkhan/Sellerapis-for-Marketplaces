@@ -10,10 +10,15 @@
 
         public string ReturnNumber { get; set; } = string.Empty;
 
+        public string Remarks { get; set; }
+
         public DateTime? ReturnDate { get; set; }
 
         public decimal Quantity { get; set; }
-
+        // NEWLY ADDED
+        public decimal? TotalAmount { get; set; }
+        public int? SalesOrderId { get; set; }
+     
         public decimal ReturnAmount { get; set; }
 
         public string? Reason { get; set; }

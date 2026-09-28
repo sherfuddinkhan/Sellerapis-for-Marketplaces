@@ -21,19 +21,29 @@ namespace Marketplacesellerportal.Models
         public int SalesInvoiceId { get; set; }
 
         [Column("InvoiceNumber")]
-        public string InvoiceNumber { get; set; }
+        public string InvoiceNumber { get; set; } = string.Empty;
 
         [Column("IRN")]
-        public string IRN { get; set; }
+        public string IRN { get; set; } = string.Empty;
 
         [Column("AckNo")]
-        public string AckNo { get; set; }
+        public string AckNo { get; set; } = string.Empty;
 
         [Column("AckDate")]
         public DateTime? AckDate { get; set; }
 
         [Column("Status")]
-        public string Status { get; set; }
+        public string Status { get; set; } = string.Empty;
+
+        // ==============================
+        // SIGNED E-INVOICE DATA
+        // ==============================
+
+        [Column("SignedInvoice")]
+        public string? SignedInvoice { get; set; }
+
+        [Column("QrCode")]
+        public string? SignedQrCode { get; set; }
 
         [Column("CreatedDate")]
         public DateTime? CreatedDate { get; set; }
