@@ -3,32 +3,53 @@ using System.ComponentModel.DataAnnotations.Schema;
 
 namespace Marketplacesellerportal.Models
 {
-    [Table("SupplierAddresses")]
+    [Table("supplierAddresses")] // your real table is lowercase
     public class SupplierAddress
     {
         [Key]
+        [Column("supplierAddressId")]
         public int SupplierAddressId { get; set; }
+
+        [Column("supplierId")]
         public int SupplierId { get; set; }
-        [MaxLength(20)]
-        public string AddressType { get; set; } // BILLING / SHIPPING
-        [MaxLength(255)]
-        public string AddressLine1 { get; set; }
-        [MaxLength(255)]
-        public string AddressLine2 { get; set; }
-        [MaxLength(2)]
-        public string CountryCode { get; set; } = "IN";
-        [MaxLength(5)]
-        public string StateCode { get; set; }
-        [MaxLength(100)]
-        public string City { get; set; }
-        [MaxLength(10)]
-        public string Pincode { get; set; }
-        [MaxLength(20)]
-        public string Phone { get; set; }
-        [MaxLength(20)]
-        public string Latitude { get; set; }
-        [MaxLength(20)]
-        public string Longitude { get; set; }
-        public DateTime CreatedDate { get; set; } = DateTime.UtcNow;
+
+        [Column("addressType")]
+        public string? AddressType { get; set; }
+
+        [Column("addressLine1")]
+        public string? AddressLine1 { get; set; }
+
+        [Column("addressLine2")]
+        public string? AddressLine2 { get; set; }
+
+        [Column("countryCode")]
+        public string? CountryCode { get; set; }
+
+        [Column("stateCode")]
+        public string? StateCode { get; set; }
+
+        [Column("city")]
+        public string? City { get; set; }
+
+        [Column("pincode")]
+        public string? Pincode { get; set; }
+
+        [Column("phone")]
+        public string? Phone { get; set; }
+
+        [Column("latitude")]
+        public string? Latitude { get; set; }
+
+        [Column("longitude")]
+        public string? Longitude { get; set; }
+
+        [Column("SellerId")]
+        public int SellerId { get; set; }
+
+        [Column("CustomerId")]
+        public int CustomerId { get; set; }
+
+        [Column("CreatedDate")]
+        public DateTime? CreatedDate { get; set; }
     }
 }

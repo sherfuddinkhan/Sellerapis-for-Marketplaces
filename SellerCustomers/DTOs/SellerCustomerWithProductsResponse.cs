@@ -187,6 +187,13 @@ namespace Marketplacesellerportal.SellerCustomers.DTOs
     = new List<SellerCustomerManifestPackageResponse>();
         public List<SellerCustomerInvoiceTaxDetailResponse> InvoiceTaxDetails { get; set; }
     = new List<SellerCustomerInvoiceTaxDetailResponse>();
+
+
+
+        public List<SellerCustomerShippingManifestResponse> ShippingManifests { get; set; } = new();
+        public List<SellerCustomerSupplierAddressResponse> SupplierAddresses { get; set; } = new();
+        public List<SellerCustomerSupplierContactResponse> SupplierContacts { get; set; } = new();
+        public List<SellerCustomerVendorItemCustomFieldResponse> VendorItemCustomFields { get; set; } = new();
         // =========================================================
         // NEW - INVENTORY & WMS TABLES YOU FIXED
         // =========================================================

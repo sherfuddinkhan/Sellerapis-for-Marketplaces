@@ -22,5 +22,12 @@ namespace Marketplacesellerportal.Models
         public string Status { get; set; } = "CREATED";
         public DateTime CreatedDate { get; set; } = DateTime.UtcNow;
         public bool ThirdPartyShipping { get; set; } = false;
+        // === FIX FOR YOUR ERROR ===
+        [NotMapped]
+        public int ShippingManifestId => ShippingManifestCode.GetHashCode();
+        [NotMapped]
+        public string ManifestNumber => ShippingManifestCode;
+        public int SellerId { get; set; }
+        public int CustomerId { get; set; }
     }
 }
