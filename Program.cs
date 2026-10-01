@@ -31,6 +31,9 @@ using Marketplacesellerportal.EInvoice.Services;
 using Marketplacesellerportal.EWayBill.Interfaces;
 using Marketplacesellerportal.EWayBill.Repositories;
 using Marketplacesellerportal.EWayBill.Services;
+using Marketplacesellerportal.ExportJobs.Interfaces;
+using Marketplacesellerportal.ExportJobs.Repositories;
+using Marketplacesellerportal.ExportJobs.Services;
 using Marketplacesellerportal.Gatepasses.Interfaces;
 using Marketplacesellerportal.Gatepasses.Repositories;
 using Marketplacesellerportal.Gatepasses.Services;
@@ -42,6 +45,11 @@ using Marketplacesellerportal.GoodsReceiptNotes.Repositories;
 using Marketplacesellerportal.GoodsReceiptNotes.Services;
 using Marketplacesellerportal.Interface;
 using Marketplacesellerportal.Interfaces;
+using Marketplacesellerportal.InventoryAdjustments.Interfaces;
+using Marketplacesellerportal.InventoryAdjustments.Repositories;
+using Marketplacesellerportal.InventoryAdjustments.Services;
+using Marketplacesellerportal.InvoiceTaxDetails.Interfaces;
+using Marketplacesellerportal.ManifestPackages.Interfaces;
 // Add only these 2 lines ONCE:
 using Marketplacesellerportal.MarketplaceCustomers.Interfaces;
 using Marketplacesellerportal.MarketplaceCustomers.Repositories;
@@ -64,6 +72,9 @@ using Marketplacesellerportal.OrderStatusHistories.Services;
 using Marketplacesellerportal.Payments.Interfaces;
 using Marketplacesellerportal.Payments.Repositories;
 using Marketplacesellerportal.Payments.Services;
+using Marketplacesellerportal.Picklists.Interfaces;
+using Marketplacesellerportal.Picklists.Repositories;
+using Marketplacesellerportal.Picklists.Services;
 using Marketplacesellerportal.ProductAttributes.Interfaces;
 using Marketplacesellerportal.ProductAttributes.Repositories;
 using Marketplacesellerportal.ProductAttributes.Services;
@@ -77,8 +88,6 @@ using Marketplacesellerportal.ProductPrices.Interfaces;
 using Marketplacesellerportal.ProductPrices.Repositories;
 using Marketplacesellerportal.ProductPrices.Services;
 using Marketplacesellerportal.Products.Interfaces;
-using Marketplacesellerportal.Products.Interfaces;
-using Marketplacesellerportal.Products.Repositories;
 using Marketplacesellerportal.Products.Repositories;
 using Marketplacesellerportal.Products.Services;
 using Marketplacesellerportal.ProductTypes.Interfaces;
@@ -97,12 +106,19 @@ using Marketplacesellerportal.Putaways.Interfaces;
 using Marketplacesellerportal.Putaways.Repositories;
 using Marketplacesellerportal.Putaways.Services;
 using Marketplacesellerportal.Repositories;
+using Marketplacesellerportal.ReversePickupAddresses.Service;
+using Marketplacesellerportal.ReversePickupItems.Interfaces;
+using Marketplacesellerportal.ReversePickupItems.Repositories;
+using Marketplacesellerportal.ReversePickupItems.Services;
 using Marketplacesellerportal.ReversePickups.Interfaces;
 using Marketplacesellerportal.ReversePickups.Repositories;
 using Marketplacesellerportal.ReversePickups.Services;
 using Marketplacesellerportal.Reviews.Interfaces;
 using Marketplacesellerportal.Reviews.Repositories;
 using Marketplacesellerportal.Reviews.Services;
+using Marketplacesellerportal.SaleOrderAddresses.Interfaces;
+using Marketplacesellerportal.SaleOrderAddresses.Repositories;
+using Marketplacesellerportal.SaleOrderAddresses.Services;
 using Marketplacesellerportal.SalesInvoices.Interfaces;
 using Marketplacesellerportal.SalesInvoices.Repositories;
 using Marketplacesellerportal.SalesInvoices.Services;
@@ -125,6 +141,9 @@ using Marketplacesellerportal.ShelfwiseInventory.Services;
 using Marketplacesellerportal.Shipments.Interfaces;
 using Marketplacesellerportal.Shipments.Repositories;
 using Marketplacesellerportal.Shipments.Services;
+using Marketplacesellerportal.ShippingManifests.Interfaces;
+using Marketplacesellerportal.ShippingManifests.Repositories;
+using Marketplacesellerportal.ShippingManifests.Services;
 using Marketplacesellerportal.StockAdjustments.Interfaces;
 using Marketplacesellerportal.StockAdjustments.Repositories;
 using Marketplacesellerportal.StockAdjustments.Services;
@@ -137,9 +156,18 @@ using Marketplacesellerportal.StockMovements.Services;
 using Marketplacesellerportal.StockTransfers.Interfaces;
 using Marketplacesellerportal.StockTransfers.Repositories;
 using Marketplacesellerportal.StockTransfers.Services;
+using Marketplacesellerportal.SupplierAddresses.Interfaces;
+using Marketplacesellerportal.SupplierAddresses.Repositories;
+using Marketplacesellerportal.SupplierAddresses.Services;
+using Marketplacesellerportal.SupplierContact.Interfaces;
+using Marketplacesellerportal.SupplierContact.Repositories;
+using Marketplacesellerportal.SupplierContact.Services;
 using Marketplacesellerportal.Suppliers.Interfaces;
 using Marketplacesellerportal.Suppliers.Repositories;
 using Marketplacesellerportal.Suppliers.Services;
+using Marketplacesellerportal.VendorItemCustomFields.Interfaces;
+using Marketplacesellerportal.VendorItemCustomFields.Repositories;
+using Marketplacesellerportal.VendorItemCustomFields.Services;
 using Marketplacesellerportal.VendorItemMasters.Interfaces;
 using Marketplacesellerportal.VendorItemMasters.Repositories;
 using Marketplacesellerportal.VendorItemMasters.Services;
@@ -542,13 +570,8 @@ builder.Services.AddScoped<
 // GOODS RECEIPT NOTE ITEM
 // =========================================================
 
-builder.Services.AddScoped<
-    IGoodsReceiptItemRepository,
-    GoodsReceiptItemRepository>();
-
-builder.Services.AddScoped<
-    IGoodsReceiptItemService,
-    GoodsReceiptItemService>();
+builder.Services.AddScoped<IGoodsReceiptItemRepository, GoodsReceiptItemsRepository>();
+builder.Services.AddScoped<IGoodsReceiptItemService, GoodsReceiptItemService>();
 
 
 // =========================================================
@@ -784,6 +807,109 @@ builder.Services.AddScoped<
 builder.Services.AddScoped<
     ISellerCustomerService,
     SellerCustomerService>();
+
+///////////////
+builder.Services.AddScoped<
+    ISupplierAddressRepository,
+    SupplierAddressRepository>();
+
+builder.Services.AddScoped<
+    ISupplierAddressService,
+    SupplierAddressService>();
+// Supplier Contacts
+builder.Services.AddScoped<
+    ISupplierContactRepository,
+    SupplierContactRepository>();
+
+builder.Services.AddScoped<
+    ISupplierContactService,
+    SupplierContactService>();
+
+// Vendor Item Custom Fields
+builder.Services.AddScoped<IVendorItemCustomFieldRepository, VendorItemCustomFieldRepository>();
+builder.Services.AddScoped<IVendorItemCustomFieldService, VendorItemCustomFieldService>();
+
+// Sale Order Addresses
+builder.Services.AddScoped<
+    ISaleOrderAddressRepository,
+    SaleOrderAddressRepository>();
+
+builder.Services.AddScoped<
+    ISaleOrderAddressService,
+    SaleOrderAddressService>();
+
+// Shipping Manifests
+builder.Services.AddScoped<
+  IShippingManifestRepository,
+  ShippingManifestRepository>();
+
+builder.Services.AddScoped<
+    IShippingManifestService,
+    ShippingManifestService>();
+
+// Manifest Packages
+builder.Services.AddScoped<
+    IManifestPackageRepository,
+    ManifestPackageRepository>();
+
+builder.Services.AddScoped<
+    IManifestPackageService,
+    ManifestPackageService>();
+
+// Invoice Tax Details
+builder.Services.AddScoped<
+    IInvoiceTaxDetailRepository,
+    InvoiceTaxDetailRepository>();
+
+builder.Services.AddScoped<
+    IInvoiceTaxDetailService,
+    InvoiceTaxDetailService>();
+
+// Reverse Pickup Items
+builder.Services.AddScoped<
+    IReversePickupItemRepository,
+    ReversePickupItemRepository>();
+
+builder.Services.AddScoped<
+    IReversePickupItemService,
+    ReversePickupItemService>();
+
+// Reverse Pickup Addresses
+builder.Services.AddScoped<
+    IReversePickupAddressRepository,
+    ReversePickupAddressRepository>();
+
+builder.Services.AddScoped<
+    IReversePickupAddressService,
+    ReversePickupAddressService>();
+
+// Export Jobs
+builder.Services.AddScoped<
+    IExportJobRepository,
+    ExportJobRepository>();
+
+builder.Services.AddScoped<
+    IExportJobService,
+    ExportJobService>();
+
+// Picklists
+builder.Services.AddScoped<
+    IPicklistRepository,
+    PicklistRepository>();
+
+builder.Services.AddScoped<
+    IPicklistService,
+    PicklistService>();
+
+// Inventory Adjustments
+builder.Services.AddScoped<
+    IInventoryAdjustmentRepository,
+    InventoryAdjustmentRepository>();
+
+builder.Services.AddScoped<
+    IInventoryAdjustmentService,
+    InventoryAdjustmentService>();
+
 
 
 // =========================================================

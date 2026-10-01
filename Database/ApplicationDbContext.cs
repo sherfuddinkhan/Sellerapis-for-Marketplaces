@@ -1,8 +1,26 @@
 ﻿using Marketplacesellerportal.Models;
 using MarketplaceSellerPortal.Models;
 using Microsoft.EntityFrameworkCore;
-using EInvoiceEntity = Marketplacesellerportal.Models.EInvoice;
-using EWayBillEntity = Marketplacesellerportal.Models.EWayBill;
+
+
+using ShippingManifestEntity =
+    Marketplacesellerportal.Models.ShippingManifest;
+
+using ShelfwiseInventoryEntity =
+    Marketplacesellerportal.Models.ShelfwiseInventory;
+
+using VendorItemMasterEntity =
+    Marketplacesellerportal.Models.VendorItemMaster;
+
+using ReversePickupEntity =
+    Marketplacesellerportal.Models.ReversePickup;
+
+using EInvoiceEntity =
+    Marketplacesellerportal.Models.EInvoice;
+
+using EWayBillEntity =
+    Marketplacesellerportal.Models.EWayBill;
+
 using BrandEntity =
     Marketplacesellerportal.Models.Brand;
 
@@ -27,6 +45,10 @@ using MarketplaceReturnEntity =
 using ProductImageEntity =
     Marketplacesellerportal.Models.ProductImage;
 
+using SellerCustomerEntity =
+    Marketplacesellerportal.Models.SellerCustomer;
+
+
 namespace Marketplacesellerportal.Database
 {
     public class ApplicationDbContext : DbContext
@@ -37,6 +59,7 @@ namespace Marketplacesellerportal.Database
         {
         }
 
+
         // =========================================================
         // CORE
         // =========================================================
@@ -45,15 +68,41 @@ namespace Marketplacesellerportal.Database
 
         public DbSet<Seller> Sellers { get; set; }
 
-        public DbSet<SellerCustomer> SellerCustomers { get; set; }
+        public DbSet<SellerCustomerEntity> SellerCustomers { get; set; }
 
 
-        /// <summary>
-        /// ////////Invoice//////////////////
-        /// </summary>
+        // =========================================================
+        // INVOICE / GENERAL
+        // =========================================================
+
+        public DbSet<SupplierAddress> SupplierAddresses { get; set; }
+
+        public DbSet<SupplierContacts> SupplierContacts { get; set; }
+
+        public DbSet<VendorItemCustomField> VendorItemCustomFields { get; set; }
+
+        public DbSet<SaleOrderAddress> SaleOrderAddresses { get; set; }
+
+        public DbSet<ManifestPackage> ManifestPackages { get; set; }
+
+        public DbSet<InvoiceTaxDetail> InvoiceTaxDetails { get; set; }
+
+        public DbSet<ReversePickupItem> ReversePickupItems { get; set; }
+
+        public DbSet<ReversePickupAddress> ReversePickupAddresses { get; set; }
+
+        public DbSet<ExportJob> ExportJobs { get; set; }
+
+        public DbSet<Picklist> Picklists { get; set; }
+
+        public DbSet<InventoryAdjustment> InventoryAdjustments { get; set; }
 
         public DbSet<EInvoiceEntity> EInvoices { get; set; }
+
         public DbSet<EWayBillEntity> EWayBills { get; set; }
+
+        public DbSet<InventoryAdjustmentLog> InventoryAdjustmentLogs { get; set; }
+
 
         // =========================================================
         // CATEGORIES
@@ -62,12 +111,21 @@ namespace Marketplacesellerportal.Database
         public DbSet<CategoryEntity> Categories { get; set; }
 
 
-        // FIX: Use full namespace for Models to avoid folder collision
-        public DbSet<Marketplacesellerportal.Models.ShelfwiseInventory> ShelfwiseInventories { get; set; }
-        public DbSet<Marketplacesellerportal.Models.VendorItemMaster> VendorItemMasters { get; set; }
-        public DbSet<Marketplacesellerportal.Models.ReversePickup> ReversePickups { get; set; }
-        public DbSet<Marketplacesellerportal.Models.Putaway> Putaways { get; set; }
-        public DbSet<Marketplacesellerportal.Models.Gatepass> Gatepasses { get; set; }
+        // =========================================================
+        // INVENTORY / WAREHOUSE MODELS
+        // =========================================================
+        public DbSet<ShippingManifestEntity> ShippingManifests { get; set; }
+
+        public DbSet<ShelfwiseInventoryEntity> ShelfwiseInventories { get; set; }
+
+        public DbSet<VendorItemMasterEntity> VendorItemMasters { get; set; }
+
+        public DbSet<ReversePickupEntity> ReversePickups { get; set; }
+        public DbSet<Putaway> Putaways { get; set; }
+
+        public DbSet<Gatepass> Gatepasses { get; set; }
+
+
         // =========================================================
         // PRODUCTS
         // =========================================================
@@ -128,7 +186,9 @@ namespace Marketplacesellerportal.Database
 
         public DbSet<SalesInvoicePayment> SalesInvoicePayments { get; set; }
 
-        public DbSet<SalesInvoiceAdditionalCharge> SalesInvoiceAdditionalCharges { get; set; }
+        public DbSet<SalesInvoiceAdditionalCharge>
+            SalesInvoiceAdditionalCharges
+        { get; set; }
 
         public DbSet<CustomerAddress> CustomerAddresses { get; set; }
 
@@ -184,9 +244,15 @@ namespace Marketplacesellerportal.Database
         // =========================================================
 
         public DbSet<MarketplaceListing> MarketplaceListings { get; set; }
-        public DbSet<MarketplaceListingInventory> MarketplaceListingInventory { get; set; }
+
+        public DbSet<MarketplaceListingInventory>
+            MarketplaceListingInventory
+        { get; set; }
+
         public DbSet<AmazonAccount> AmazonAccounts { get; set; }
+
         public DbSet<AmazonInventorySync> AmazonInventorySync { get; set; }
+
         public DbSet<Marketplace> Marketplaces { get; set; }
 
         public DbSet<MarketplaceReturnEntity> MarketplaceReturns { get; set; }
@@ -275,60 +341,208 @@ namespace Marketplacesellerportal.Database
         // MODEL CONFIGURATION
         // =========================================================
 
-        protected override void OnModelCreating(ModelBuilder modelBuilder)
+        protected override void OnModelCreating(
+            ModelBuilder modelBuilder)
         {
             base.OnModelCreating(modelBuilder);
-            modelBuilder.ApplyConfigurationsFromAssembly(typeof(ApplicationDbContext).Assembly);
+
+
+            // =====================================================
+            // APPLY ALL IEntityTypeConfiguration CLASSES
+            // =====================================================
+
+            modelBuilder.ApplyConfigurationsFromAssembly(
+                typeof(ApplicationDbContext).Assembly);
+
+
+            // =====================================================
+            // SELLER CUSTOMER
+            //
+            // IMPORTANT:
+            // SellerCustomerConfiguration.cs is responsible for
+            // SellerCustomer relationship/key configuration.
+            //
+            // DO NOT configure SellerCustomer relationship again
+            // here. Otherwise EF can create a duplicate/shadow
+            // SellerId relationship such as SellerId1.
+            // =====================================================
+
 
             // =====================================================
             // PRODUCT
             // =====================================================
+
             modelBuilder.Entity<Product>()
-               .ToTable("Products", "dbo");
+                .ToTable("Products", "dbo");
+
 
             // =====================================================
-            // PRODUCT -> BRAND (keep ONLY one config, delete the other one)
+            // PRODUCT -> BRAND
             // =====================================================
+
             modelBuilder.Entity<Product>()
-               .HasOne(p => p.Brand)
-               .WithMany(b => b.Products)
-               .HasForeignKey(p => p.BrandId)
-               .OnDelete(DeleteBehavior.SetNull);
+                .HasOne(p => p.Brand)
+                .WithMany(b => b.Products)
+                .HasForeignKey(p => p.BrandId)
+                .OnDelete(DeleteBehavior.SetNull);
+
 
             // =====================================================
             // PRODUCT -> CATEGORY
             // =====================================================
+
             modelBuilder.Entity<Product>()
-               .HasOne(p => p.Category)
-               .WithMany(c => c.Products)
-               .HasForeignKey(p => p.CategoryId)
-               .OnDelete(DeleteBehavior.SetNull);
+                .HasOne(p => p.Category)
+                .WithMany(c => c.Products)
+                .HasForeignKey(p => p.CategoryId)
+                .OnDelete(DeleteBehavior.SetNull);
+
 
             // =====================================================
             // BRAND
             // =====================================================
+
             modelBuilder.Entity<BrandEntity>()
-               .ToTable("Brands", "dbo");
+                .ToTable("Brands", "dbo");
+
             modelBuilder.Entity<BrandEntity>()
-               .HasKey(b => b.BrandId);
+                .HasKey(b => b.BrandId);
+
 
             // =====================================================
             // BRAND -> BRAND MODELS
             // =====================================================
-            modelBuilder.Entity<BrandModelEntity>()
-               .ToTable("BrandModels", "dbo");
-            modelBuilder.Entity<BrandModelEntity>()
-               .HasKey(bm => bm.BrandModelId);
 
             modelBuilder.Entity<BrandModelEntity>()
-               .HasOne(bm => bm.Brand)
-               .WithMany(b => b.BrandModels)
-               .HasForeignKey(bm => bm.BrandId)
-               .OnDelete(DeleteBehavior.Cascade);
+                .ToTable("BrandModels", "dbo");
 
-     
+            modelBuilder.Entity<BrandModelEntity>()
+                .HasKey(bm => bm.BrandModelId);
+
+            modelBuilder.Entity<BrandModelEntity>()
+                .HasOne(bm => bm.Brand)
+                .WithMany(b => b.BrandModels)
+                .HasForeignKey(bm => bm.BrandId)
+                .OnDelete(DeleteBehavior.Cascade);
+
+
+            // =====================================================
+            // INVOICE TAX DETAILS
+            // =====================================================
+
+            modelBuilder.Entity<InvoiceTaxDetail>(entity =>
+            {
+                entity.ToTable(
+                    "InvoiceTaxDetails",
+                    "dbo");
+
+                entity.HasKey(
+                    e => e.InvoiceTaxDetailId);
+
+                entity.Property(
+                    e => e.InvoiceTaxDetailId)
+                    .HasColumnName("InvoiceTaxDetailId")
+                    .ValueGeneratedOnAdd();
+
+                entity.Property(
+                    e => e.SalesInvoiceId)
+                    .HasColumnName("salesInvoiceId");
+
+                entity.Property(
+                    e => e.ChannelProductId)
+                    .HasColumnName("channelProductId");
+
+                entity.Property(
+                    e => e.TaxPercentage)
+                    .HasColumnName("taxPercentage");
+
+                entity.Property(
+                    e => e.CentralGst)
+                    .HasColumnName("centralGst");
+
+                entity.Property(
+                    e => e.StateGst)
+                    .HasColumnName("stateGst");
+
+                entity.Property(
+                    e => e.IntegratedGst)
+                    .HasColumnName("integratedGst");
+
+                entity.Property(
+                    e => e.CompensationCess)
+                    .HasColumnName("compensationCess");
+            });
+
+
+            // =====================================================
+            // MANIFEST PACKAGES
+            // =====================================================
+
+            modelBuilder.Entity<ManifestPackage>(entity =>
+            {
+                entity.ToTable(
+                    "ManifestPackages",
+                    "dbo");
+
+                entity.HasKey(
+                    e => e.ManifestPackageId);
+
+                entity.Property(
+                    e => e.ManifestPackageId)
+                    .HasColumnName("ManifestPackageId")
+                    .ValueGeneratedOnAdd();
+
+                entity.Property(
+                    e => e.ShippingManifestCode)
+                    .HasColumnName("ShippingManifestCode")
+                    .HasMaxLength(50)
+                    .IsRequired();
+
+                entity.Property(
+                    e => e.ShippingPackageCode)
+                    .HasColumnName("ShippingPackageCode")
+                    .HasMaxLength(50);
+            });
+
+
+            // =====================================================
+            // PICKLIST
+            // =====================================================
+
+            modelBuilder.Entity<Picklist>(entity =>
+            {
+                entity.ToTable(
+                    "picklists",
+                    "dbo");
+
+                entity.HasKey(
+                    e => e.PicklistCode);
+
+                entity.Property(
+                    e => e.PicklistCode)
+                    .HasColumnName("picklistCode")
+                    .HasMaxLength(50)
+                    .IsRequired();
+
+                entity.Property(
+                    e => e.Destination)
+                    .HasColumnName("destination")
+                    .HasMaxLength(20);
+
+                entity.Property(
+                    e => e.ShippingPackageCodes)
+                    .HasColumnName("shippingPackageCodes")
+                    .HasColumnType("text");
+
+                entity.Property(
+                    e => e.CreatedDate)
+                    .HasColumnName("createdDate");
+
+                entity.Property(
+                    e => e.PicklistId)
+                    .HasColumnName("PicklistId")
+                    .ValueGeneratedOnAdd();
+            });
         }
-
-
     }
 }
