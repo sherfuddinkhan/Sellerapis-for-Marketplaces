@@ -45,5 +45,11 @@ namespace MarketplaceSellerPortal.Models
         public string? Email { get; set; }
 
         public DateTime? CreatedDate { get; set; }
+ 
+        [MaxLength(50)]
+        public string? FacilityCode { get; set; }
+
+        [MaxLength(50)]
+        public string? ChannelCode { get; set; }
     }
 }

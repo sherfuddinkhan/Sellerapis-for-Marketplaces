@@ -169,11 +169,24 @@ namespace Marketplacesellerportal.SellerCustomers.DTOs
 
         public SellerCustomerTransactionResponse Transactions { get; set; }
             = new();
-
+        public List<SellerCustomerExportJobResponse> ExportJobs { get; set; }
+    = new List<SellerCustomerExportJobResponse>();
         public List<SellerCustomerAddressResponse> CustomerAddresses { get; set; }
     = new();
 
+        public List<SellerCustomerSaleOrderAddressResponse> SalesOrderAddresses { get; set; }
+      = new List<SellerCustomerSaleOrderAddressResponse>();
+        public List<SellerCustomerReversePickupItemResponse> ReversePickupItems { get; set; }
+    = new List<SellerCustomerReversePickupItemResponse>();
 
+        public List<SellerCustomerPicklistResponse> Picklists { get; set; }
+    = new List<SellerCustomerPicklistResponse>();
+        public List<SellerCustomerReversePickupAddressResponse> ReversePickupAddresses { get; set; }
+    = new List<SellerCustomerReversePickupAddressResponse>();
+        public List<SellerCustomerManifestPackageResponse> ManifestPackages { get; set; }
+    = new List<SellerCustomerManifestPackageResponse>();
+        public List<SellerCustomerInvoiceTaxDetailResponse> InvoiceTaxDetails { get; set; }
+    = new List<SellerCustomerInvoiceTaxDetailResponse>();
         // =========================================================
         // NEW - INVENTORY & WMS TABLES YOU FIXED
         // =========================================================

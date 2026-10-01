@@ -39,7 +39,7 @@ namespace Marketplacesellerportal.Models
         [MaxLength(50)] public string? ItemType { get; set; } = "STANDARD";
         public int? ProductXID { get; set; }
         public decimal? CostPrice { get; set; }
-        public decimal? MRP { get; set; }
+      
         public decimal? GSTPercentage { get; set; } = 18;
         public bool? IsReturnable { get; set; } = true;
         public bool? IsCancellable { get; set; } = true;

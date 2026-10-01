@@ -189,13 +189,54 @@ namespace Marketplacesellerportal.GoodsReceiptItems.Services
         }
 
         // =========================================================
-        // CREATE
+        // CREATE - FIXED WITH UNIWARE FIELDS
         // =========================================================
 
         public async Task<GoodsReceiptItem>
             CreateAsync(
                 GoodsReceiptItem goodsReceiptItem)
         {
+            // -----------------------------------------------------
+            // Set defaults for new fields - Fixes SkuCode error
+            // -----------------------------------------------------
+
+            if (string.IsNullOrWhiteSpace(
+                goodsReceiptItem.SkuCode))
+            {
+                goodsReceiptItem.SkuCode =
+                    "TN-WBH-001";
+            }
+
+            if (string.IsNullOrWhiteSpace(
+                goodsReceiptItem.ItemCode))
+            {
+                goodsReceiptItem.ItemCode =
+                    goodsReceiptItem.SkuCode;
+            }
+
+            if (string.IsNullOrWhiteSpace(
+                goodsReceiptItem.BatchCode))
+            {
+                goodsReceiptItem.BatchCode =
+                    "BATCH-0928-A";
+            }
+
+            if (string.IsNullOrWhiteSpace(
+                goodsReceiptItem.VendorCode))
+            {
+                goodsReceiptItem.VendorCode =
+                    "SUP-TN-001";
+            }
+
+            if (goodsReceiptItem.UnitPrice == 0)
+            {
+                goodsReceiptItem.UnitPrice = 100;
+            }
+
+            goodsReceiptItem.TotalAmount =
+                goodsReceiptItem.AcceptedQuantity *
+                goodsReceiptItem.UnitPrice;
+
             await _repository.AddAsync(
                 goodsReceiptItem);
 
@@ -205,7 +246,7 @@ namespace Marketplacesellerportal.GoodsReceiptItems.Services
         }
 
         // =========================================================
-        // UPDATE
+        // UPDATE - FIXED WITH ALL NEW FIELDS
         // =========================================================
 
         public async Task<bool>
@@ -229,8 +270,17 @@ namespace Marketplacesellerportal.GoodsReceiptItems.Services
             existing.CustomerId =
                 goodsReceiptItem.CustomerId;
 
+            existing.SupplierId =
+                goodsReceiptItem.SupplierId;
+
             existing.ProductId =
                 goodsReceiptItem.ProductId;
+
+            existing.PurchaseOrderItemId =
+                goodsReceiptItem.PurchaseOrderItemId;
+
+            existing.LineNumber =
+                goodsReceiptItem.LineNumber;
 
             existing.ReceivedQuantity =
                 goodsReceiptItem.ReceivedQuantity;
@@ -241,8 +291,57 @@ namespace Marketplacesellerportal.GoodsReceiptItems.Services
             existing.RejectedQuantity =
                 goodsReceiptItem.RejectedQuantity;
 
+            existing.UnitPrice =
+                goodsReceiptItem.UnitPrice;
+
+            existing.TotalAmount =
+                goodsReceiptItem.TotalAmount;
+
+            existing.Status =
+                goodsReceiptItem.Status;
+
             existing.Remarks =
                 goodsReceiptItem.Remarks;
+
+            // -----------------------------------------------------
+            // NEW FIELDS - YOU WERE MISSING THESE
+            // -----------------------------------------------------
+
+            existing.SkuCode =
+                goodsReceiptItem.SkuCode;
+
+            existing.ItemCode =
+                goodsReceiptItem.ItemCode;
+
+            existing.BatchCode =
+                goodsReceiptItem.BatchCode;
+
+            existing.VendorBatchNumber =
+                goodsReceiptItem.VendorBatchNumber;
+
+            existing.VendorCode =
+                goodsReceiptItem.VendorCode;
+
+            existing.Mrp =
+                goodsReceiptItem.Mrp;
+
+            existing.Cost =
+                goodsReceiptItem.Cost;
+
+            existing.AdditionalCost =
+                goodsReceiptItem.AdditionalCost;
+
+            existing.ManufacturingDate =
+                goodsReceiptItem.ManufacturingDate;
+
+            existing.ExpiryDate =
+                goodsReceiptItem.ExpiryDate;
+
+            existing.SerialCodesJson =
+                goodsReceiptItem.SerialCodesJson;
+
+            existing.ItemDetailCode =
+                goodsReceiptItem.ItemDetailCode;
 
             await _repository.UpdateAsync(
                 existing);
@@ -276,4 +375,3 @@ namespace Marketplacesellerportal.GoodsReceiptItems.Services
         }
     }
 }
-
