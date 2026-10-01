@@ -216,18 +216,14 @@ namespace Marketplacesellerportal.SellerCustomers.Services
 
             var productIds = products.Select(p => p.ProductId).Distinct().ToList();
             var salesOrderIds = await _context.SalesOrders
-           .Where(x =>
-               x.SellerId == sellerId &&
-               x.CustomerId == customerId)
+           .Where(x => x.SellerId == sellerId && x.CustomerId == customerId)
            .Select(x => x.SalesOrderId)
            .ToListAsync();
 
             var salesOrderAddresses = await _context.SaleOrderAddresses
-                .Where(x =>
-                    x.SalesOrderId.HasValue &&
-                    salesOrderIds.Contains(x.SalesOrderId.Value))
-                .AsNoTracking()
-                .ToListAsync();
+                .Where(x => x.SalesOrderId.HasValue && salesOrderIds.Contains(x.SalesOrderId.Value))
+                .AsNoTracking().ToListAsync();
+
             var deliveryChallanIds = deliveryChallans.Select(d => d.DeliveryChallanId).ToList();
             var purchaseOrderIds = purchaseOrders.Select(o => o.PurchaseOrderId).ToList();
 
@@ -256,6 +252,23 @@ namespace Marketplacesellerportal.SellerCustomers.Services
             var marketplaceReturns = await _marketplaceReturnRepository.GetBySellerCustomerAsync(sellerId, customerId);
             var marketplaces = await _marketplaceRepo.GetAllAsync();
 
+            // === YOUR 4 MISSING TABLES ADDED ===
+            var shippingManifests = await _context.ShippingManifests
+                .Where(x => x.SellerId == sellerId && x.CustomerId == customerId)
+                .AsNoTracking().ToListAsync();
+
+            var supplierAddresses = await _context.SupplierAddresses
+                .Where(x => x.SellerId == sellerId && x.CustomerId == customerId)
+                .AsNoTracking().ToListAsync();
+
+            var supplierContacts = await _context.SupplierContacts
+                .Where(x => x.SellerId == sellerId && x.CustomerId == customerId)
+                .AsNoTracking().ToListAsync();
+
+            var vendorItemCustomFields = await _context.VendorItemCustomFields
+                .Where(x => x.SellerId == sellerId && x.CustomerId == customerId)
+                .AsNoTracking().ToListAsync();
+
             var categoryIds = products.Where(p => p.CategoryId.HasValue).Select(p => p.CategoryId!.Value).Distinct().ToList();
             var categories = categoryIds.Count > 0 ? await _categoryRepository.GetByIdsAsync(categoryIds) : [];
 
@@ -263,17 +276,11 @@ namespace Marketplacesellerportal.SellerCustomers.Services
             var seller = await _context.Sellers.AsNoTracking().FirstOrDefaultAsync(s => s.SellerId == sellerId);
 
             var picklists = await _context.Picklists.Where(x => x.SellerId == sellerId && x.CustomerId == customerId).AsNoTracking().ToListAsync();
-           
             var manifestPackages = await _context.ManifestPackages.Where(x => x.SellerId == sellerId && x.CustomerId == customerId).AsNoTracking().ToListAsync();
             var reversePickupItems = await _context.ReversePickupItems.Where(x => x.SellerId == sellerId && x.CustomerId == customerId).AsNoTracking().ToListAsync();
             var invoiceTaxDetails = await _context.InvoiceTaxDetails.Where(x => x.SellerId == sellerId && x.CustomerId == customerId).AsNoTracking().ToListAsync();
             var exportJobs = await _context.ExportJobs.Where(x => x.SellerId == sellerId && x.CustomerId == customerId).AsNoTracking().ToListAsync();
-            var reversePickupAddresses = await _context.ReversePickupAddresses
-     .Where(x =>
-         x.SellerId == sellerId &&
-         x.CustomerId == customerId)
-     .AsNoTracking()
-     .ToListAsync();
+            var reversePickupAddresses = await _context.ReversePickupAddresses.Where(x => x.SellerId == sellerId && x.CustomerId == customerId).AsNoTracking().ToListAsync();
             var warehouseLocations = await _context.WarehouseLocations.Where(l => l.SellerId == sellerId && l.CustomerId == customerId).AsNoTracking().ToListAsync();
             var shelfwiseInventories = await _context.ShelfwiseInventories.Where(i => i.SellerId == sellerId && i.CustomerId == customerId).AsNoTracking().ToListAsync();
             var vendorItemMasters = await _context.VendorItemMasters.Where(i => i.SellerId == sellerId && i.CustomerId == customerId).AsNoTracking().ToListAsync();
@@ -359,27 +366,18 @@ namespace Marketplacesellerportal.SellerCustomers.Services
                 Picklists = picklists.Select(x => new SellerCustomerPicklistResponse { PicklistId = x.PicklistId, PicklistCode = x.PicklistCode, SellerId = x.SellerId, CustomerId = x.CustomerId }).ToList(),
                 ManifestPackages = manifestPackages.Select(x => new SellerCustomerManifestPackageResponse { ManifestPackageId = x.ManifestPackageId, SellerId = x.SellerId, CustomerId = x.CustomerId, ShippingPackageCode = x.ShippingPackageCode }).ToList(),
                 InvoiceTaxDetails = invoiceTaxDetails.Select(x => new SellerCustomerInvoiceTaxDetailResponse { InvoiceTaxDetailId = x.InvoiceTaxDetailId, SellerId = x.SellerId, CustomerId = x.CustomerId, SalesInvoiceId = x.SalesInvoiceId }).ToList(),
-                ReversePickupAddresses = reversePickupAddresses
-    .Select(x => new SellerCustomerReversePickupAddressResponse
-    {
-        ReversePickupAddressId = x.Id,
-        SellerId = x.SellerId,
-        CustomerId = x.CustomerId,
-        ReversePickupId = x.ReversePickupId,
-        City = x.City
-    })
-    .ToList(),
+                ReversePickupAddresses = reversePickupAddresses.Select(x => new SellerCustomerReversePickupAddressResponse { ReversePickupAddressId = x.Id, SellerId = x.SellerId, CustomerId = x.CustomerId, ReversePickupId = x.ReversePickupId, City = x.City }).ToList(),
                 ExportJobs = exportJobs.Select(x => new SellerCustomerExportJobResponse { ExportJobId = x.ExportJobId, SellerId = x.SellerId, CustomerId = x.CustomerId, JobCode = x.JobCode, Status = x.Status }).ToList(),
-                SalesOrderAddresses = salesOrderAddresses
-    .Select(x => new SellerCustomerSaleOrderAddressResponse
-    {
-        SaleOrderAddressId = x.AddressId,
-        SalesOrderId = x.SalesOrderId ?? 0,
-        City = x.City
-    })
-    .ToList(),
+                SalesOrderAddresses = salesOrderAddresses.Select(x => new SellerCustomerSaleOrderAddressResponse { SaleOrderAddressId = x.AddressId, SalesOrderId = x.SalesOrderId ?? 0, City = x.City }).ToList(),
                 MarketplaceListingInventories = marketplaceListingInventories.Select(x => new SellerCustomerMarketplaceListingInventoryResponse { MarketplaceListingInventoryId = x.MarketplaceListingInventoryId, MarketplaceListingId = x.MarketplaceListingId, AvailableQuantity = x.AvailableQuantity ?? 0m }).ToList(),
                 AmazonInventorySyncs = amazonInventorySyncs.Select(x => new SellerCustomerAmazonInventorySyncResponse { InventorySyncId = x.InventorySyncId, ProductId = x.ProductId ?? 0, SKU = x.SKU ?? "", ASIN = x.ASIN ?? "" }).ToList(),
+
+                // === ADDED MAPPINGS FOR 4 MISSING TABLES ===
+                ShippingManifests = shippingManifests.Select(x => new SellerCustomerShippingManifestResponse { ShippingManifestId = x.ShippingManifestId, SellerId = x.SellerId, CustomerId = x.CustomerId, ManifestNumber = x.ManifestNumber, Status = x.Status, CreatedDate = x.CreatedDate }).ToList(),
+                SupplierAddresses = supplierAddresses.Select(x => new SellerCustomerSupplierAddressResponse { SupplierAddressId = x.SupplierAddressId, SellerId = x.SellerId, CustomerId = x.CustomerId, SupplierId = x.SupplierId, AddressLine1 = x.AddressLine1, City = x.City, State = x.StateCode }).ToList(),
+                SupplierContacts = supplierContacts.Select(x => new SellerCustomerSupplierContactResponse { SupplierContactId = x.SupplierContactId, SellerId = x.SellerId, CustomerId = x.CustomerId, SupplierId = x.SupplierId, ContactName = x.ContactName, Email = x.Email, Phone = x.Phone }).ToList(),
+                VendorItemCustomFields = vendorItemCustomFields.Select(x => new SellerCustomerVendorItemCustomFieldResponse { VendorItemCustomFieldId = x.VendorItemCustomFieldId, SellerId = x.SellerId, CustomerId = x.CustomerId, VendorItemMasterId = x.VendorItemMasterId, FieldName = x.Name, FieldValue = x.Value }).ToList(),
+
                 Transactions = new SellerCustomerTransactionResponse
                 {
                     CustomerId = customerId,
@@ -404,11 +402,13 @@ namespace Marketplacesellerportal.SellerCustomers.Services
                     MarketplaceOrders = marketplaceOrders.Select(x => new SellerCustomerMarketplaceOrderResponse { MarketplaceOrderId = x.MarketplaceOrderId, MarketplaceOrderNumber = x.MarketplaceOrderNumber, OrderStatus = x.OrderStatus }).ToList(),
                     MarketplaceOrderItems = marketplaceOrderItems.Select(x => new SellerCustomerMarketplaceOrderItemResponse { MarketplaceOrderItemId = x.MarketplaceOrderItemId, MarketplaceOrderId = x.MarketplaceOrderId, SKU = x.SKU, Quantity = x.Quantity }).ToList(),
                     MarketplaceReturns = marketplaceReturns.Select(x => new SellerCustomerMarketplaceReturnResponse { MarketplaceReturnId = x.MarketplaceReturnId, ReturnNumber = x.ReturnNumber, ReturnStatus = x.ReturnStatus }).ToList()
+               
+                
+                
                 }
             };
             return response;
         }
-
         public async Task<SellerCustomerEntity> CreateAsync(CreateSellerCustomerRequest request)
         {
             var entity = new SellerCustomerEntity
