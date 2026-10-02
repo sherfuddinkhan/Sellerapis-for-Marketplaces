@@ -38,5 +38,11 @@
         // EXTERNAL MAPPING
         public string? ExternalProductId { get; set; } = string.Empty;
         public string? ExternalSystemCode { get; set; } = string.Empty;
+
+        // === ADDED ===
+        public string? ManufacturerDetails { get; set; }
+        public string? ImporterDetails { get; set; }
+        public string? PackerDetails { get; set; }
+        public long? ShelfLifeSeconds { get; set; }
     }
 }

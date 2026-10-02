@@ -19,7 +19,6 @@ namespace Marketplacesellerportal.Models
         [MaxLength(100)] public string? VendorCode { get; set; }
         [MaxLength(200)] public string? VendorName { get; set; }
         [MaxLength(100)] public string? FacilityCode { get; set; } = "WH-TN-001";
-        [MaxLength(100)] public string? UniwareFacilityCode { get; set; }
         [MaxLength(20)] public string? Type { get; set; } = "CART";
         [MaxLength(50)] public string? Status { get; set; } = "CREATED";
         [MaxLength(100)] public string? StatusCode { get; set; }

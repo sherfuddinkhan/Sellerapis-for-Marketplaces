@@ -6,7 +6,6 @@
 
     public string WarehouseCode { get; set; } = string.Empty;
     public string? FacilityCode { get; set; }
-    public string? UniwareFacilityCode { get; set; }
     public string WarehouseName { get; set; } = string.Empty;
     public string? FacilityName { get; set; }
     public string? FacilityType { get; set; }

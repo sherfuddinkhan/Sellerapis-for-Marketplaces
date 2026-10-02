@@ -49,23 +49,82 @@ namespace Marketplacesellerportal.ShelfwiseInventory.Services
             return new ShelfwiseInventoryResponse { Success = ok, Message = ok ? "Deleted" : "Not found" };
         }
 
-        private static ShelfwiseInventoryModel Map(ShelfwiseInventoryEntity e) => new()
+        private static ShelfwiseInventoryModel Map(
+      ShelfwiseInventoryEntity e)
         {
-            ShelfwiseInventoryId = e.ShelfwiseInventoryId,
-            SellerId = e.SellerId,
-            CustomerId = e.CustomerId,
-            FacilityCode = e.FacilityCode,
-            ShelfCode = e.ShelfCode,
-            ItemSkuCode = e.ItemSkuCode,
-            Quantity = e.Quantity,
-            BatchCode = e.BatchCode,
-            ExpiryDate = e.ExpiryDate,
-            InventoryType = e.InventoryType,
-            LocationCode = e.LocationCode,
-            CreatedDate = e.CreatedDate,
-            UpdatedDate = e.UpdatedDate
-        };
+            return new ShelfwiseInventoryModel
+            {
+                ShelfwiseInventoryId =
+                    e.ShelfwiseInventoryId,
 
+                SellerId =
+                    e.SellerId ?? 0,
+
+                CustomerId =
+                    e.CustomerId ?? 0,
+
+                FacilityCode =
+                    e.FacilityCode,
+
+                ShelfCode =
+                    e.ShelfCode,
+
+                ItemSkuCode =
+                    e.ItemSkuCode,
+
+                Quantity =
+                    e.Quantity ?? 0,
+
+                BatchCode =
+                    e.BatchCode,
+
+                ExpiryDate =
+                    e.ExpiryDate,
+
+                InventoryType =
+                    e.InventoryType,
+
+                LocationCode =
+                    e.LocationCode,
+
+                CreatedDate =
+                    e.CreatedDate ?? DateTime.MinValue,
+
+                UpdatedDate =
+                    e.UpdatedDate ?? DateTime.MinValue,
+
+                // =====================================================
+                // ADDED
+                // =====================================================
+
+                Mrp =
+                    e.Mrp,
+
+                Mfd =
+                    e.Mfd,
+
+                VendorCode =
+                    e.VendorCode,
+
+                VendorBatchNumber =
+                    e.VendorBatchNumber,
+
+                LotNumber =
+                    e.LotNumber,
+
+                TransferToShelfCode =
+                    e.TransferToShelfCode,
+
+                Sla =
+                    e.Sla,
+
+                Remarks =
+                    e.Remarks,
+
+                WarehouseId =
+                    e.WarehouseId
+            };
+        }
         private static ShelfwiseInventoryEntity MapToEntity(ShelfwiseInventoryModel m) => new()
         {
             ShelfwiseInventoryId = m.ShelfwiseInventoryId,
@@ -80,7 +139,17 @@ namespace Marketplacesellerportal.ShelfwiseInventory.Services
             InventoryType = m.InventoryType,
             LocationCode = m.LocationCode,
             CreatedDate = m.CreatedDate,
-            UpdatedDate = m.UpdatedDate
+            UpdatedDate = m.UpdatedDate,
+            // ===== ADDED =====
+            Mrp = m.Mrp,
+            Mfd = m.Mfd,
+            VendorCode = m.VendorCode,
+            VendorBatchNumber = m.VendorBatchNumber,
+            LotNumber = m.LotNumber,
+            TransferToShelfCode = m.TransferToShelfCode,
+            Sla = m.Sla,
+            Remarks = m.Remarks,
+            WarehouseId = m.WarehouseId
         };
     }
 }

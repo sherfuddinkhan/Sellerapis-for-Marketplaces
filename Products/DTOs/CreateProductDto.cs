@@ -28,8 +28,9 @@ namespace Marketplacesellerportal.Products.DTOs
         public string? UnitOfMeasure { get; set; }
         public string? Status { get; set; }
         public bool? IsActive { get; set; }
-
-        // GENERALIZED LISTING FIELDS - 11 fields - Already working
+        public string? ItemSku { get; set; } // = SKU
+        public string? CategoryCode { get; set; }
+        public string? Brand { get; set; }
         public string? TaxCategory { get; set; } = "GST_18";
         public string? VisibilityStatus { get; set; } = "VISIBLE";
         public string? FulfillmentType { get; set; } = "SELF";

@@ -138,6 +138,9 @@ using Marketplacesellerportal.Services;
 using Marketplacesellerportal.ShelfwiseInventory.Interfaces;
 using Marketplacesellerportal.ShelfwiseInventory.Repositories;
 using Marketplacesellerportal.ShelfwiseInventory.Services;
+using Marketplacesellerportal.FacilityChannel.Interfaces;
+using Marketplacesellerportal.FacilityChannel.Repositories;
+using Marketplacesellerportal.FacilityChannel.Services;
 using Marketplacesellerportal.Shipments.Interfaces;
 using Marketplacesellerportal.Shipments.Repositories;
 using Marketplacesellerportal.Shipments.Services;
@@ -372,6 +375,10 @@ builder.Services.AddScoped<
 builder.Services.AddScoped<
     IMarketplaceOrderItemService,
     MarketplaceOrderItemService>();
+
+builder.Services.AddScoped<IFacilityChannelRepository, FacilityChannelRepository>();
+
+builder.Services.AddScoped<IFacilityChannelService, FacilityChannelService>();
 
 // =========================================================
 // WAREHOUSE

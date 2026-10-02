@@ -48,7 +48,6 @@ namespace Marketplacesellerportal.Models
         public int? ShippingAddressId { get; set; }
 
         [MaxLength(100)] public string? FacilityCode { get; set; } = "WH-TN-001";
-        [MaxLength(100)] public string? UniwareFacilityCode { get; set; } = "WH-TN-001";
         [MaxLength(50)] public string? Type { get; set; } = "CART";
         public DateTime? ChannelCreatedDate { get; set; }
         public DateTime? ExpectedDeliveryDate { get; set; }
@@ -169,7 +168,7 @@ namespace Marketplacesellerportal.Models
         public bool IsCod => CashOnDelivery; // Uniware alias
 
         [NotMapped]
-        public List<object> UniwareAddresses
+        public List<object> Addresses
         {
             get
             {

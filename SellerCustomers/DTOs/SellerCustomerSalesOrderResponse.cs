@@ -14,7 +14,6 @@
         public string? DisplayOrderCode { get; set; } // SO-TN-2026-005
         public string? ChannelCode { get; set; } = "CUSTOM";
         public string? FacilityCode { get; set; } = "WH-TN-001";
-        public string? UniwareFacilityCode { get; set; }
         public string? CustomerCode { get; set; }
         public string? CustomerName { get; set; }
         public string? OrderType { get; set; } = "CART";

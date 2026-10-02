@@ -60,10 +60,6 @@ namespace Marketplacesellerportal.Models
 
         [MaxLength(100)]
         public string? ChannelCode { get; set; }
-
-        [MaxLength(100)]
-        public string? UniwareChannelCode { get; set; }
-
         public bool? IsChannelCodeMatch { get; set; }
 
         // =========================================================
@@ -76,10 +72,6 @@ namespace Marketplacesellerportal.Models
 
         [MaxLength(100)]
         public string? FacilityCode { get; set; }
-
-        [MaxLength(100)]
-        public string? UniwareFacilityCode { get; set; }
-
         public bool? IsFacilityCodeMatch { get; set; }
 
         // =========================================================
@@ -113,7 +105,7 @@ namespace Marketplacesellerportal.Models
         }
 
         [NotMapped]
-        public bool IsPriceActiveForUniware
+        public bool IsPriceActive
         {
             get
             {

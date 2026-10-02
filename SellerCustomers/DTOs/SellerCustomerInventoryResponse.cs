@@ -22,10 +22,10 @@
     public string? Barcode { get; set; } 
     public string? WarehouseCode { get; set; }
     public string? FacilityCode { get; set; } 
-    public string? UniwareFacilityCode { get; set; } 
+
     public bool IsFacilityCodeMatch { get; set; } 
     public string? ChannelCode { get; set; } 
-    public string? UniwareChannelCode { get; set; } 
+ 
     public bool IsChannelCodeMatch { get; set; } 
     public string? LocationCode { get; set; } 
     public string? LocationName { get; set; } 
@@ -43,11 +43,7 @@
 
 
     public string? ProductName { get; set; }
-    public bool? IsSyncedToUniware { get; set; }
-    public DateTime? UniwareSyncDate { get; set; }
-    public string? UniwareItemCode { get; set; }
-
-    // For Uniware Dashboard
-    public string? FacilityCodeForUniware => UniwareFacilityCode ?? FacilityCode;
-    public string? ChannelCodeForUniware => UniwareChannelCode ?? ChannelCode;
+    public bool? IsSynced { get; set; }
+    public DateTime? SyncDate { get; set; }
+    public string? ItemCode { get; set; }
 }

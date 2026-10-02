@@ -30,10 +30,8 @@
         // =========================================================
         // ADDED MISSING FIELDS - WITHOUT DELETING YOURS
         // =========================================================
-        public string? UniwareItemCode { get; set; }
-        public string? UniwareVendorCode { get; set; }
+        public string? ItemCode { get; set; }
         public string? FacilityCode { get; set; }
-        public string? UniwareFacilityCode { get; set; }
         public string? ChannelCode { get; set; }
         public string? BinCode { get; set; }
         public string? ShelfCode { get; set; }
@@ -41,7 +39,6 @@
         public decimal RejectedQuantity { get; set; }
         public decimal TotalAmount { get; set; }
         public decimal AdditionalCost { get; set; }
-        public string? ItemCode { get; set; } = "TN-WBH-001";
         public string? ItemDetailCode { get; set; }
         public DateTime? ManufacturingDate { get; set; }
         public DateTime? ExpiryDate { get; set; }

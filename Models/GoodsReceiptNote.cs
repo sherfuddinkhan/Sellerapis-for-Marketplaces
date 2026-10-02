@@ -25,7 +25,6 @@ namespace Marketplacesellerportal.Models
 
         // Uniware - 15 APIs
         [MaxLength(100)] public string? FacilityCode { get; set; } = "WH-TN-001";
-        [MaxLength(100)] public string? UniwareFacilityCode { get; set; }
         [MaxLength(100)] public string? VendorCode { get; set; } = "SUP-TN-001";
         [MaxLength(100)] public string? VendorInvoiceNumber { get; set; }
         public DateTime? VendorInvoiceDate { get; set; } = DateTime.UtcNow;
@@ -67,7 +66,7 @@ namespace Marketplacesellerportal.Models
 
         // ================= NOTMAPPED - SINGLE DEFINITION ONLY =================
         [NotMapped] public decimal PendingQCQuantity => ReceivedQuantity - (AcceptedQuantity ?? ReceivedQuantity) - RejectedQuantity;
-        [NotMapped] public bool IsFacilityCodeMatch => string.Equals(FacilityCode, UniwareFacilityCode, StringComparison.OrdinalIgnoreCase);
+        [NotMapped] public bool IsFacilityCodeMatch => string.Equals(FacilityCode, FacilityCode, StringComparison.OrdinalIgnoreCase);
         [NotMapped] public bool IsQCPending => QcStatus == "PENDING";
         [NotMapped] public bool IsPutawayPending => PutawayStatus == "PENDING";
 

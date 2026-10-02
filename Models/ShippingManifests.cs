@@ -29,5 +29,15 @@ namespace Marketplacesellerportal.Models
         public string ManifestNumber => ShippingManifestCode;
         public int SellerId { get; set; }
         public int CustomerId { get; set; }
+
+        // === MISSING - ADD THESE (from DB) ===
+        [MaxLength(50)]
+        public string? CourierCode { get; set; }
+
+        [MaxLength(100)]
+        public string? TrackingNumber { get; set; }
+
+        [MaxLength(20)]
+        public string? ManifestType { get; set; } = "OUTBOUND";
     }
 }

@@ -12,7 +12,7 @@ namespace Marketplacesellerportal.Models
 
         [Required][MaxLength(200)] public string ProductTypeName { get; set; } = null!;
         [MaxLength(100)] public string? ProductTypeCode { get; set; }
-        [MaxLength(100)] public string? UniwareProductTypeCode { get; set; }
+
 
         public int? CategoryId { get; set; }
         [MaxLength(500)] public string? Description { get; set; }

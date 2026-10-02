@@ -554,12 +554,12 @@ namespace Marketplacesellerportal.Catalog.Repositories
                 return Enumerable.Empty<BrandResponse>();
 
             var brands = await _context.Brands
-                .AsNoTracking()
-                .Where(b =>
-                    b.IsActive &&
-                    brandIds.Contains(b.BrandId))
-                .OrderBy(b => b.BrandName)
-                .ToListAsync();
+    .AsNoTracking()
+    .Where(b =>
+        b.IsActive == true &&
+        brandIds.Contains(b.BrandId))
+    .OrderBy(b => b.BrandName)
+    .ToListAsync();
 
             return brands
                 .Select(b => new BrandResponse

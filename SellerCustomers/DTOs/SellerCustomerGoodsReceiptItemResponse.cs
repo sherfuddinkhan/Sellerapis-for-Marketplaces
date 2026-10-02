@@ -27,17 +27,15 @@
         // Uniware Mandatory - Missing in your current DTO
         public string? SkuCode { get; set; }
         public string? ItemCode { get; set; }
-        public string? UniwareItemCode { get; set; }
         public string? BatchCode { get; set; }
         public string? VendorBatchNumber { get; set; }
         public string? VendorCode { get; set; }
         public string? UniwareVendorCode { get; set; }
         public string? FacilityCode { get; set; }
-        public string? UniwareFacilityCode { get; set; }
         public string? ChannelCode { get; set; }
         public string? BinCode { get; set; }
         public string? ShelfCode { get; set; }
-        public string? UniwareSyncStatus { get; set; }
+        public string? SyncStatus { get; set; }
 
         public DateTime? ManufacturingDate { get; set; }
         public DateTime? ExpiryDate { get; set; }
