@@ -14,11 +14,6 @@ namespace Marketplacesellerportal.Models
         public int? WarehouseId { get; set; } = 1;
         public int? LocationId { get; set; } = 2;
 
-
-
-        // =====================================================
-        // QUANTITY - FIXED: Removed duplicate QuantityOnHand
-        // =====================================================
         public decimal? Quantity { get; set; } = 100;
         public decimal? ReservedQuantity { get; set; } = 5;
         public decimal? DamagedQuantity { get; set; } = 2;
@@ -31,18 +26,13 @@ namespace Marketplacesellerportal.Models
         public DateTime CreatedDate { get; set; } = DateTime.Now;
         public DateTime? UpdatedDate { get; set; }
 
-        // =====================================================
-        // CODES
-        // =====================================================
         [MaxLength(100)] public string? SKU { get; set; } = "TN-WBH-001";
         [MaxLength(100)] public string? ItemTypeCode { get; set; } = "WIRELESS_AUDIO";
         [MaxLength(100)] public string? VendorSkuCode { get; set; } = "TN-WBH-001";
         [MaxLength(100)] public string? Barcode { get; set; } = "8901234567890";
         [MaxLength(100)] public string? WarehouseCode { get; set; } = "WH-TN-001";
-        [MaxLength(100)] public string? FacilityCode { get; set; } = "WH-TN-001";
-        [MaxLength(100)] public string? UniwareFacilityCode { get; set; } = "WH-TN-001";
-        [MaxLength(100)] public string? ChannelCode { get; set; } = "CUSTOM";
-        [MaxLength(100)] public string? UniwareChannelCode { get; set; } = "CUSTOM";
+        [MaxLength(100)] public string? FacilityCode { get; set; } = "WH-TN-001"; // GENERIC ONLY
+        [MaxLength(100)] public string? ChannelCode { get; set; } = "CUSTOM"; // GENERIC ONLY
         [MaxLength(100)] public string? LocationCode { get; set; } = "009";
         [MaxLength(200)] public string? LocationName { get; set; } = "Bandlaguda";
         [MaxLength(100)] public string? ShelfCode { get; set; } = "A-01-01";
@@ -60,14 +50,10 @@ namespace Marketplacesellerportal.Models
 
         public string? ProductName { get; set; }
         public bool? IsSyncedToUniware { get; set; } = false;
-        public DateTime? UniwareSyncDate { get; set; }
+        public DateTime? LastSyncDate { get; set; } // RENAMED from UniwareSyncDate
 
-        // =====================================================
-        // CALCULATED - FIXED: Must be [NotMapped] and getter only
-        // =====================================================
+        // CALCULATED
         [NotMapped] public decimal QuantityOnHand => Quantity ?? 0;
-        [NotMapped] public bool IsFacilityCodeMatch => string.Equals(FacilityCode, UniwareFacilityCode, StringComparison.OrdinalIgnoreCase);
-        [NotMapped] public bool IsChannelCodeMatch => string.Equals(ChannelCode, UniwareChannelCode, StringComparison.OrdinalIgnoreCase);
         [NotMapped] public decimal SellableQuantity => Math.Max(0, (Quantity ?? 0) - (ReservedQuantity ?? 0) - (DamagedQuantity ?? 0));
         [NotMapped] public bool IsLowStock => SellableQuantity <= (ReorderLevel ?? 20);
         [NotMapped] public bool NeedsReorder => IsLowStock;

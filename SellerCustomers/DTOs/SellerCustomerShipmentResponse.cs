@@ -63,6 +63,5 @@
         // === ADD THESE 2 FOR UNIWARE STATUS ===
         public string? CourierStatus { get; set; }
         public string? StatusRemarks { get; set; }
-        public string? UniwareFacilityCode { get; set; }
     }
 }

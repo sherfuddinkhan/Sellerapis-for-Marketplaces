@@ -2,7 +2,6 @@
 using Marketplacesellerportal.Models;
 using Marketplacesellerportal.GoodsReceiptItems.Interfaces;
 using Marketplacesellerportal.GoodsReceiptItems.DTOs;
-using System.Text.Json;
 
 namespace Marketplacesellerportal.GoodsReceiptItems.Controllers
 {
@@ -30,22 +29,18 @@ namespace Marketplacesellerportal.GoodsReceiptItems.Controllers
                 ProductId = x.ProductId,
                 LineNumber = x.LineNumber,
 
-                // Uniware Core Fields
+                // CLEAN - No Uniware prefix
                 SkuCode = x.SkuCode ?? "TN-WBH-001",
                 ItemCode = x.ItemCode ?? "TN-WBH-001",
-                UniwareItemCode = x.UniwareItemCode ?? x.SkuCode ?? "TN-WBH-001",
                 BatchCode = x.BatchCode ?? "BATCH-0928-A",
                 VendorBatchNumber = x.VendorBatchNumber,
                 VendorCode = x.VendorCode ?? "SUP-TN-001",
-                UniwareVendorCode = x.UniwareVendorCode ?? x.VendorCode ?? "SUP-TN-001",
 
-                // 8 Missing Columns - Added with DB Values
                 FacilityCode = x.FacilityCode ?? "TN-WH-01",
-                UniwareFacilityCode = x.UniwareFacilityCode ?? "TN-WH-01",
                 ChannelCode = x.ChannelCode ?? "CUSTOM",
                 BinCode = x.BinCode ?? "BIN-A1",
                 ShelfCode = x.ShelfCode ?? "SHELF-01",
-                UniwareSyncStatus = x.UniwareSyncStatus ?? "Pending",
+                SyncStatus = x.SyncStatus ?? "Pending", // renamed from UniwareSyncStatus
 
                 ReceivedQuantity = x.ReceivedQuantity,
                 AcceptedQuantity = x.AcceptedQuantity,
@@ -61,8 +56,8 @@ namespace Marketplacesellerportal.GoodsReceiptItems.Controllers
                 Status = x.Status,
                 Remarks = x.Remarks,
                 SerialCodes = string.IsNullOrEmpty(x.SerialCodesJson)
-                  ? new List<string>()
-                    : System.Text.Json.JsonSerializer.Deserialize<List<string>>(x.SerialCodesJson) ?? new List<string>(),
+                 ? new List<string>()
+                  : System.Text.Json.JsonSerializer.Deserialize<List<string>>(x.SerialCodesJson) ?? new List<string>(),
                 SerialCodesJson = x.SerialCodesJson
             };
         }
@@ -155,7 +150,6 @@ namespace Marketplacesellerportal.GoodsReceiptItems.Controllers
         }
 
         [HttpPost]
-        [HttpPost]
         public async Task<IActionResult> Create([FromBody] CreateGoodsReceiptItemDto dto)
         {
             if (!ModelState.IsValid) return BadRequest(ModelState);
@@ -174,24 +168,15 @@ namespace Marketplacesellerportal.GoodsReceiptItems.Controllers
                 RejectedQuantity = dto.ReceivedQuantity - dto.AcceptedQuantity,
                 UnitPrice = dto.UnitPrice,
                 TotalAmount = dto.AcceptedQuantity * dto.UnitPrice,
-
-                // Uniware Mandatory - With DB Defaults
                 SkuCode = dto.SkuCode ?? "TN-WBH-001",
                 ItemCode = dto.ItemCode ?? dto.SkuCode ?? "TN-WBH-001",
                 BatchCode = dto.BatchCode ?? "BATCH-0928-A",
                 VendorBatchNumber = dto.VendorBatchNumber ?? "VB-001",
                 VendorCode = dto.VendorCode ?? "SUP-TN-001",
-
-                // 8 Missing Columns - Now Added
-                UniwareItemCode = dto.UniwareItemCode ?? dto.SkuCode ?? "TN-WBH-001",
-                UniwareVendorCode = dto.UniwareVendorCode ?? dto.VendorCode ?? "SUP-TN-001",
                 FacilityCode = dto.FacilityCode ?? "TN-WH-01",
-                UniwareFacilityCode = dto.UniwareFacilityCode ?? "TN-WH-01",
                 ChannelCode = dto.ChannelCode ?? "CUSTOM",
                 BinCode = dto.BinCode ?? "BIN-A1",
                 ShelfCode = dto.ShelfCode ?? "SHELF-01",
-                UniwareSyncStatus = dto.UniwareSyncStatus ?? "Pending",
-
                 Mrp = dto.Mrp ?? 120,
                 Cost = dto.Cost ?? 90,
                 AdditionalCost = dto.AdditionalCost,

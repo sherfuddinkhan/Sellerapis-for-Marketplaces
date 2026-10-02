@@ -70,7 +70,7 @@ namespace Marketplacesellerportal.Database
 
         public DbSet<SellerCustomerEntity> SellerCustomers { get; set; }
 
-
+        public DbSet<FacilityChannelInventory> FacilityChannelInventories { get; set; }
         // =========================================================
         // INVOICE / GENERAL
         // =========================================================

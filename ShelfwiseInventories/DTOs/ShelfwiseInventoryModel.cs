@@ -8,7 +8,6 @@ namespace Marketplacesellerportal.ShelfwiseInventory.DTOs
         public int SellerId { get; set; }
         public int CustomerId { get; set; }
 
-        // These were missing - now added
         public string FacilityCode { get; set; } = "";
         public string ShelfCode { get; set; } = "";
         public string ItemSkuCode { get; set; } = "";
@@ -20,5 +19,16 @@ namespace Marketplacesellerportal.ShelfwiseInventory.DTOs
 
         public DateTime CreatedDate { get; set; }
         public DateTime? UpdatedDate { get; set; }
+
+        // ===== NEW FIELDS FROM DB - ADD THESE =====
+        public decimal? Mrp { get; set; }
+        public long? Mfd { get; set; }
+        public string? VendorCode { get; set; }
+        public string? VendorBatchNumber { get; set; }
+        public string? LotNumber { get; set; }
+        public string? TransferToShelfCode { get; set; }
+        public int? Sla { get; set; }
+        public string? Remarks { get; set; }
+        public int? WarehouseId { get; set; }
     }
 }

@@ -38,9 +38,6 @@ namespace Marketplacesellerportal.Models
         [MaxLength(50)]
         public string? ItemCode { get; set; } = "TN-WBH-001";
 
-        [MaxLength(100)]
-        public string? UniwareItemCode { get; set; } = "TN-WBH-001";
-
         [MaxLength(50)]
         public string? BatchCode { get; set; } = "BATCH-0928-A";
 
@@ -50,15 +47,9 @@ namespace Marketplacesellerportal.Models
         [MaxLength(50)]
         public string? VendorCode { get; set; } = "SUP-TN-001";
 
-        [MaxLength(50)]
-        public string? UniwareVendorCode { get; set; } = "SUP-TN-001";
-
         // Facility / Channel - Uniware needs this
         [MaxLength(50)]
         public string? FacilityCode { get; set; } = "TN-WH-01";
-
-        [MaxLength(50)]
-        public string? UniwareFacilityCode { get; set; } = "TN-WH-01";
 
         [MaxLength(50)]
         public string? ChannelCode { get; set; } = "CUSTOM";
@@ -87,8 +78,7 @@ namespace Marketplacesellerportal.Models
         [MaxLength(100)]
         public string? ItemDetailCode { get; set; } = "DETAIL-001";
 
-        [MaxLength(50)]
-        public string? UniwareSyncStatus { get; set; } = "Pending";
+        [NotMapped] public string? SyncStatus { get; set; }
 
         // STATUS
         [MaxLength(100)]

@@ -205,5 +205,7 @@ namespace Marketplacesellerportal.SellerCustomers.DTOs
         public List<SellerCustomerMarketplaceListingInventoryResponse> MarketplaceListingInventories { get; set; } = new();
         public List<SellerCustomerAmazonInventorySyncResponse> AmazonInventorySyncs { get; set; } = new();
 
+        public List<SellerCustomerFacilityChannelInventoryResponse> FacilityChannels { get; set; } = new();
+
     }
 }

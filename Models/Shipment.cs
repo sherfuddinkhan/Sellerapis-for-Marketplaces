@@ -45,9 +45,6 @@ namespace Marketplacesellerportal.Models
         [MaxLength(100)]
         public string? FacilityCode { get; set; } = "WH-TN-001";
 
-        [MaxLength(100)]
-        public string? UniwareFacilityCode { get; set; }
-
         // COURIER
         [MaxLength(100)]
         public string? CourierName { get; set; }

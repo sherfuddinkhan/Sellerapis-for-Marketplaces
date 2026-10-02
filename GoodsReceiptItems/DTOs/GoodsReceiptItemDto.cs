@@ -20,13 +20,11 @@
 
         // ===== ADD THESE 8 MISSING COLUMNS =====
         public string? FacilityCode { get; set; }
-        public string? UniwareFacilityCode { get; set; }
+
         public string? ChannelCode { get; set; }
-        public string? UniwareItemCode { get; set; }
-        public string? UniwareVendorCode { get; set; }
         public string? BinCode { get; set; }
         public string? ShelfCode { get; set; }
-        public string? UniwareSyncStatus { get; set; }
+        public string? SyncStatus { get; set; }
 
         public decimal ReceivedQuantity { get; set; }
         public decimal AcceptedQuantity { get; set; }

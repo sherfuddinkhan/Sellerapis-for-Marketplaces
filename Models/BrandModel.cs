@@ -28,7 +28,6 @@ namespace Marketplacesellerportal.Models
 
         // === CODE-ONLY - NOT IN DB ===
         [NotMapped] public string? ModelCode { get; set; }
-        [NotMapped] public string? UniwareModelCode { get; set; }
         [NotMapped] public string? Barcode { get; set; }
         [NotMapped] public string? BarcodeType { get; set; }
         [NotMapped] public string? BarcodeImageUrl { get; set; }
@@ -36,7 +35,6 @@ namespace Marketplacesellerportal.Models
         [NotMapped] public DateTime? BarcodeVerifiedDate { get; set; }
         [NotMapped] public string? ChannelModelId { get; set; }
         [NotMapped] public string? ChannelCode { get; set; }
-        [NotMapped] public string? UniwareChannelCode { get; set; }
         [NotMapped] public string? ChannelProductId { get; set; }
         [NotMapped] public string? BatchId { get; set; }
         [NotMapped] public int? SellerId { get; set; }

@@ -180,69 +180,110 @@ public async Task<IEnumerable<StockLedger>>
                 .OrderByDescending(x => x.TransactionDate)
                 .ToListAsync();
         }
-        
-// =========================================================
-// FILTERS
-//
-// GET /api/stock-ledgers/filters
-// =========================================================
 
-public async Task<StockLedgerFilters>
-    GetFiltersAsync()
+        // =========================================================
+        // FILTERS
+        //
+        // GET /api/stock-ledgers/filters
+        // =========================================================
+        // =========================================================
+        // FILTERS
+        //
+        // GET /api/stock-ledgers/filters
+        // =========================================================
+
+        public async Task<StockLedgerFilters>
+            GetFiltersAsync()
         {
+            // =====================================================
+            // TRANSACTION TYPES
+            // =====================================================
+
             var transactionTypes =
                 await _context.StockLedgers
                     .AsNoTracking()
                     .Where(x =>
                         x.TransactionType != null &&
                         x.TransactionType != "")
-                    .Select(x => x.TransactionType)
+                    .Select(x => x.TransactionType!)
                     .Distinct()
                     .OrderBy(x => x)
                     .ToListAsync();
+
+
+            // =====================================================
+            // SELLERS
+            // =====================================================
 
             var sellers =
                 await _context.StockLedgers
                     .AsNoTracking()
-                    .Select(x => x.SellerId)
+                    .Where(x => x.SellerId.HasValue)
+                    .Select(x => x.SellerId!.Value)
                     .Distinct()
                     .OrderBy(x => x)
                     .ToListAsync();
+
+
+            // =====================================================
+            // CUSTOMERS
+            // =====================================================
 
             var customers =
                 await _context.StockLedgers
                     .AsNoTracking()
-                    .Select(x => x.CustomerId)
+                    .Where(x => x.CustomerId.HasValue)
+                    .Select(x => x.CustomerId!.Value)
                     .Distinct()
                     .OrderBy(x => x)
                     .ToListAsync();
+
+
+            // =====================================================
+            // PRODUCTS
+            // =====================================================
 
             var products =
                 await _context.StockLedgers
                     .AsNoTracking()
-                    .Select(x => x.ProductId)
+                    .Where(x => x.ProductId.HasValue)
+                    .Select(x => x.ProductId!.Value)
                     .Distinct()
                     .OrderBy(x => x)
                     .ToListAsync();
+
+
+            // =====================================================
+            // WAREHOUSES
+            // =====================================================
 
             var warehouses =
                 await _context.StockLedgers
                     .AsNoTracking()
-                    .Select(x => x.WarehouseId)
+                    .Where(x => x.WarehouseId.HasValue)
+                    .Select(x => x.WarehouseId!.Value)
                     .Distinct()
                     .OrderBy(x => x)
                     .ToListAsync();
 
+
+            // =====================================================
+            // RETURN FILTERS
+            // =====================================================
+
             return new StockLedgerFilters
             {
                 TransactionTypes = transactionTypes,
+
                 SellerIds = sellers,
+
                 CustomerIds = customers,
+
                 ProductIds = products,
+
                 WarehouseIds = warehouses
             };
         }
-
 
         // =========================================================
         // PAGINATION

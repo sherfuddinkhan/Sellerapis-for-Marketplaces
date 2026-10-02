@@ -152,7 +152,13 @@ namespace Marketplacesellerportal.Products.Services
                 ShippingChargeNational = dto.ShippingChargeNational,
                 IsComboPack = dto.IsComboPack,
                 ExternalProductId = dto.ExternalProductId ?? string.Empty,       // <-- ADDED NOW - MISSING BEFORE
-                ExternalSystemCode = dto.ExternalSystemCode ?? string.Empty     // <-- ADDED NOW - MISSING BEFORE
+                ExternalSystemCode = dto.ExternalSystemCode ?? string.Empty,    // <-- ADDED NOW - MISSING BEFORE
+                CategoryCode = dto.CategoryCode ?? string.Empty, // was missing
+                CountryOfOrigin = dto.AddressLabel?.CountryOfOrigin ?? "India", // was missing
+                ManufacturerDetails = dto.AddressLabel?.ManufacturerDetails, // was missing
+                ImporterDetails = dto.AddressLabel?.ImporterDetails, // was missing
+                PackerDetails = dto.AddressLabel?.PackerDetails, // was missing
+                ShelfLifeSeconds = dto.AddressLabel?.ShelfLifeSeconds, // was missing
             };
 
             await _repository.AddAsync(product);

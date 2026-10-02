@@ -23,7 +23,7 @@ namespace Marketplacesellerportal.Database.Configurations
 
             // DB doesn't have ModelCode - generate in code
             builder.Ignore(x => x.ModelCode);
-            builder.Ignore(x => x.UniwareModelCode);
+            builder.Ignore(x => x.ModelCode);
             builder.Ignore(x => x.Barcode);
             builder.Ignore(x => x.BarcodeType);
             builder.Ignore(x => x.BarcodeImageUrl);
@@ -31,7 +31,6 @@ namespace Marketplacesellerportal.Database.Configurations
             builder.Ignore(x => x.BarcodeVerifiedDate);
             builder.Ignore(x => x.ChannelModelId);
             builder.Ignore(x => x.ChannelCode);
-            builder.Ignore(x => x.UniwareChannelCode);
             builder.Ignore(x => x.ChannelProductId);
             builder.Ignore(x => x.BatchId);
             builder.Ignore(x => x.SellerId);

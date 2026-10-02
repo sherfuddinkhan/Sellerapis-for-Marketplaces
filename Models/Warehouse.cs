@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
@@ -15,11 +14,9 @@ namespace Marketplacesellerportal.Models
         [Required][MaxLength(50)] public string WarehouseCode { get; set; } = string.Empty;
         [Required][MaxLength(200)] public string WarehouseName { get; set; } = string.Empty;
 
-        // Uniware - Single definition only
-        [MaxLength(100)] public string? FacilityCode { get; set; } = "WH-TN-001";
-        [MaxLength(100)] public string? UniwareFacilityCode { get; set; }
         [MaxLength(200)] public string? FacilityName { get; set; }
         [MaxLength(100)] public string? FacilityType { get; set; }
+        [MaxLength(100)] public string? FacilityCode { get; set; }
         [MaxLength(100)] public string? LocationCode { get; set; }
 
         [MaxLength(250)] public string? AddressLine1 { get; set; }
@@ -35,7 +32,7 @@ namespace Marketplacesellerportal.Models
         [MaxLength(20)] public string? Phone { get; set; }
         [MaxLength(150)] public string? Email { get; set; }
 
-        public bool? IsActive { get; set; }
+        public bool? IsActive { get; set; } = true;
         public bool? IsDefault { get; set; } = false;
         public bool? IsQCEnabled { get; set; } = true;
         public bool? IsPutawayEnabled { get; set; } = true;
@@ -65,13 +62,16 @@ namespace Marketplacesellerportal.Models
         [MaxLength(20)] public string? ExternalSystemCode { get; set; }
         [Column("flipkart_location_id")][MaxLength(50)] public string? FlipkartLocationId { get; set; }
 
-        [NotMapped] public bool IsFacilityCodeMatch => !string.IsNullOrWhiteSpace(FacilityCode) && !string.IsNullOrWhiteSpace(UniwareFacilityCode) && string.Equals(FacilityCode, UniwareFacilityCode, StringComparison.OrdinalIgnoreCase);
+        // No Uniware suffix - compares FacilityCode vs LocationCode
+        [NotMapped]
+        public bool IsFacilityCodeMatch =>
+           !string.IsNullOrWhiteSpace(FacilityCode) &&
+           !string.IsNullOrWhiteSpace(LocationCode) &&
+            string.Equals(FacilityCode, LocationCode, StringComparison.OrdinalIgnoreCase);
+
         [NotMapped] public int? TotalInventory { get; set; }
         [NotMapped] public int? ReservedInventory { get; set; }
         [NotMapped] public int? DamagedInventory { get; set; }
         [NotMapped] public int? SellableInventory => TotalInventory.HasValue ? Math.Max(0, TotalInventory.Value - (ReservedInventory ?? 0) - (DamagedInventory ?? 0)) : null;
-
-        public ICollection<ProductInventory> Inventories { get; set; } = [];
-        public ICollection<ProductPrice> Prices { get; set; } = [];
     }
 }

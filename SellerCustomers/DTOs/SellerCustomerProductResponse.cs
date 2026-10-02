@@ -63,8 +63,7 @@ public class SellerCustomerProductResponse
 
     // Uniware fields
     public string? ProductCode { get; set; }
-    public string? UniwareItemCode { get; set; }
-    public string? UniwareProductCode { get; set; }
+    public string? ItemCode { get; set; }
     public string? ItemType { get; set; } = "STANDARD";
     public int? ProductXID { get; set; }
     public decimal? CostPrice { get; set; }
@@ -87,9 +86,9 @@ public class SellerCustomerProductResponse
     public string? PackerDetails { get; set; }
     public string? CountryOfOrigin { get; set; }
     public long? ShelfLifeSeconds { get; set; }
-    public string? ItemSkuForUniware { get; set; }
-    public string? CategoryCodeForUniware { get; set; }
-    public string? BrandForUniware => BrandName ?? "Samsung";
+    public string? ItemSku { get; set; }
+    public string? CategoryCode { get; set; }
+    public string? Brand { get; set; }
 }
 
 

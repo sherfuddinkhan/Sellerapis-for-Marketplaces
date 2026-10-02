@@ -17,16 +17,13 @@ namespace Marketplacesellerportal.Models
 
         // Uniware - Mandatory
         [MaxLength(100)] public string? CategoryCode { get; set; }
-        [MaxLength(100)] public string? UniwareCategoryCode { get; set; }
         [MaxLength(1000)] public string? CategoryPath { get; set; }
-        [MaxLength(1000)] public string? UniwareCategoryPath { get; set; }
         public int? CategoryLevel { get; set; }
         public int? DisplayOrder { get; set; }
         [MaxLength(1000)] public string? ImageUrl { get; set; }
         [MaxLength(100)] public string? BatchId { get; set; }
         public bool? IsBulkUpload { get; set; } = false;
         [MaxLength(100)] public string? ChannelCode { get; set; } = "CUSTOM";
-        [MaxLength(100)] public string? UniwareChannelCode { get; set; }
         public int? SellerId { get; set; } = 6;
         public int? CustomerId { get; set; } = 3;
 
@@ -35,7 +32,7 @@ namespace Marketplacesellerportal.Models
         [MaxLength(100)] public string? UpdatedBy { get; set; }
 
         // Calculated
-        [NotMapped] public bool IsCodeMatch => !string.IsNullOrWhiteSpace(CategoryCode) && !string.IsNullOrWhiteSpace(UniwareCategoryCode) && string.Equals(CategoryCode, UniwareCategoryCode, StringComparison.OrdinalIgnoreCase);
+        [NotMapped] public bool IsCodeMatch => !string.IsNullOrWhiteSpace(CategoryCode) && !string.IsNullOrWhiteSpace(CategoryCode) && string.Equals(CategoryCode,CategoryCode, StringComparison.OrdinalIgnoreCase);
         [NotMapped] public int ProductCount { get; set; }
         [NotMapped] public int Level => CategoryLevel ?? (ParentCategoryId == null ? 1 : 2);
         [NotMapped] public string? ParentCategoryName => ParentCategory?.CategoryName;

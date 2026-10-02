@@ -13,13 +13,13 @@ public class Brand
     public string? BrandCode { get; set; }
     public string? BrandName { get; set; }
     public string? Description { get; set; }
-    public bool IsActive { get; set; }
-    public DateTime CreatedDate { get; set; } = DateTime.UtcNow;
+    public bool? IsActive { get; set; }
+    public DateTime? CreatedDate { get; set; } = DateTime.UtcNow;
     public DateTime? UpdatedDate { get; set; }
-    public string? UniwareBrandCode { get; set; }
+
     public string? ChannelBrandId { get; set; }
     public string? ChannelCode { get; set; }
-    public string? UniwareChannelCode { get; set; }
+
     public string? LogoUrl { get; set; }
     public string? WebsiteUrl { get; set; }
     public string? BatchId { get; set; }
@@ -30,8 +30,8 @@ public class Brand
 
     [NotMapped]
     public bool IsCodeMatch => !string.IsNullOrWhiteSpace(BrandCode)
-        && !string.IsNullOrWhiteSpace(UniwareBrandCode)
-        && string.Equals(BrandCode, UniwareBrandCode, StringComparison.OrdinalIgnoreCase);
+        && !string.IsNullOrWhiteSpace(BrandCode)
+        && string.Equals(BrandCode, BrandCode, StringComparison.OrdinalIgnoreCase);
 
     [NotMapped] public int ProductCount { get; set; }
     [NotMapped] public int ModelCount { get; set; }
