@@ -1,5 +1,6 @@
 ﻿using Marketplacesellerportal.ReversePickup.DTOs;
 using Marketplacesellerportal.ReversePickups.DTOs;
+using System;
 using System.Threading.Tasks;
 
 namespace Marketplacesellerportal.ReversePickups.Interfaces
@@ -11,5 +12,9 @@ namespace Marketplacesellerportal.ReversePickups.Interfaces
         Task<ReversePickupResponse> CreateAsync(ReversePickupModel model);
         Task<ReversePickupResponse> UpdateAsync(int id, ReversePickupModel model);
         Task<ReversePickupResponse> DeleteAsync(int id, int sellerId, int customerId);
+        Task<ReversePickupListResponse> GetAllAsync();
+
+
+
     }
 }

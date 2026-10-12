@@ -2192,13 +2192,13 @@ namespace Marketplacesellerportal.SellerCustomers.Services
 
                                 HsnCode = ii.Hsncode ?? string.Empty,
 
-        GstPer = (decimal?)ii.GstPer,
+                                 GstPer = (decimal?)ii.GstPer,
 
-        SgstPer = (decimal?)ii.SgstPer,
+                             SgstPer = (decimal?)ii.SgstPer,
 
-        SgstAmount = (decimal?)ii.SgstAmount,
+                             SgstAmount = (decimal?)ii.SgstAmount,
 
-        CgstPer = (decimal?)ii.CgstPer,
+                             CgstPer = (decimal?)ii.CgstPer,
 
         CgstAmount = (decimal?)ii.CgstAmount,
 

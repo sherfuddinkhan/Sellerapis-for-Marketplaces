@@ -800,9 +800,12 @@ builder.Services.AddScoped<
 
 
 // =========================================================
-// CUSTOMER
+// BrandModelService
 // =========================================================
+builder.Services.AddScoped<IBrandService, BrandService>();
 
+builder.Services.AddScoped<IBrandRepository, BrandRepository>();
+builder.Services.AddScoped<IBrandModelRepository, BrandModelRepository>();
 // =========================================================
 // SELLER CUSTOMER
 // =========================================================

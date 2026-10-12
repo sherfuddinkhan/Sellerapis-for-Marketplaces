@@ -14,6 +14,19 @@ namespace Marketplacesellerportal.ReversePickups.Controllers
         private readonly IReversePickupService _svc;
         public ReversePickupController(IReversePickupService svc) => _svc = svc;
 
+        [HttpGet("all")]
+           public async Task<IActionResult> GetAll()
+        {
+            var result = await _svc.GetAllAsync();
+
+            if (!result.Success)
+                return BadRequest(result);
+
+            return Ok(result);
+        }
+
+
+
         [HttpGet("seller/{sellerId}/customer/{customerId}")]
         public async Task<IActionResult> GetList(int sellerId, int customerId, [FromQuery] int page = 1, [FromQuery] int size = 20)
         {

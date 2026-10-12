@@ -107,5 +107,22 @@ namespace Marketplacesellerportal.Gatepasses.Services
             CustomerId = m.CustomerId,
             CreatedDate = m.CreatedDate
         };
+
+        public async Task<GatepassListResponse> GetAllAsync()
+        {
+            var items = await _repo.GetAllAsync();
+
+            var data = items.Select(Map).ToList();
+
+            return new GatepassListResponse
+            {
+                Success = true,
+                Message = "Gatepasses retrieved successfully",
+                Data = data,
+                TotalCount = data.Count,
+                PageNumber = 1,
+                PageSize = data.Count
+            };
+        }
     }
 }

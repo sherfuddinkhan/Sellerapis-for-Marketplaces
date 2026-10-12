@@ -8,6 +8,7 @@ namespace Marketplacesellerportal.Models
     {
         [Key]
         [Column("supplierAddressId")]
+        [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         public int SupplierAddressId { get; set; }
 
         [Column("supplierId")]
@@ -38,10 +39,10 @@ namespace Marketplacesellerportal.Models
         public string? Phone { get; set; }
 
         [Column("latitude")]
-        public string? Latitude { get; set; }
+        public decimal? Latitude { get; set; }
 
         [Column("longitude")]
-        public string? Longitude { get; set; }
+        public decimal? Longitude { get; set; }
 
         [Column("SellerId")]
         public int SellerId { get; set; }

@@ -15,7 +15,13 @@ namespace Marketplacesellerportal.ReversePickups.Repositories
     {
         private readonly ApplicationDbContext _context;
         public ReversePickupRepository(ApplicationDbContext context) => _context = context;
-
+        public async Task<List<ReversePickupEntity>> GetAllAsync()
+        {
+            return await _context.ReversePickups
+                .AsNoTracking()
+                .OrderByDescending(x => x.ReversePickupId)
+                .ToListAsync();
+        }
         public async Task<ReversePickupEntity?> GetByIdAsync(int id, int sellerId, int customerId)
             => await _context.ReversePickups.AsNoTracking()
                 .FirstOrDefaultAsync(x => x.ReversePickupId == id && x.SellerId == sellerId && x.CustomerId == customerId);
@@ -97,7 +103,7 @@ namespace Marketplacesellerportal.ReversePickups.Repositories
             await _context.SaveChangesAsync();
             return en.Entity;
         }
-
+     
         public async Task<ReversePickupEntity?> UpdateAsync(ReversePickupEntity e)
         {
             var ex = await _context.ReversePickups.FirstOrDefaultAsync(x => x.ReversePickupId == e.ReversePickupId && x.SellerId == e.SellerId && x.CustomerId == e.CustomerId);
@@ -119,9 +125,9 @@ namespace Marketplacesellerportal.ReversePickups.Repositories
             return ex;
         }
 
-        public async Task<bool> DeleteAsync(int id, int s, int c)
+        public async Task<bool> DeleteAsync(int id, int sellerId, int customerId)
         {
-            var e = await _context.ReversePickups.FirstOrDefaultAsync(x => x.ReversePickupId == id && x.SellerId == s && x.CustomerId == c);
+            var e = await _context.ReversePickups.FirstOrDefaultAsync(x => x.ReversePickupId == id && x.SellerId == sellerId && x.CustomerId == customerId);
             if (e == null) return false;
             _context.ReversePickups.Remove(e);
             await _context.SaveChangesAsync();
