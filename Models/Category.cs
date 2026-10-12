@@ -23,16 +23,15 @@ namespace Marketplacesellerportal.Models
         [MaxLength(1000)] public string? ImageUrl { get; set; }
         [MaxLength(100)] public string? BatchId { get; set; }
         public bool? IsBulkUpload { get; set; } = false;
-        [MaxLength(100)] public string? ChannelCode { get; set; } = "CUSTOM";
-        public int? SellerId { get; set; } = 6;
-        public int? CustomerId { get; set; } = 3;
+        [MaxLength(100)] public string? ChannelCode { get; set; }
+        public int? SellerId { get; set; } 
+        public int? CustomerId { get; set; } 
 
         // FIXED: You had CreatedBy missing for mapping
-        [MaxLength(100)] public string? CreatedBy { get; set; } = "System";
+        [MaxLength(100)] public string? CreatedBy { get; set; } 
         [MaxLength(100)] public string? UpdatedBy { get; set; }
 
         // Calculated
-        [NotMapped] public bool IsCodeMatch => !string.IsNullOrWhiteSpace(CategoryCode) && !string.IsNullOrWhiteSpace(CategoryCode) && string.Equals(CategoryCode,CategoryCode, StringComparison.OrdinalIgnoreCase);
         [NotMapped] public int ProductCount { get; set; }
         [NotMapped] public int Level => CategoryLevel ?? (ParentCategoryId == null ? 1 : 2);
         [NotMapped] public string? ParentCategoryName => ParentCategory?.CategoryName;

@@ -7,6 +7,7 @@ namespace Marketplacesellerportal.Models
     public class SupplierContacts
     {
         [Key]
+        [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         [Column("partyContactId")]
         public int PartyContactId { get; set; }
 

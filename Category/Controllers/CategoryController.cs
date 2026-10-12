@@ -3,7 +3,7 @@ using Marketplacesellerportal.Category.DTOs;
 using Marketplacesellerportal.Models;
 using Microsoft.AspNetCore.Mvc;
 
-using CategoryModel = Marketplacesellerportal.Models.Category;
+using CategoryEntity = Marketplacesellerportal.Models.Category;
 
 namespace Marketplacesellerportal.Categories.Controllers
 {
@@ -20,24 +20,6 @@ namespace Marketplacesellerportal.Categories.Controllers
 
         // =========================================================
         // GET ALL CATEGORIES - LIST
-        //
-        // Purpose:
-        // Used for dropdowns / filters / selection
-        //
-        // GET:
-        // /api/categories/list
-        //
-        // Response:
-        // [
-        //     {
-        //         "categoryId": 1,
-        //         "categoryName": "Mobiles"
-        //     },
-        //     {
-        //         "categoryId": 2,
-        //         "categoryName": "Laptops"
-        //     }
-        // ]
         // =========================================================
 
         [HttpGet("list")]
@@ -221,13 +203,70 @@ namespace Marketplacesellerportal.Categories.Controllers
         // =========================================================
         [HttpPost]
         public async Task<IActionResult> Create(
-            [FromBody] CategoryModel category)
+     [FromBody] CategoryCreateRequest request)
         {
+            var category = new CategoryEntity
+            {
+                CategoryId = request.CategoryId,
+                CategoryName = request.CategoryName,
+                ParentCategoryId = request.ParentCategoryId,
+                Description = request.Description,
+                IsActive = request.IsActive,
+                CreatedDate = request.CreatedDate,
+                UpdatedDate = request.UpdatedDate,
+                CategoryCode = request.CategoryCode,
+                CategoryPath = request.CategoryPath,
+                CategoryLevel = request.CategoryLevel,
+                DisplayOrder = request.DisplayOrder,
+                ImageUrl = request.ImageUrl,
+                BatchId = request.BatchId,
+                IsBulkUpload = request.IsBulkUpload,
+                ChannelCode = request.ChannelCode,
+                SellerId = request.SellerId,
+                CustomerId = request.CustomerId,
+                CreatedBy = request.CreatedBy,
+                UpdatedBy = request.UpdatedBy,
+                BannerUrl = request.BannerUrl,
+                IconUrl = request.IconUrl,
+                MetaTitle = request.MetaTitle,
+                MetaDescription = request.MetaDescription,
+                IsSystemDefined = request.IsSystemDefined,
+                HSNCode = request.HSNCode,
+                GSTPercentage = request.GSTPercentage
+            };
+
             var result = await _service.CreateAsync(category);
 
-            return Ok(result);
+            return Ok(new
+            {
+                result.CategoryId,
+                result.CategoryName,
+                result.ParentCategoryId,
+                result.Description,
+                result.IsActive,
+                result.CreatedDate,
+                result.UpdatedDate,
+                result.CategoryCode,
+                result.CategoryPath,
+                result.CategoryLevel,
+                result.DisplayOrder,
+                result.ImageUrl,
+                result.BatchId,
+                result.IsBulkUpload,
+                result.ChannelCode,
+                result.SellerId,
+                result.CustomerId,
+                result.CreatedBy,
+                result.UpdatedBy,
+                result.BannerUrl,
+                result.IconUrl,
+                result.MetaTitle,
+                result.MetaDescription,
+                result.IsSystemDefined,
+                result.HSNCode,
+                result.GSTPercentage
+            });
         }
-
         // =========================================================
         // UPDATE CATEGORY
         // =========================================================
@@ -236,7 +275,7 @@ namespace Marketplacesellerportal.Categories.Controllers
         [HttpPut("{categoryId:int}")]
         public async Task<IActionResult> Update(
             int categoryId,
-            [FromBody] CategoryModel category)
+            [FromBody] CategoryEntity category)
         {
             var result = await _service.UpdateAsync(
                 categoryId,

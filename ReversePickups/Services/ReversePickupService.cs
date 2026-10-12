@@ -1,10 +1,5 @@
-﻿using Marketplacesellerportal.DTOs;
-using Marketplacesellerportal.Interfaces;
-using Marketplacesellerportal.ReversePickup.DTOs;
-using Marketplacesellerportal.ReversePickups.DTOs;
+﻿using Marketplacesellerportal.ReversePickups.DTOs;
 using Marketplacesellerportal.ReversePickups.Interfaces;
-using System.Linq;
-using System.Threading.Tasks;
 using ReversePickupEntity = Marketplacesellerportal.Models.ReversePickup;
 
 namespace Marketplacesellerportal.ReversePickups.Services
@@ -14,9 +9,24 @@ namespace Marketplacesellerportal.ReversePickups.Services
         private readonly IReversePickupRepository _repo;
         public ReversePickupService(IReversePickupRepository repo) => _repo = repo;
 
-        public async Task<ReversePickupResponse> GetByIdAsync(int id, int s, int c)
+        public async Task<ReversePickupListResponse> GetAllAsync()
         {
-            var e = await _repo.GetByIdAsync(id, s, c);
+            var items = await _repo.GetAllAsync();
+            var list = items.Select(Map).ToList();
+            return new ReversePickupListResponse
+            {
+                Success = true,
+                Message = "All reverse pickups fetched",
+                Data = list,
+                TotalCount = list.Count,
+                PageNumber = 1,
+                PageSize = list.Count
+            };
+        }
+
+        public async Task<ReversePickupResponse> GetByIdAsync(int id, int sellerId, int customerId)
+        {
+            var e = await _repo.GetByIdAsync(id, sellerId, customerId);
             if (e == null) return new ReversePickupResponse { Success = false, Message = "Not found" };
             return new ReversePickupResponse { Success = true, Data = Map(e) };
         }
@@ -24,7 +34,14 @@ namespace Marketplacesellerportal.ReversePickups.Services
         public async Task<ReversePickupListResponse> GetListAsync(ReversePickupListRequest req)
         {
             var (items, total) = await _repo.GetListAsync(req);
-            return new ReversePickupListResponse { Success = true, Data = items.Select(Map).ToList(), TotalCount = total, PageNumber = req.PageNumber, PageSize = req.PageSize };
+            return new ReversePickupListResponse
+            {
+                Success = true,
+                Data = items.Select(Map).ToList(),
+                TotalCount = total,
+                PageNumber = req.PageNumber,
+                PageSize = req.PageSize
+            };
         }
 
         public async Task<ReversePickupResponse> CreateAsync(ReversePickupModel m)
@@ -42,10 +59,25 @@ namespace Marketplacesellerportal.ReversePickups.Services
             return new ReversePickupResponse { Success = true, Message = "Updated", Data = Map(up) };
         }
 
-        public async Task<ReversePickupResponse> DeleteAsync(int id, int s, int c)
+        // FIXED - This matches your Interface exactly
+        public async Task<ReversePickupResponse> DeleteAsync(int id, int sellerId, int customerId)
         {
-            var ok = await _repo.DeleteAsync(id, s, c);
-            return new ReversePickupResponse { Success = ok, Message = ok ? "Deleted" : "Not found" };
+            try
+            {
+                var entity = await _repo.GetByIdAsync(id, sellerId, customerId);
+                if (entity == null)
+                    return new ReversePickupResponse { Success = false, Message = $"Not found: {id}/{sellerId}/{customerId}" };
+
+                var ok = await _repo.DeleteAsync(id, sellerId, customerId);
+                if (!ok)
+                    return new ReversePickupResponse { Success = false, Message = "Delete failed in repo" };
+
+                return new ReversePickupResponse { Success = true, Message = "Deleted successfully" };
+            }
+            catch (Exception ex)
+            {
+                return new ReversePickupResponse { Success = false, Message = ex.InnerException?.Message ?? ex.Message };
+            }
         }
 
         private static ReversePickupModel Map(ReversePickupEntity e) => new()
@@ -71,7 +103,6 @@ namespace Marketplacesellerportal.ReversePickups.Services
 
         private static ReversePickupEntity MapToEntity(ReversePickupModel m) => new()
         {
-            ReversePickupId = m.ReversePickupId,
             ReversePickupNo = m.ReversePickupNo,
             SaleOrderCode = m.SaleOrderCode,
             SaleOrderItemCode = m.SaleOrderItemCode,
@@ -87,7 +118,7 @@ namespace Marketplacesellerportal.ReversePickups.Services
             SellerId = m.SellerId,
             CustomerId = m.CustomerId,
             CreatedDate = m.CreatedDate,
-            UpdatedDate = m.UpdatedDate
+            UpdatedDate = DateTime.UtcNow
         };
     }
 }

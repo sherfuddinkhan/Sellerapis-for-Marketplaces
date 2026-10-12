@@ -13,6 +13,7 @@ namespace Marketplacesellerportal.Gatepasses.Interfaces
         Task<Gatepass?> UpdateAsync(Gatepass entity);
         Task<bool> DeleteAsync(int gatepassId, int sellerId, int customerId);
         Task<bool> ExistsAsync(int gatepassId, int sellerId, int customerId);
+        Task<List<Gatepass>> GetAllAsync();
     }
 }
 

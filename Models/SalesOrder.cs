@@ -91,8 +91,7 @@ namespace Marketplacesellerportal.Models
         [NotMapped] public string? EmailAddress { get => Email_Address; set => Email_Address = value; }
 
         [MaxLength(50)] public string? GSTIN { get; set; }
-        [NotMapped] public string? Gstin { get => GSTIN; set => GSTIN = value; }
-
+ 
         [MaxLength(100)] public string? DeliveryNote { get; set; }
         [MaxLength(200)] public string? ModeorTermsOfPayment { get; set; }
         [MaxLength(200)] public string? OtherReferences { get; set; }

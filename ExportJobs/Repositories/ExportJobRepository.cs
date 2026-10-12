@@ -17,7 +17,12 @@ namespace Marketplacesellerportal.ExportJobs.Repositories
         }
 
         public async Task<List<ExportJob>> GetAllAsync()
-            => await _context.ExportJobs.ToListAsync();
+        {
+            return await _context.ExportJobs
+                .AsNoTracking()
+                .OrderBy(x => x.ExportJobId)
+                .ToListAsync();
+        }
 
         public async Task<ExportJob?> GetByIdAsync(int id)
             => await _context.ExportJobs.FindAsync(id);

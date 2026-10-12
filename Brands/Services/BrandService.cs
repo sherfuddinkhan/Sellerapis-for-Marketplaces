@@ -1,256 +1,182 @@
 ﻿using Marketplacesellerportal.Brands.DTOs;
 using Marketplacesellerportal.Brands.Interfaces;
-
 using BrandEntity = Marketplacesellerportal.Models.Brand;
+using BrandModelEntity = Marketplacesellerportal.Models.BrandModel;
 
 namespace Marketplacesellerportal.Brands.Services
 {
     public class BrandService : IBrandService
     {
-        private readonly IBrandRepository _repository;
+        private readonly IBrandRepository _brandRepo;
+        private readonly IBrandModelRepository _modelRepo;
 
-
-        // =========================================================
-        // CONSTRUCTOR
-        // =========================================================
-
-        public BrandService(
-            IBrandRepository repository)
+        public BrandService(IBrandRepository brandRepo, IBrandModelRepository modelRepo)
         {
-            _repository = repository;
+            _brandRepo = brandRepo;
+            _modelRepo = modelRepo;
         }
 
-
-        // =========================================================
-        // GET ALL BRANDS
-        // =========================================================
-
-        public async Task<IEnumerable<BrandResponse>>
-            GetAllAsync()
+        public async Task<IEnumerable<BrandResponse>> GetAllAsync()
         {
-            var brands =
-                await _repository.GetAllAsync();
-
+            var brands = await _brandRepo.GetAllAsync();
             return brands.Select(x => new BrandResponse
             {
-                BrandId =
-                    x.BrandId,
-
-                BrandCode =
-                    x.BrandCode,
-
-                BrandName =
-                    x.BrandName,
-
-                Description =
-                    x.Description,
-
-                // Brand.IsActive is bool?
-                // BrandResponse.IsActive is bool
-                IsActive =
-                    x.IsActive ?? false,
-
-                ProductCount =
-                    x.Products?.Count ?? 0,
-
-                ModelCount =
-                    x.BrandModels?.Count ?? 0
+                BrandId = x.BrandId,
+                BrandCode = x.BrandCode,
+                BrandName = x.BrandName,
+                Description = x.Description,
+                IsActive = x.IsActive ?? false,
+                ProductCount = x.Products?.Count ?? 0,
+                ModelCount = x.BrandModels?.Count ?? 0
             });
         }
 
-
-        // =========================================================
-        // GET BRAND BY ID
-        // =========================================================
-
-        public async Task<BrandResponse?>
-            GetByIdAsync(int brandId)
+        public async Task<BrandResponse?> GetByIdAsync(int brandId)
         {
-            var brand =
-                await _repository.GetByIdAsync(brandId);
-
-            if (brand == null)
-                return null;
-
+            var brand = await _brandRepo.GetByIdAsync(brandId);
+            if (brand == null) return null;
             return new BrandResponse
             {
-                BrandId =
-                    brand.BrandId,
-
-                BrandCode =
-                    brand.BrandCode,
-
-                BrandName =
-                    brand.BrandName,
-
-                Description =
-                    brand.Description,
-
-                // bool? -> bool
-                IsActive =
-                    brand.IsActive ?? false,
-
-                ProductCount =
-                    brand.Products?.Count ?? 0,
-
-                ModelCount =
-                    brand.BrandModels?.Count ?? 0
+                BrandId = brand.BrandId,
+                BrandCode = brand.BrandCode,
+                BrandName = brand.BrandName,
+                Description = brand.Description,
+                IsActive = brand.IsActive ?? false,
+                ProductCount = brand.Products?.Count ?? 0,
+                ModelCount = brand.BrandModels?.Count ?? 0
             };
         }
 
-
-        // =========================================================
-        // GET ACTIVE BRANDS
-        // =========================================================
-
-        public async Task<IEnumerable<BrandResponse>>
-            GetActiveBrandsAsync()
+        public async Task<IEnumerable<BrandResponse>> GetActiveBrandsAsync()
         {
-            var brands =
-                await _repository.GetActiveBrandsAsync();
-
+            var brands = await _brandRepo.GetActiveBrandsAsync();
             return brands.Select(x => new BrandResponse
             {
-                BrandId =
-                    x.BrandId,
-
-                BrandCode =
-                    x.BrandCode,
-
-                BrandName =
-                    x.BrandName,
-
-                IsActive =
-                    x.IsActive ?? false
+                BrandId = x.BrandId,
+                BrandCode = x.BrandCode,
+                BrandName = x.BrandName,
+                Description = x.Description,
+                IsActive = x.IsActive ?? false
             });
         }
 
-
-        // =========================================================
-        // CREATE BRAND
-        // =========================================================
-
-        public async Task<bool>
-            CreateAsync(CreateBrandRequest request)
+        public async Task<bool> CreateAsync(CreateBrandRequest request)
         {
-            var existing =
-                await _repository.GetByNameAsync(
-                    request.BrandName);
-
-            if (existing != null)
-                return false;
-
-
+            var existing = await _brandRepo.GetByNameAsync(request.BrandName);
+            if (existing != null) return false;
             var brand = new BrandEntity
             {
-                BrandCode =
-                    request.BrandCode,
-
-                BrandName =
-                    request.BrandName,
-
-                Description =
-                    request.Description,
-
-                IsActive =
-                    request.IsActive,
-
-                CreatedDate =
-                    DateTime.UtcNow
+                BrandCode = request.BrandCode,
+                BrandName = request.BrandName,
+                Description = request.Description,
+                IsActive = request.IsActive,
+                CreatedDate = DateTime.UtcNow
             };
-
-
-            await _repository.AddAsync(brand);
-
-            await _repository.SaveChangesAsync();
-
+            await _brandRepo.AddAsync(brand);
+            await _brandRepo.SaveChangesAsync();
             return true;
         }
 
-
-        // =========================================================
-        // UPDATE BRAND
-        // =========================================================
-
-        public async Task<bool>
-            UpdateAsync(UpdateBrandRequest request)
+        public async Task<bool> UpdateAsync(UpdateBrandRequest request)
         {
-            var brand =
-                await _repository.GetByIdAsync(
-                    request.BrandId);
-
-            if (brand == null)
-                return false;
-
-
-            brand.BrandCode =
-                request.BrandCode;
-
-            brand.BrandName =
-                request.BrandName;
-
-            brand.Description =
-                request.Description;
-
-            brand.IsActive =
-                request.IsActive;
-
-            brand.UpdatedDate =
-                DateTime.UtcNow;
-
-
-            await _repository.UpdateAsync(brand);
-
-            await _repository.SaveChangesAsync();
-
+            var brand = await _brandRepo.GetByIdAsync(request.BrandId);
+            if (brand == null) return false;
+            brand.BrandCode = request.BrandCode;
+            brand.BrandName = request.BrandName;
+            brand.Description = request.Description;
+            brand.IsActive = request.IsActive;
+            brand.UpdatedDate = DateTime.UtcNow;
+            await _brandRepo.UpdateAsync(brand);
+            await _brandRepo.SaveChangesAsync();
             return true;
         }
 
-
-        // =========================================================
-        // DELETE BRAND
-        // =========================================================
-
-        public async Task<bool>
-            DeleteAsync(int brandId)
+        public async Task<bool> DeleteAsync(int brandId)
         {
-            var brand =
-                await _repository.GetByIdAsync(
-                    brandId);
-
-            if (brand == null)
-                return false;
-
-
-            await _repository.DeleteAsync(brand);
-
-            await _repository.SaveChangesAsync();
-
+            var brand = await _brandRepo.GetByIdAsync(brandId);
+            if (brand == null) return false;
+            await _brandRepo.DeleteAsync(brand);
+            await _brandRepo.SaveChangesAsync();
             return true;
         }
 
+        public Task<BrandStatisticsResponse> GetStatisticsAsync() => _brandRepo.GetStatisticsAsync();
+        public Task<BrandFiltersResponse> GetFiltersAsync() => _brandRepo.GetFiltersAsync();
 
-        // =========================================================
-        // STATISTICS
-        // =========================================================
+        // ===== BRAND MODEL METHODS - FIXED NO?? ON BOOL =====
 
-        public async Task<BrandStatisticsResponse>
-            GetStatisticsAsync()
+        public async Task<IEnumerable<BrandModelResponse>> GetModelsByBrandIdAsync(int brandId)
         {
-            return await _repository
-                .GetStatisticsAsync();
+            var models = await _modelRepo.GetByBrandIdAsync(brandId);
+            return models.Select(m => new BrandModelResponse
+            {
+                BrandModelId = m.BrandModelId,
+                BrandId = m.BrandId,
+                ModelName = m.ModelName!,
+                Description = m.Description,
+                IsActive = m.IsActive, // <-- NO??, your table is bool not bool?
+                CreatedDate = m.CreatedDate
+            });
         }
 
-
-        // =========================================================
-        // FILTERS
-        // =========================================================
-
-        public async Task<BrandFiltersResponse>
-            GetFiltersAsync()
+        public async Task<BrandModelResponse?> GetModelByIdAsync(int modelId)
         {
-            return await _repository
-                .GetFiltersAsync();
+            var m = await _modelRepo.GetByIdAsync(modelId);
+            if (m == null) return null;
+            return new BrandModelResponse
+            {
+                BrandModelId = m.BrandModelId,
+                BrandId = m.BrandId,
+                ModelName = m.ModelName!,
+                Description = m.Description,
+                IsActive = m.IsActive,
+                CreatedDate = m.CreatedDate
+            };
+        }
+
+        public async Task<BrandModelResponse> CreateModelAsync(int brandId, CreateBrandModelRequest request)
+        {
+            var entity = new BrandModelEntity
+            {
+                BrandId = brandId,
+                ModelName = request.ModelName,
+                Description = request.Description,
+                IsActive = request.IsActive,
+                CreatedDate = DateTime.UtcNow
+            };
+            var created = await _modelRepo.AddAsync(entity);
+            await _modelRepo.SaveChangesAsync();
+            return new BrandModelResponse
+            {
+                BrandModelId = created.BrandModelId,
+                BrandId = created.BrandId,
+                ModelName = created.ModelName!,
+                IsActive = created.IsActive,
+                Description = created.Description
+            };
+        }
+
+        public async Task<bool> UpdateModelAsync(UpdateBrandModelRequest request)
+        {
+            var model = await _modelRepo.GetByIdAsync(request.BrandModelId);
+            if (model == null) return false;
+            model.ModelName = request.ModelName;
+            model.Description = request.Description;
+            model.IsActive = request.IsActive;
+            model.BrandId = request.BrandId;
+            model.UpdatedDate = DateTime.UtcNow;
+            await _modelRepo.UpdateAsync(model);
+            await _modelRepo.SaveChangesAsync();
+            return true;
+        }
+
+        public async Task<bool> DeleteModelAsync(int modelId)
+        {
+            var model = await _modelRepo.GetByIdAsync(modelId);
+            if (model == null) return false;
+            await _modelRepo.DeleteAsync(model);
+            await _modelRepo.SaveChangesAsync();
+            return true;
         }
     }
 }

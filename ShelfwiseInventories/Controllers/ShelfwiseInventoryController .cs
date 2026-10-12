@@ -14,6 +14,24 @@ namespace Marketplacesellerportal.ShelfwiseInventory.Controllers
         private readonly IShelfwiseInventoryService _svc;
         public ShelfwiseInventoryController(IShelfwiseInventoryService svc) => _svc = svc;
 
+        // =========================================================
+        // GET ALL SHELFWISE INVENTORY
+        // GET: api/ShelfwiseInventory/all
+        // =========================================================
+        [HttpGet("all")]
+        public async Task<IActionResult> GetAll()
+        {
+            var req = new ShelfwiseInventoryListRequest
+            {
+                PageNumber = 1,
+                PageSize = int.MaxValue
+            };
+
+            req.Normalize();
+
+            return Ok(await _svc.GetListAsync(req));
+        }
+
         [HttpGet("seller/{sellerId}/customer/{customerId}")]
         public async Task<IActionResult> GetList(int sellerId, int customerId, [FromQuery] int page = 1, [FromQuery] int size = 20)
         {

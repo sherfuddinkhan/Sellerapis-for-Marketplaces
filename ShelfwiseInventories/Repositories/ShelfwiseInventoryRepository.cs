@@ -22,31 +22,65 @@ namespace Marketplacesellerportal.ShelfwiseInventory.Repositories
             => await _context.ShelfwiseInventories.AsNoTracking()
                 .FirstOrDefaultAsync(x => x.ShelfwiseInventoryId == id && x.SellerId == sellerId && x.CustomerId == customerId);
 
-        public async Task<(List<ShelfwiseInventoryEntity> Items, int TotalCount)> GetListAsync(ShelfwiseInventoryListRequest req)
+
+        public async Task<(List<ShelfwiseInventoryEntity> Items, int TotalCount)> GetListAsync(
+            ShelfwiseInventoryListRequest req)
         {
-            var q = _context.ShelfwiseInventories.AsNoTracking()
-                .Where(x => x.SellerId == req.SellerId && x.CustomerId == req.CustomerId);
+            var q = _context.ShelfwiseInventories.AsNoTracking();
+
+            // Apply seller/customer filters only when positive IDs are supplied.
+            if (req.SellerId > 0)
+                q = q.Where(x => x.SellerId == req.SellerId);
+
+            if (req.CustomerId > 0)
+                q = q.Where(x => x.CustomerId == req.CustomerId);
 
             if (!string.IsNullOrWhiteSpace(req.FacilityCode))
-                q = q.Where(x => x.FacilityCode.Contains(req.FacilityCode));
+                q = q.Where(x => x.FacilityCode != null &&
+                                 x.FacilityCode.Contains(req.FacilityCode));
+
             if (!string.IsNullOrWhiteSpace(req.ShelfCode))
-                q = q.Where(x => x.ShelfCode.Contains(req.ShelfCode));
+                q = q.Where(x => x.ShelfCode != null &&
+                                 x.ShelfCode.Contains(req.ShelfCode));
+
             if (!string.IsNullOrWhiteSpace(req.ItemSkuCode))
-                q = q.Where(x => x.ItemSkuCode.Contains(req.ItemSkuCode));
+                q = q.Where(x => x.ItemSkuCode != null &&
+                                 x.ItemSkuCode.Contains(req.ItemSkuCode));
+
             if (!string.IsNullOrWhiteSpace(req.BatchCode))
-                q = q.Where(x => x.BatchCode.Contains(req.BatchCode));
+                q = q.Where(x => x.BatchCode != null &&
+                                 x.BatchCode.Contains(req.BatchCode));
+
             if (!string.IsNullOrWhiteSpace(req.InventoryType))
                 q = q.Where(x => x.InventoryType == req.InventoryType);
 
             if (!string.IsNullOrWhiteSpace(req.SearchTerm))
             {
-                var s = req.SearchTerm.ToLower();
-                q = q.Where(x => x.FacilityCode.ToLower().Contains(s) || x.ShelfCode.ToLower().Contains(s) || x.ItemSkuCode.ToLower().Contains(s) || x.BatchCode.ToLower().Contains(s));
+                var search = req.SearchTerm.Trim();
+
+                q = q.Where(x =>
+                    (x.FacilityCode != null && x.FacilityCode.Contains(search)) ||
+                    (x.ShelfCode != null && x.ShelfCode.Contains(search)) ||
+                    (x.ItemSkuCode != null && x.ItemSkuCode.Contains(search)) ||
+                    (x.BatchCode != null && x.BatchCode.Contains(search)));
             }
 
             var total = await q.CountAsync();
-            q = req.SortOrder == "ASC" ? q.OrderBy(x => x.CreatedDate) : q.OrderByDescending(x => x.CreatedDate);
-            var items = await q.Skip((req.PageNumber - 1) * req.PageSize).Take(req.PageSize).ToListAsync();
+
+            q = string.Equals(
+                req.SortOrder, "ASC",
+                StringComparison.OrdinalIgnoreCase)
+                ? q.OrderBy(x => x.CreatedDate)
+                : q.OrderByDescending(x => x.CreatedDate);
+
+            var pageNumber = Math.Max(1, req.PageNumber);
+            var pageSize = Math.Clamp(req.PageSize, 1, 100);
+
+            var items = await q
+                .Skip((pageNumber - 1) * pageSize)
+                .Take(pageSize)
+                .ToListAsync();
+
             return (items, total);
         }
 

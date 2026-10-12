@@ -97,5 +97,12 @@ namespace Marketplacesellerportal.Gatepasses.Repositories
         {
             return await _dbSet.AnyAsync(x => x.GatepassId == gatepassId && x.SellerId == sellerId && x.CustomerId == customerId);
         }
+
+        public async Task<List<Gatepass>> GetAllAsync()
+        {
+            return await _context.Gatepasses
+                .AsNoTracking()
+                .ToListAsync();
+        }
     }
 }

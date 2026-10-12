@@ -12,5 +12,7 @@ namespace Marketplacesellerportal.ReversePickups.Interfaces
         Task<ReversePickupEntity> CreateAsync(ReversePickupEntity e);
         Task<ReversePickupEntity?> UpdateAsync(ReversePickupEntity e);
         Task<bool> DeleteAsync(int id, int sellerId, int customerId);
+        Task<List<ReversePickupEntity>> GetAllAsync();
+
     }
 }
